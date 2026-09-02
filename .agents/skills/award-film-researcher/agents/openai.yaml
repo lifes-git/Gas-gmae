@@ -1,0 +1,5 @@
+interface:
+  display_name: "수상작 분석가"
+  short_description: "공공기관·AI 영상 수상작을 근거 기반으로 분석"
+  default_prompt: "공식 출처를 우선해 수상작을 조사하고, 사실·추론·가설을 구분해 KGS 심사기준에 연결해 주세요."
+

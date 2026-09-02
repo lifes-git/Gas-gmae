@@ -1,0 +1,6 @@
+rule_id,context,screen_state,player_action,visible_copy,allowed_depiction,forbidden_depiction,reviewer,status,review_date,version
+GS-OUTING-01,장기간 외출 전 가정 점검,valve-open,가스밸브 잠그기,"장기간 외출 전 가스밸브를 잠가요.",장기간 외출 상황과 승인된 밸브 차단 상태,"짧은 외출 전체로 일반화; 모호한 밸브 방향",Gas Safety Reviewer,draft,2026-08-31,v0.3
+GS-FIRE-01,화기 사용 또는 사용 준비 중인 주방,towel-near-stove,수건을 화기와 떨어진 곳으로 옮기기,"종이와 수건은 화기 주변에 두지 않아요.",꺼진 가스레인지와 떨어진 보관 위치,"불 켠 상태; 불붙는 연출; 쓰레기통 투척",Gas Safety Reviewer,approved,2026-08-31,v0.3
+GS-BUTANE-DISPOSAL-01,다 쓴 부탄캔 배출 전,butane-location-choice,통풍이 잘되는 실외 선택,"잔여가스는 통풍이 잘되는 곳에서 제거해요.",실외 또는 충분히 통풍되는 장소,"실내 제거; 쓰레기봉투 안 제거; 열원 주변",Gas Safety Reviewer,approved,2026-08-31,v0.3
+GS-BUTANE-DISPOSAL-01,통풍이 잘되는 장소,butane-nozzle-step,거꾸로 들어 노즐 눌러 잔여가스 제거,"잔여가스 제거 전에 구멍을 뚫지 않아요.",거꾸로 든 채 노즐 누르기,"제거 전 송곳 천공; 폭발·중독 재현",Gas Safety Reviewer,approved,2026-08-31,v0.3
+GS-BUTANE-DISPOSAL-01,잔여가스 제거 후,butane-disposal-note,지역 분리배출 기준 확인,"잔여가스를 제거한 뒤 지역 분리배출 기준을 확인해요.",지역 기준 확인 안내,전국 공통 단일 배출함 단정,Gas Safety Reviewer,approved,2026-08-31,v0.3

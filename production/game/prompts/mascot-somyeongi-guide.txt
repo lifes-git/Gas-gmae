@@ -1,0 +1,10 @@
+Use case: illustration-story
+Asset type: transparent prototype web-game guide character
+Primary request: create a clean full-body game pose of the same Somyeongi puppy character shown in all three reference images
+Input images: Images 1–3 are official-character appearance references supplied by the user; preserve the shared character identity and proportions
+Subject: pale beige two-head-tall puppy, large rounded head, broad floppy ears, tiny curved eyebrows, black oval eyes with small highlights, pink cheeks, small brown nose, smiling mouth with red tongue, short limbs, small tail; right front paw raised to show paw pads in a friendly mission-guide greeting
+Wardrobe: plain white triangular neckerchief; for this prototype omit the chest emblem so no AI-generated corporate logo is embedded
+Style/medium: simple polished Korean educational webtoon character, thick rounded dark-brown outline, flat colors with very light cel shading
+Composition/framing: centered full body, front three-quarter view, all ears paws and tail visible, generous transparent padding
+Constraints: genuinely transparent background; match the reference character rather than inventing a new breed; readable at 160 px; no text; no letters; no numbers; no logo; no watermark; no props; no cape; no suit
+Avoid: realistic fur, anime sparkle eyes, long legs, oversized fluffy tail, extra limbs, cropped feet, 3D rendering

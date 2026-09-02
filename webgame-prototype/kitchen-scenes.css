@@ -1,0 +1,47 @@
+/* Separate migration layer: original UI remains intact outside these scenes. */
+#room { background:#e9d8bd; }
+#room::before, #room::after { display:none; }
+#scene-world.approved-scenes { width:1672px; height:941px; background:none; }
+.approved-scenes > .room-state-layer,
+.approved-scenes > .window-art, .approved-scenes > .door-art,
+.approved-scenes > .sofa-art, .approved-scenes > .cabinet-art,
+.approved-scenes > .counter-art, .approved-scenes > .stove-art,
+.approved-scenes > .safe-basket { display:none !important; }
+.new-scene-art { position:absolute; inset:0; pointer-events:none; }
+.new-scene-art > img, .kitchen-art { display:block; width:100%; height:100%; }
+.new-scene-art > .living-butane-prop { position:absolute; left:720px; top:735px; width:100px; height:auto; }
+#scene-world.approved-scenes .hotspot { width:105px; height:105px; min-width:0; min-height:0; right:auto; bottom:auto; transform:none; }
+#scene-world.approved-scenes .hotspot-valve { left:1383px; top:300px; }
+#scene-world.approved-scenes .hotspot-towel { left:710px; top:495px; }
+#scene-world.approved-scenes .hotspot-butane { left:716px; top:719px; }
+#scene-world.approved-scenes .exit-door { left:480px; top:350px; width:130px; height:230px; right:auto; bottom:auto; }
+.scene-navigation, .scene-held-item { position:absolute; z-index:12; font:inherit; color:#263d43; background:#fff8de; border:1px solid #c9b98f; border-radius:10px; box-shadow:0 3px 8px #34271625; padding:12px 18px; }
+.scene-navigation { right:20px; top:85px; min-height:44px; cursor:pointer; }
+.scene-held-item { left:50%; top:85px; transform:translateX(-50%); max-width:55%; }
+.kitchen-basket-target { position:absolute; left:55px; top:650px; width:300px; height:150px; z-index:5; background:#fff6ba22; border:2px dashed #ffe68b; border-radius:24px; color:#fff; font-size:23px; text-shadow:0 2px 4px #000; cursor:pointer; }
+.kitchen-detail-dialog { width:min(880px,94vw); max-height:96dvh; padding:18px; border:1px solid #c9b98f; border-radius:14px; background:#fff8e5; color:#263d43; overflow:auto; }
+.kitchen-detail-dialog::backdrop { background:#1f282ac9; }
+.kitchen-detail-dialog header { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.kitchen-detail-dialog h2 { margin:0; font-size:clamp(18px,2.5vw,26px); }
+.kitchen-detail-dialog button { font:inherit; cursor:pointer; min-height:44px; }
+.detail-close, .detail-back { border:1px solid #9bbcc2; border-radius:9px; background:#d5eced; color:#263d43; padding:8px 14px; }
+.kitchen-detail-view { position:relative; margin-top:12px; height:min(52dvh,420px); overflow:hidden; background:#ead2b0; border-radius:8px; }
+.kitchen-detail-view .kitchen-art { position:absolute; inset:0; }
+.detail-valve { aspect-ratio:370/350; width:auto; margin-inline:auto; }
+.detail-towel { aspect-ratio:600/350; width:auto; margin-inline:auto; }
+.detail-target { position:absolute; border:2px dashed #ffe785; border-radius:50%; background:transparent; color:transparent; touch-action:none; box-shadow:0 0 14px #ffe68150; }
+.target-valve { left:29%; top:19%; width:40%; height:43%; }
+.target-towel { left:18%; top:24%; width:52%; height:52%; }
+.detail-instruction { margin:12px 0; font-size:clamp(14px,1.5vw,18px); }
+.kitchen-detail-dialog footer { display:flex; gap:12px; justify-content:center; }
+.detail-action { padding:10px 20px; border:1px solid #d27660; border-radius:10px; background:#ff947b; color:#43271f; }
+.detail-target:disabled { visibility:hidden; }
+.detail-action:disabled { opacity:.6; cursor:default; }
+.kitchen-detail-dialog button:focus-visible, .scene-navigation:focus-visible, .kitchen-basket-target:focus-visible { outline:3px solid #246a9b; outline-offset:4px; }
+[hidden] { display:none !important; }
+@media (max-height:500px) {
+  .kitchen-detail-dialog { padding:10px; }
+  .kitchen-detail-view { height:43dvh; }
+  .detail-instruction { margin:6px 0; }
+  .scene-navigation, .scene-held-item { top:62px; padding:8px 12px; font-size:13px; }
+}

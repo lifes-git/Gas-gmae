@@ -1,0 +1,5 @@
+interface:
+  display_name: "가스안전 영상 기획자"
+  short_description: "검증된 안전수칙을 1분 대상권 기획으로 전환"
+  default_prompt: "검증된 가스안전 수칙과 수상작 패턴을 바탕으로 제작 가능한 1분 콘셉트·대본·콘티를 설계해 주세요."
+

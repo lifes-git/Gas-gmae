@@ -1,0 +1,10 @@
+# Research-only copies of publicly available reference videos and generated contact sheets
+research/media/
+
+# Local editor and render files
+production/workfiles/
+production/exports/
+
+# Operating-system metadata
+.DS_Store
+**/.DS_Store

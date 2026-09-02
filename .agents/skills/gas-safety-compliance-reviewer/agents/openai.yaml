@@ -1,0 +1,5 @@
+interface:
+  display_name: "가스안전 심사·검수관"
+  short_description: "안전·심사·권리·SNS 제출을 독립 검수"
+  default_prompt: "완성본을 블라인드 심사하고 가스안전 사실, AI 증빙, 자산 권리와 제출 조건을 검수해 주세요."
+

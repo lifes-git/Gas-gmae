@@ -1,0 +1,10 @@
+Use case: illustration-story
+Asset type: 16:9 web-game exploration background
+Primary request: create a bright Korean apartment living-room and kitchen combined interior for a hidden-object educational browser game
+Scene/backdrop: cozy modern home, living room on the left, entry door near center, kitchen counter and upper cabinet on the right, large window, clear floor area, safe storage basket zone at far right
+Style/medium: polished 2D game background, rounded clean shapes, dark-brown restrained outlines, subtle cel shading, same friendly educational tone as a family web game
+Composition/framing: wide 16:9, near-front three-quarter perspective, uncluttered; reserve separate empty interaction zones for a wall valve near right cabinet, a towel near but not on the off stove, and a used can on the floor; do not draw those three interactive objects into the background
+Lighting/mood: clear daytime, calm and welcoming
+Color palette: sky blue, warm wood, cream, muted orange, navy accents
+Constraints: gas stove must visibly have no flame and no glowing burner; no people or characters; no text; no letters; no numbers; no logo; no watermark; no gas cloud; no danger incident
+Avoid: photorealism, 3D render, excessive clutter, fisheye distortion, fire, smoke, puncturing tools, disposable-bin messaging

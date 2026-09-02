@@ -1,0 +1,13 @@
+# 거실·현관 분리 맵 시안
+
+사용자 승인: 시작 화면과 같은 집. 거실·현관에서 주방 통로로 맵 이동. 거실의 캠핑용품 정리 공간에서 다 쓴 부탄캔 발견. 이번 배경에는 캔·밸브·수건·캐릭터·UI를 포함하지 않는다. 주방 및 이동 구현은 별도 단계이며 게임에 자동 적용하지 않는다.
+
+스타일/공간 원본: `webgame-prototype/assets/masters/bg-title-entry-v2.png`. 같은 현관문·신발장·소파·장식장·오른쪽 주방 통로 유지. 카메라를 조금 뒤로 이동한 시안. 크림/오크/네이비/하늘색과 선명한 2D 셀 셰이딩 고정. 캠핑 가방 옆 빈 공간은 후속 소품 합성용이며 권장 가스용기 보관 장소를 뜻하지 않는다.
+
+도구: 내장 image_gen. Art 판정은 사용자 검수 대기. 기존 파일과 코드는 보존한다.
+
+## 생성 프롬프트
+
+결과: `webgame-prototype/assets/masters/bg-living-entry-map-v1.png`, 원본 크기 1672×941, 1790605 bytes. 요청보다 작은 출력이므로 확대하지 않았다. 현관/가구 순서와 열린 주방 통로, 캠핑 가방 및 매트 확인. 밸브·부탄캔·상호작용 수건·UI 없음. 시작 화면의 걸린 체크무늬 천은 배경 장식으로 유지됨. 세부 원근과 가구 비율은 생성에 따라 달라 사용자 검수 대상. Art: Revise(검수 대기). 게임 코드/런타임 변경 없음.
+
+Use case: illustration-story. Create a clean living-room/entry exploration map for a 2D point-and-click game, based on the attached approved TITLE ROOM. Reference is the authoritative SAME HOUSE architecture and style, not just inspiration. Pull camera back slightly to show more living room floor and the full right-side kitchen doorway. Keep exact left-to-right order and identifiable design: left window with blue curtains and cream sofa with blue/floral cushions, navy CLOSED front door with black closer and lever handle near left-center, wood shoe cabinet and slippers immediately to its right, wall hooks/tote and plant above cabinet, low cream/oak/navy sideboard under the same framed pictures and macrame, open arched kitchen passage on FAR RIGHT revealing cream upper cabinets, navy lower cabinets and a window. Do NOT move kitchen into the living room, do not create a peninsula or a second front door. This is the living room map only; kitchen is a separate room reached through that clear walkable passage. Add a modest camping unpacking area near the entry but NOT blocking door, slippers or passage: one open low fabric camping tote with a rolled camping mat beside it, on clear floor near the shoe cabinet. Leave a small EMPTY floor patch directly beside that tote for a separately added used butane can later. Do not depict any can, gas cylinder, burner, towel, gas valve or exposed gas piping, or any imagined safety labels. No luggage/suitcase (the camping tote is distinct from travel luggage). No people, mascot, UI, text, numbers, logos, glowing circles or sparkles. Preserve crisp rounded brown outlines, warm cream/light oak/navy/sky blue palette, polished 2D soft cel shading, gentle daylight from left, same visual style as reference. Clear contact shadows and coherent perspective. Fresh crisp linework, no blur or photographic detail, no grain, no haze. Landscape 16:9 full bleed, preferred 2048x1152. Keep bottom foreground relatively clear for game HUD. Never transform this into a combined open-plan kitchen hub.

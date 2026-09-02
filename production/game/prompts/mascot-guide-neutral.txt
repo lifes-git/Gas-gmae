@@ -1,0 +1,10 @@
+Use case: illustration-story
+Asset type: transparent web-game guide character master
+Primary request: create an original friendly puppy safety guide for a Korean household educational browser game
+Subject: a cheerful cream-and-light-caramel puppy, 2.5-head-tall chibi proportions, floppy ears, one front paw raised in a welcoming gesture, simple navy neckerchief with no symbol
+Style/medium: polished 2D game illustration, rounded shapes, clean dark-brown outlines, subtle cel shading
+Composition/framing: full body centered, entire ears paws and tail visible, generous transparent padding, front three-quarter view
+Lighting/mood: soft bright daytime, trustworthy and energetic
+Color palette: cream, light caramel, navy, safety yellow accents
+Constraints: genuinely transparent background; original character design; readable at 160 px; no text; no letters; no numbers; no logo; no badge; no watermark; no gas appliance or safety prop
+Avoid: resemblance to an existing corporate mascot, photorealism, 3D render, extra limbs, cropped ears or feet, red cross symbols

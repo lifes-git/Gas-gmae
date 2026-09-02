@@ -1,0 +1,5 @@
+interface:
+  display_name: "Google Flow 영상감독"
+  short_description: "Omni·Veo 샷 생성, 연속성, 크레딧 관리"
+  default_prompt: "승인된 콘티를 Google Flow용 샷과 프롬프트로 변환하고 연속성·안전 오류·크레딧을 관리해 주세요."
+

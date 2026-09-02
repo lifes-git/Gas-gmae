@@ -1,0 +1,5 @@
+interface:
+  display_name: "CapCut 공모전 편집자"
+  short_description: "무료 기능으로 1분 홍보영상 편집과 출력 검수"
+  default_prompt: "Flow 클립을 CapCut 무료 기능만 사용해 편집하고 자막·음향·권리·1080p 출력을 검수해 주세요."
+

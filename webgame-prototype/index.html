@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="장기간 외출 전 가스안전 위험요소 3개를 찾는 교육용 웹게임 프로토타입">
+  <title>소멍이의 외출 전 가스안전 점검</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kitchen-scenes.css">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-valve-wall-handleless-v3.jpg">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-room-layered-unsafe-hd-v3.webp">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-towel-counter-clean-v3.jpg">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-butane-floor-clean-v3.jpg">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-outdoor-ventilated-v1.jpg">
+  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-entry-open-v1.jpg">
+  <link rel="preload" as="image" href="assets/runtime/props/prop-basket-empty-v1.png">
+</head>
+
+<body>
+  <a class="skip-link" href="#game-scene">게임 장면으로 이동</a>
+
+  <main class="app-shell game-stage" id="app">
+    <header class="game-header">
+      <div class="header-tools" aria-label="게임 진행 상황" style="pointer-events: auto;">
+        <div class="progress-card" aria-label="위험요소 해결 진행도">
+          <span id="progress-text">0 / 3</span>
+          <div class="progress-dots" id="progress-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions" aria-label="게임 메뉴"
+        style="display: flex; gap: 0.5rem; pointer-events: auto; align-items: center;">
+        <button class="retro-button btn-blue" id="settings-button" type="button"
+          style="font-size: 1rem; padding: 0.4rem 1rem; border-width: 4px;">설정</button>
+        <button class="retro-button btn-orange" id="restart-game-button" type="button"
+          style="font-size: 1rem; padding: 0.4rem 1rem; border-width: 4px;">다시하기</button>
+        <button class="fullscreen-button" id="fullscreen-button" type="button" aria-label="전체화면으로 보기">전체화면 ⛶</button>
+      </div>
+    </header>
+
+    <section class="game-layout">
+      <section class="scene-card" id="game-scene" aria-label="거실과 주방 탐색 장면">
+        <div class="room" id="room">
+          <div class="scene-world" id="scene-world">
+            <div class="window-art" aria-hidden="true">
+              <span></span><span></span>
+            </div>
+            <div class="door-art" aria-hidden="true"></div>
+            <div class="sofa-art" aria-hidden="true"></div>
+            <div class="cabinet-art" aria-hidden="true"></div>
+            <div class="counter-art" aria-hidden="true"></div>
+            <div class="stove-art" aria-label="꺼진 가스레인지 모형">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="safe-basket" aria-hidden="true">안전 보관</div>
+
+            <img class="room-state-layer state-valve" id="state-valve"
+              src="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
+            <img class="room-state-layer state-towel" id="state-towel"
+              src="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
+            <img class="room-state-layer state-butane" id="state-butane"
+              src="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
+
+            <button class="hotspot hotspot-valve" data-hazard="valve" type="button" aria-label="열려 있는 가스밸브 위험요소">
+              <span class="hotspot-pulse" aria-hidden="true"></span>
+              <span class="hotspot-label">가스밸브</span>
+            </button>
+
+            <button class="hotspot hotspot-towel" data-hazard="towel" type="button" aria-label="화기 가까이에 놓인 수건 위험요소">
+              <span class="hotspot-pulse" aria-hidden="true"></span>
+              <span class="hotspot-label">수건</span>
+            </button>
+
+            <button class="hotspot hotspot-butane" data-hazard="butane" type="button" aria-label="바닥에 놓인 다 쓴 부탄캔 위험요소">
+              <span class="hotspot-pulse" aria-hidden="true"></span>
+              <span class="hotspot-label">다 쓴 부탄캔</span>
+            </button>
+
+            <button class="exit-door" id="exit-door" type="button" disabled aria-label="모든 위험요소를 해결하면 활성화되는 현관문">
+              <span aria-hidden="true">🚪</span>
+              <span>외출하기</span>
+            </button>
+
+            <div class="room-complete" id="room-complete" hidden>
+              <span aria-hidden="true">✓</span>
+              모든 위험요소 해결 완료!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="guide-panel" aria-labelledby="guide-title">
+        <img class="mascot-art" id="mascot-art" src="assets/runtime/mascot-somyeongi-guide-v1.png" alt="소멍이"
+          aria-hidden="false" style="cursor: pointer; position: relative; z-index: 10;" title="클릭해서 힌트 보기">
+        <div class="speech-bubble" id="speech-bubble"
+          style="opacity: 1; pointer-events: auto; transition: opacity 0.3s ease; transform-origin: bottom left;">
+          <h2 id="guide-title"
+            style="font-family: 'Jua', sans-serif; font-size: 1.4rem; color: #ff4757; margin-top: 0; margin-bottom: 0.5rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.1);">
+            소멍이의 힌트</h2>
+          <p id="guide-message"
+            style="margin: 0; font-family: 'Jua', sans-serif; color: #2f3640; font-size: 1.2rem; line-height: 1.4;">장기간
+            외출 전, 집 안의 위험요소 3개를 찾아보세요!</p>
+          <button class="bubble-link" id="rules-button" type="button">ⓘ 안전수칙</button>
+        </div>
+        <div class="hazard-list visually-hidden" aria-label="키보드용 위험요소 목록">
+          <button type="button" data-open-hazard="valve"><span aria-hidden="true">○</span> 가스밸브</button>
+          <button type="button" data-open-hazard="towel"><span aria-hidden="true">○</span> 화기 주변 수건</button>
+          <button type="button" data-open-hazard="butane"><span aria-hidden="true">○</span> 다 쓴 부탄캔</button>
+        </div>
+      </aside>
+    </section>
+
+    <p class="live-region" id="live-region" role="status" aria-live="polite"></p>
+  </main>
+
+  <dialog class="mission-dialog retro-modal" id="mission-dialog" aria-labelledby="mission-title">
+    <form method="dialog" class="dialog-frame mission-stage">
+      <header class="retro-header" style="flex-direction: column;">
+        <p class="dialog-kicker" id="mission-step"
+          style="font-family: 'Jua', sans-serif; color: #ffb142; font-size: 1.2rem; margin: 0; text-shadow: 1px 1px 0 rgba(0,0,0,0.2);">
+          가스안전 미션</p>
+        <h2 id="mission-title" class="retro-title" style="font-size: clamp(2rem, 5vw, 3rem);">미션</h2>
+        <button class="icon-button retro-close" value="cancel" aria-label="미션 닫기">✖</button>
+      </header>
+      <div class="mission-visual" id="mission-visual"></div>
+      <section class="mission-console">
+        <div class="mission-dialogue">
+          <img src="assets/runtime/mascots/mascot-somyeongi-question-v1.png" alt="" aria-hidden="true">
+          <div class="mission-speech">
+            <p class="mission-copy" id="mission-copy"></p>
+            <button class="bubble-link explanation-toggle" id="explanation-toggle" type="button" hidden>왜
+              안전한가요?</button>
+            <p class="mission-explanation" id="mission-explanation" hidden></p>
+          </div>
+        </div>
+        <div class="mission-actions" id="mission-actions" hidden>
+          <p class="fallback-label">조작이 어려운가요? 버튼으로 안전 행동을 실행할 수 있어요.</p>
+        </div>
+        <p class="mission-feedback" id="mission-feedback" role="status" aria-live="polite"></p>
+        <button class="retro-button btn-blue" id="return-room-button" type="button" hidden
+          style="width: 100%; margin-top: 1rem; padding: 1rem;">방으로 돌아가기</button>
+      </section>
+    </form>
+  </dialog>
+
+  <dialog class="rules-dialog retro-modal" id="rules-dialog" aria-labelledby="rules-title">
+    <form method="dialog" class="dialog-frame rules-frame">
+      <header class="rules-memo-header">
+        <h2 id="rules-title" class="retro-title">가스안전 수칙</h2>
+        <button class="icon-button retro-close" value="cancel" aria-label="안전수칙 닫기">✖</button>
+      </header>
+      <ol class="retro-list">
+        <li><strong class="retro-label">가스밸브</strong><span>장기간 외출 전 가스밸브를 잠가요.</span></li>
+        <li><strong class="retro-label">화기 주변</strong><span>종이와 수건은 화기 주변에 두지 않아요.</span></li>
+        <li><strong class="retro-label">다 쓴 부탄캔</strong><span>통풍이 잘되는 곳에서 잔여가스를 제거하고 지역 배출 기준을 확인해요. 제거 전에 구멍을 뚫지
+            않아요.</span></li>
+      </ol>
+    </form>
+  </dialog>
+
+  <section class="result-screen" id="result-screen" hidden aria-labelledby="result-title">
+    <div class="result-card retro-modal" style="width: min(600px, 100%); padding: 3rem 2rem;">
+      <div class="confetti" aria-hidden="true" style="font-size: 2rem; color: #fca311;">◆ ● ▲ ◆ ●</div>
+      <img class="result-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-exit-v1.png" alt="" aria-hidden="true"
+        style="width: 200px; height: 200px;">
+      <p class="eyebrow" style="font-family: 'Jua', sans-serif; color: #ff4757; font-size: 1.5rem; margin-bottom: 0;">외출
+        준비 완료</p>
+      <h2 id="result-title" class="retro-title" tabindex="-1"
+        style="font-size: clamp(2.5rem, 6vw, 3.5rem); margin-top: 0;">외출 준비 완료!</h2>
+      <p style="font-family: 'Jua', sans-serif; font-size: 1.4rem; color: #2f3640;">오늘도 가스안전 지킴이!</p>
+      <ul class="retro-list" style="margin: 2rem 0; text-align: left;">
+        <li><strong class="retro-label" style="background:#1dd1a1; border-color:white;">가스밸브</strong><span>장기간 외출 전 가스밸브
+            잠그기</span></li>
+        <li><strong class="retro-label" style="background:#0984e3; border-color:white;">화기 주변</strong><span>화기 주변에 수건 두지
+            않기</span></li>
+        <li><strong class="retro-label" style="background:#fca311; border-color:white;">부탄캔</strong><span>부탄캔 잔여가스 안전하게
+            제거하기</span></li>
+      </ul>
+      <div class="retro-actions" style="margin-top: 0;">
+        <button class="retro-button btn-blue" id="restart-button" type="button">다시하기</button>
+        <button class="retro-button btn-orange" id="result-rules-button" type="button">수칙 다시보기</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="rotate-screen" id="rotate-screen" aria-labelledby="rotate-title" hidden>
+    <div class="rotate-card">
+      <span class="rotate-icon" aria-hidden="true">↻</span>
+      <h2 id="rotate-title">휴대폰을 가로로 돌려주세요</h2>
+      <p>더 크고 정확하게 안전 미션을 조작할 수 있어요.</p>
+    </div>
+  </section>
+
+  <section class="size-screen" id="size-screen" aria-labelledby="size-title" hidden>
+    <div class="rotate-card">
+      <span class="size-icon" aria-hidden="true">⛶</span>
+      <h2 id="size-title">화면을 조금 더 크게 열어주세요</h2>
+      <p>가로 568px, 세로 300px 이상에서 안전 미션을 정확하게 조작할 수 있어요.</p>
+      <button class="primary-button" id="size-fullscreen-button" type="button">전체화면으로 보기</button>
+    </div>
+  </section>
+
+  <section class="intro-screen" id="intro-screen" aria-labelledby="intro-title">
+    <div class="intro-card retro-ui">
+      <img class="intro-mascot-art" src="assets/runtime/mascot-somyeongi-title-v2.png" alt="" aria-hidden="true">
+      <div class="intro-copy">
+        <h2 id="intro-title" class="retro-title">외출 전<br><span>가스안전 점검!</span></h2>
+        <div class="retro-actions">
+          <button class="retro-button btn-orange" id="start-button" type="button"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5 19 12 8 19Z" fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="2"/></svg><span>시작</span></button>
+          <button class="retro-button btn-blue" id="intro-rules-button" type="button"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="m7 9 1.5 1.5L11 8M14 9h3m-10 6 1.5 1.5L11 14m3 1h3"/></svg><span>안전수칙</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="game-data.js"></script>
+  <script src="kitchen-scenes.js"></script>
+  <script src="game.js"></script>
+</body>
+
+</html>

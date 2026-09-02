@@ -9,15 +9,17 @@
 .approved-scenes > .safe-basket { display:none !important; }
 .new-scene-art { position:absolute; inset:0; pointer-events:none; }
 .new-scene-art > img, .kitchen-art { display:block; width:100%; height:100%; }
-.new-scene-art > .living-butane-prop { position:absolute; left:720px; top:735px; width:100px; height:auto; }
+.new-scene-art > .living-butane-prop { position:absolute; left:690px; top:710px; width:145px; height:auto; }
 #scene-world.approved-scenes .hotspot { width:105px; height:105px; min-width:0; min-height:0; right:auto; bottom:auto; transform:none; }
 #scene-world.approved-scenes .hotspot-valve { left:1383px; top:300px; }
 #scene-world.approved-scenes .hotspot-towel { left:710px; top:495px; }
 #scene-world.approved-scenes .hotspot-butane { left:716px; top:719px; }
-#scene-world.approved-scenes .exit-door { left:480px; top:350px; width:130px; height:230px; right:auto; bottom:auto; }
+#scene-world.approved-scenes .exit-door { left:408px; top:67px; width:230px; height:512px; right:auto; bottom:auto; }
 .scene-navigation, .scene-held-item { position:absolute; z-index:12; font:inherit; color:#263d43; background:#fff8de; border:1px solid #c9b98f; border-radius:10px; box-shadow:0 3px 8px #34271625; padding:12px 18px; }
-.scene-navigation { right:20px; top:85px; min-height:44px; cursor:pointer; }
-.scene-held-item { left:50%; top:85px; transform:translateX(-50%); max-width:55%; }
+.scene-navigation { right:20px; top:50%; transform:translateY(-50%); min-height:44px; cursor:pointer; }
+.scene-held-item { left:50%; top:auto; bottom:18px; transform:translateX(-50%); max-width:62%; z-index:14; }
+.scene-held-item[data-item="empty"] { opacity:.72; }
+.scene-navigation:disabled { opacity:.58; cursor:not-allowed; }
 .kitchen-basket-target { position:absolute; left:55px; top:650px; width:300px; height:150px; z-index:5; background:#fff6ba22; border:2px dashed #ffe68b; border-radius:24px; color:#fff; font-size:23px; text-shadow:0 2px 4px #000; cursor:pointer; }
 .kitchen-detail-dialog { width:min(880px,94vw); max-height:96dvh; padding:18px; border:1px solid #c9b98f; border-radius:14px; background:#fff8e5; color:#263d43; overflow:auto; }
 .kitchen-detail-dialog::backdrop { background:#1f282ac9; }
@@ -29,9 +31,14 @@
 .kitchen-detail-view .kitchen-art { position:absolute; inset:0; }
 .detail-valve { aspect-ratio:370/350; width:auto; margin-inline:auto; }
 .detail-towel { aspect-ratio:600/350; width:auto; margin-inline:auto; }
+.detail-butane { aspect-ratio:16/9; width:auto; margin-inline:auto; }
+.butane-detail-art { position:absolute; inset:0; width:100%; height:100%; }
 .detail-target { position:absolute; border:2px dashed #ffe785; border-radius:50%; background:transparent; color:transparent; touch-action:none; box-shadow:0 0 14px #ffe68150; }
-.target-valve { left:29%; top:19%; width:40%; height:43%; }
-.target-towel { left:18%; top:24%; width:52%; height:52%; }
+.target-valve { left:54%; top:20%; width:30%; height:60%; }
+.target-towel { left:26%; top:28%; width:40%; height:42%; }
+.target-butane { left:37%; top:34%; width:30%; height:38%; }
+.butane-pickup-target { display:grid; place-items:center; color:transparent; overflow:visible; }
+.butane-pickup-target img { width:92%; height:92%; object-fit:contain; transform:rotate(-7deg); filter:drop-shadow(0 8px 8px rgba(19,41,67,.25)); pointer-events:none; }
 .detail-instruction { margin:12px 0; font-size:clamp(14px,1.5vw,18px); }
 .kitchen-detail-dialog footer { display:flex; gap:12px; justify-content:center; }
 .detail-action { padding:10px 20px; border:1px solid #d27660; border-radius:10px; background:#ff947b; color:#43271f; }
@@ -43,5 +50,61 @@
   .kitchen-detail-dialog { padding:10px; }
   .kitchen-detail-view { height:43dvh; }
   .detail-instruction { margin:6px 0; }
-  .scene-navigation, .scene-held-item { top:62px; padding:8px 12px; font-size:13px; }
+  .scene-navigation { right:8px; padding:8px 12px; font-size:13px; }
+  .scene-held-item { bottom:8px; padding:8px 12px; font-size:13px; }
+}
+
+/* Shared close-up language: scene, thin frame, dotted target, Someongi bubble */
+.scene-held-item {
+  min-width: min(430px,64%); min-height: 54px; display: flex; align-items: center; justify-content: center;
+  color: #263c48; border: 1px solid rgba(38,60,72,.38); border-radius: 9px;
+  background: rgba(255,251,233,.95); box-shadow: 0 4px 14px rgba(27,46,57,.2);
+  font-size: 14px; font-weight: 650;
+}
+.scene-held-item::before { content:""; width:26px; height:26px; margin-right:9px; border:1px solid #c9b98f; border-radius:6px; background:#fffdf4; }
+.scene-held-item[data-item="empty"] { display: none; }
+.scene-held-item[data-item="towel"]::before { background:#fffdf4 url("assets/runtime/props/prop-towel-scene-v3.png") center/contain no-repeat; }
+.scene-held-item[data-item="butane"]::before { background:#fffdf4 url("assets/runtime/props/prop-butane-red-v4.png") center/contain no-repeat; }
+.scene-navigation { color:#263c48; border:1px solid rgba(38,60,72,.3); border-radius:9px; background:rgba(255,251,233,.94); box-shadow:0 3px 10px rgba(27,46,57,.18); font-weight:650; }
+
+.kitchen-detail-dialog {
+  width:min(90vw,calc(90vh * 16 / 9)); height:min(90vh,calc(90vw * 9 / 16)); max-width:none; max-height:none;
+  padding:0; overflow:hidden; color:#263c48; border:1px solid rgba(255,251,233,.85); border-radius:8px;
+  background:#20323b; box-shadow:0 22px 70px rgba(7,19,25,.45);
+}
+.kitchen-detail-dialog::backdrop { background:rgba(15,25,30,.7); backdrop-filter:blur(2px); }
+.kitchen-detail-dialog > header { position:absolute; inset:0; z-index:20; pointer-events:none; }
+.kitchen-detail-dialog h2 { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.kitchen-detail-dialog .detail-close {
+  position:absolute; top:12px; right:12px; width:44px; height:44px; min-height:44px; padding:0;
+  color:#263c48; border:1px solid rgba(38,60,72,.35); border-radius:50%; background:rgba(255,251,233,.94);
+  box-shadow:0 3px 10px rgba(18,34,42,.24); font-size:0; pointer-events:auto;
+}
+.kitchen-detail-dialog .detail-close::before { content:"×"; font-size:22px; }
+.kitchen-detail-view { width:100%; height:100%; margin:0; border-radius:7px; background:#ead2b0; }
+.detail-valve, .detail-towel, .detail-butane { width:100%; aspect-ratio:auto; margin:0; }
+.detail-target { border:2px dashed rgba(255,231,133,.95); box-shadow:0 0 0 5px rgba(255,231,133,.12),0 0 18px rgba(255,230,129,.34); }
+.detail-guide { position:absolute; left:2.2%; bottom:2.5%; z-index:18; display:flex; align-items:flex-end; width:min(58%,700px); pointer-events:none; }
+.detail-guide img { width:clamp(72px,10vw,128px); max-height:22vh; object-fit:contain; margin-right:10px; filter:drop-shadow(0 5px 7px rgba(18,34,42,.25)); }
+.detail-guide-copy { position:relative; flex:1; padding:10px 13px; border:1px solid rgba(38,60,72,.42); border-radius:10px; background:rgba(255,251,233,.96); box-shadow:0 5px 16px rgba(18,34,42,.22); pointer-events:auto; }
+.detail-guide-copy::before { content:""; position:absolute; left:-8px; bottom:18px; width:15px; height:15px; background:#fffbe9; transform:rotate(45deg); box-shadow:-1px 1px 0 rgba(38,60,72,.42); }
+.detail-instruction { margin:0; font-size:clamp(14px,1.05vw,17px); font-weight:600; line-height:1.42; }
+.detail-guide-copy.is-success { border-color:#3d956e; }
+.detail-guide-copy.is-success .detail-instruction::before { content:"✓ "; color:#287557; }
+.kitchen-detail-dialog footer { position:absolute; left:calc(60.2% + 12px); right:2.2%; bottom:2.5%; z-index:19; display:grid; gap:7px; }
+.detail-action, .detail-back { min-height:44px; padding:9px 12px; color:#263c48; border:1px solid rgba(38,60,72,.35); border-radius:9px; background:#ff947b; box-shadow:0 3px 0 #d97660; font-weight:650; }
+.detail-action { display:none; }
+.kitchen-detail-dialog.show-fallback .detail-action { display:block; }
+.detail-back { display:none; background:#ade0f4; box-shadow:0 3px 0 #70aec9; }
+.kitchen-detail-dialog.is-success .detail-back { display:block; }
+.kitchen-basket-target { border:2px dashed #ffe785; background:rgba(255,246,186,.08); }
+
+@media (orientation:landscape) and (max-height:520px) {
+  .scene-held-item { min-height:38px; bottom:6px; padding:5px 9px; font-size:11px; }
+  .detail-guide { left:1.5%; bottom:1.5%; width:60%; }
+  .detail-guide img { width:60px; max-height:18vh; }
+  .detail-guide-copy { padding:7px 9px; }
+  .detail-instruction { font-size:11px; }
+  .kitchen-detail-dialog footer { left:calc(61.5% + 8px); right:1.5%; bottom:1.5%; }
+  .detail-action,.detail-back { min-height:36px; padding:6px 8px; font-size:11px; }
 }

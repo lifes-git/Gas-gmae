@@ -191,7 +191,8 @@
     if (!elements.music) return;
     // A single audio element owns both tracks: two songs can never overlap.
     var completion = !elements.result.hidden;
-    var track = completion ? "Walking_Toward_The_Sun.mp3" : "Suitcase_and_Sunlight.mp3";
+    // Content version prevents a same-name audio replacement reusing old cache.
+    var track = completion ? "Walking_Toward_The_Sun.mp3?v=208c51f32d89" : "Suitcase_and_Sunlight.mp3";
     if (elements.music.getAttribute("src") !== track) {
       elements.music.pause();
       elements.music.setAttribute("src", track);

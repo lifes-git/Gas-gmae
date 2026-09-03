@@ -34,6 +34,15 @@
 
   elements.room = document.getElementById("room");
   elements.world = document.getElementById("scene-world");
+  // Limit native menu suppression to game artwork, including dynamically
+  // created close-ups. Leave ordinary text, links and settings unaffected.
+  function preventArtworkDefault(event) {
+    if (event.target instanceof Element && event.target.closest("#scene-world, #mission-visual, .kitchen-detail-view")) {
+      event.preventDefault();
+    }
+  }
+  document.addEventListener("contextmenu", preventArtworkDefault, true);
+  document.addEventListener("dragstart", preventArtworkDefault, true);
   elements.console = document.querySelector(".mission-console");
   elements.explanationToggle = document.getElementById("explanation-toggle");
   elements.explanation = document.getElementById("mission-explanation");
@@ -67,7 +76,7 @@
       if (state.solved.has(id)) return;
       state.solved.add(id);
       elements.guide.textContent = id === "valve" ? "밸브 잠금 완료!" : "수건 이동 완료!";
-      elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-v1.png";
+      elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg";
       playFeedback("success");
       announce(window.GAME_CONTENT[id].success);
       renderProgress();
@@ -206,13 +215,13 @@
     elements.feedback.textContent = "";
     if (message) elements.copy.textContent = message;
     if (!kind) {
-      elements.missionMascot.src = "assets/runtime/mascots/mascot-somyeongi-question-v1.png";
+      elements.missionMascot.src = "assets/runtime/mascots/mascot-somyeongi-question-logo-v1.svg";
       return;
     }
     elements.missionSpeech.classList.add("is-" + kind);
     elements.missionMascot.src = kind === "success"
-      ? "assets/runtime/mascots/mascot-somyeongi-success-v1.png"
-      : "assets/runtime/mascots/mascot-somyeongi-caution-v1.png";
+      ? "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg"
+      : "assets/runtime/mascots/mascot-somyeongi-caution-logo-v1.svg";
     playFeedback(kind);
   }
 
@@ -629,10 +638,10 @@
     var mascot = document.createElement("img");
     mascot.className = "mission-mascot mission-mascot-" + visualName;
     mascot.src = visualName === "towel"
-      ? "assets/runtime/mascots/mascot-somyeongi-caution-v1.png"
+      ? "assets/runtime/mascots/mascot-somyeongi-caution-logo-v1.svg"
       : visualName === "butane-outdoor"
-        ? "assets/runtime/mascots/mascot-somyeongi-success-v1.png"
-        : "assets/runtime/mascots/mascot-somyeongi-question-v1.png";
+        ? "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg"
+        : "assets/runtime/mascots/mascot-somyeongi-question-logo-v1.svg";
     mascot.alt = "";
     elements.visual.appendChild(mascot);
 
@@ -646,6 +655,7 @@
 
     var prop = document.createElement("img");
     prop.className = "mission-prop mission-prop-" + visualName;
+    prop.draggable = false;
     prop.src = propPaths[visualName];
     prop.alt = "";
     elements.visual.appendChild(prop);
@@ -798,7 +808,7 @@
     state.started = false;
     if (elements.dialog.open) elements.dialog.close();
     elements.guide.textContent = "반짝이는 물건 3개를 찾아요!";
-    elements.guideMascot.src = "assets/runtime/mascot-somyeongi-guide-v1.png";
+    elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg";
     document.querySelectorAll(".is-solved").forEach(function (item) { item.classList.remove("is-solved"); });
     renderProgress();
     window.clearTimeout(state.hintTimer);
@@ -886,7 +896,6 @@
   function returnToRoom() {
     playFeedback("door");
     elements.dialog.close();
-    state.activeHazard = null;
     elements.console.classList.remove("is-success");
     resetHintTimer();
     document.getElementById("game-scene").focus({ preventScroll: true });
@@ -909,6 +918,15 @@
 
   elements.dialog.addEventListener("close", function () {
     elements.console.classList.remove("is-success");
+    // Update the room guide for every exit path (door, close button, Escape).
+    // Keep the completed hazard until this shared close handler has consumed it.
+    if (state.started && state.activeHazard === "butane" && state.solved.has("butane")) {
+      elements.guide.textContent = "부탄캔 잔여가스 제거 완료!";
+      elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg";
+      if (state.solved.size < HAZARDS.length) announce(elements.guide.textContent);
+      renderProgress(); // All three solved: the exit-door message takes priority.
+    }
+    state.activeHazard = null;
     resetHintTimer();
   });
 

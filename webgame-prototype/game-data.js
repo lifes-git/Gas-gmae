@@ -51,7 +51,7 @@ window.GAME_CONTENT = {
       { id: "nozzle", label: "거꾸로 들고 노즐 눌러 제거하기", correct: true },
       { id: "puncture", label: "먼저 송곳으로 구멍 뚫기", correct: false }
     ],
-    success: "잔여가스 제거 전에 구멍을 뚫지 않아요. 제거 후 지역 분리배출 기준을 확인해요.",
+    success: "부탄캔 잔여가스 제거 완료!",
     error: "멈춰요! 잔여가스를 제거하기 전에 구멍을 뚫지 않아요.",
     explanation: "통풍이 잘되는 곳에서 잔여가스를 완전히 제거하고, 구멍을 뚫지 않은 채 지역 분리배출 기준을 확인해요."
   }

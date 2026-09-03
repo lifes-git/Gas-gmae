@@ -9,7 +9,7 @@ function walk(dir) {
     return e.isDirectory() ? walk(p) : [p];
   });
 }
-const code = walk('webgame-prototype').filter(p => /\.(js|css|html|cjs)$/.test(p))
+const code = [...walk('webgame-prototype'), ...walk('production/game/tools')].filter(p => /\.(js|css|html|cjs|mjs)$/.test(p))
   .map(p => fs.readFileSync(p,'utf8')).join('\n');
 const bible = fs.readFileSync('production/game/art-bible.md','utf8');
 const assets = walk(assetRoot);

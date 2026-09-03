@@ -221,10 +221,10 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
   transform:scale(1.08) !important;
 }
 #room[data-map="living"]::before {
-  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-living-entry-map-v1.png") !important;
+  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-living-entry-no-towel-v2.png") !important;
 }
 #room[data-map="kitchen"]::before {
-  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-stove-counter-basket-v3.png") !important;
+  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-stove-controls-v4.png") !important;
 }
 #scene-world.approved-scenes { z-index:1 !important; }
 .mission-dialog::backdrop,.kitchen-detail-dialog::backdrop {

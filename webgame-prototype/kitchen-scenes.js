@@ -4,7 +4,7 @@ window.createKitchenScenes = function (options) {
   var world = document.getElementById("scene-world");
   var room = "living", heldItem = null;
   var root = "assets/masters/";
-  var background = root + "bg-stove-counter-basket-v3.png";
+  var background = root + "bg-stove-controls-v4.png";
   var towel = root + "prop-towel-draped-alpha-v1.png";
   var handle = root + "prop-valve-handle-alpha-v2.png";
   var ns = "http://www.w3.org/2000/svg";
@@ -122,7 +122,7 @@ window.createKitchenScenes = function (options) {
     if (room === "kitchen") layer.appendChild(art("0 0 1672 941"));
     else {
       var image = document.createElement("img");
-      image.src = root + "bg-living-entry-map-v1.png"; image.alt = "";
+      image.src = root + "bg-living-entry-no-towel-v2.png"; image.alt = "";
       layer.appendChild(image);
       if (!options.solved("butane") && heldItem !== "butane") {
         var can = document.createElement("img");
@@ -180,8 +180,8 @@ window.createKitchenScenes = function (options) {
     var view = document.createElement("div"); view.className = "kitchen-detail-view detail-" + id;
     var svg = null;
     if (id === "butane") {
-      svg = svgNode("svg", {viewBox:"250 294 1150 647", "aria-hidden":"true", class:"kitchen-art butane-detail-art"});
-      svg.appendChild(svgNode("image", {href:root + "bg-living-entry-map-v1.png", width:1672, height:941}));
+      svg = svgNode("svg", {viewBox:"467 286 1150 647", "aria-hidden":"true", class:"kitchen-art butane-detail-art"});
+      svg.appendChild(svgNode("image", {href:root + "bg-living-entry-no-towel-v2.png", width:1672, height:941}));
       view.appendChild(svg);
     } else {
       svg = art(id === "valve" ? "872 100 800 450" : "526 306 900 506");
@@ -191,8 +191,8 @@ window.createKitchenScenes = function (options) {
     var guide = document.createElement("div"); guide.className = "detail-guide";
     var guideMascot = document.createElement("img");
     guideMascot.src = id === "towel"
-      ? "assets/runtime/mascots/mascot-somyeongi-caution-v1.png"
-      : "assets/runtime/mascots/mascot-somyeongi-question-v1.png";
+      ? "assets/runtime/mascots/mascot-somyeongi-caution-logo-v1.svg"
+      : "assets/runtime/mascots/mascot-somyeongi-question-logo-v1.svg";
     guideMascot.alt = ""; guideMascot.setAttribute("aria-hidden", "true");
     var guideCopy = document.createElement("div"); guideCopy.className = "detail-guide-copy ui-speech";
     var instruction = document.createElement("p"); instruction.className = "detail-instruction";
@@ -223,7 +223,7 @@ window.createKitchenScenes = function (options) {
         options.complete("valve"); render();
         instruction.textContent = window.GAME_CONTENT.valve.success;
         guideCopy.classList.add("is-success");
-        guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-v1.png";
+        guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg";
         modal.classList.add("is-success");
         action.disabled = true; target.disabled = true; close.focus();
       }

@@ -9,11 +9,12 @@
 .approved-scenes > .safe-basket { display:none !important; }
 .new-scene-art { position:absolute; inset:0; pointer-events:none; }
 .new-scene-art > img, .kitchen-art { display:block; width:100%; height:100%; }
-.new-scene-art > .living-butane-prop { position:absolute; left:690px; top:710px; width:145px; height:auto; }
+/* Can center: 63.7% / 66.9% of the 1672 × 941 world. */
+.new-scene-art > .living-butane-prop { position:absolute; left:992.56px; top:587.37px; width:145px; height:auto; }
 #scene-world.approved-scenes .hotspot { width:105px; height:105px; min-width:0; min-height:0; right:auto; bottom:auto; transform:none; }
 #scene-world.approved-scenes .hotspot-valve { left:1458px; top:300px; }
 #scene-world.approved-scenes .hotspot-towel { left:886px; top:501px; }
-#scene-world.approved-scenes .hotspot-butane { left:716px; top:719px; }
+#scene-world.approved-scenes .hotspot-butane { left:1012.56px; top:577.03px; }
 #scene-world.approved-scenes .exit-door { left:408px; top:67px; width:230px; height:512px; right:auto; bottom:auto; }
 .scene-navigation, .scene-held-item { position:absolute; z-index:12; font:inherit; color:#263d43; background:#fff8de; border:1px solid #c9b98f; border-radius:10px; box-shadow:0 3px 8px #34271625; padding:12px 18px; }
 .scene-navigation { right:20px; top:50%; transform:translateY(-50%); min-height:44px; cursor:pointer; }

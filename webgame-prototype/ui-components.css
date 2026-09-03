@@ -118,6 +118,52 @@
   #app #guide-message { flex-basis:100%; }
   #app .speech-bubble .bubble-link { margin-left:auto; }
 }
+/* Keep the phone guide inside the left-hand safe area, away from the can.
+   Do not inherit the near-full-width portrait layout in landscape. */
+@media (orientation:landscape) and (max-height:500px), (orientation:landscape) and (pointer:coarse) {
+  #app .guide-panel {
+    left:max(12px, env(safe-area-inset-left, 0px)) !important;
+    bottom:max(8px, env(safe-area-inset-bottom, 0px)) !important;
+    width:39vw !important;
+    max-width:440px;
+    gap:10px !important;
+  }
+  #app .guide-panel #mascot-art {
+    width:clamp(46px,6vw,72px) !important;
+    height:clamp(64px,18vh,96px) !important;
+  }
+  #app .speech-bubble {
+    min-width:0;
+    padding:8px 10px !important;
+    flex-wrap:wrap;
+    gap:2px !important;
+  }
+  #app #guide-message {
+    flex-basis:100%;
+    font-size:clamp(14px,1.7vw,18px) !important;
+    line-height:1.35 !important;
+    margin:0;
+  }
+  #app .speech-bubble .bubble-link {
+    margin-left:auto;
+    padding:6px 0 !important;
+    min-height:32px;
+    font-size:12px !important;
+  }
+}
+/* Game artwork is manipulated in-game, not by the browser image menu. */
+#scene-world, #mission-visual, .kitchen-detail-view {
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+}
+#scene-world img, #mission-visual img, .kitchen-detail-view img {
+  -webkit-touch-callout:none;
+  -webkit-user-drag:none;
+}
+#mission-visual .mission-prop, #mission-visual .nozzle-focus {
+  touch-action:none;
+}
 #intro-screen #intro-title.image-title, #result-screen #result-title.image-title {
   width:100%; font-size:0 !important; line-height:0 !important;
   text-shadow:none !important; -webkit-text-stroke:0 !important;
@@ -162,7 +208,30 @@
   box-shadow:none !important;
 }
 .guide-panel .speech-bubble { align-self:center !important; margin-bottom:0 !important; }
-.guide-panel .speech-bubble::before { top:50% !important; bottom:auto !important; margin-top:-8px; }
+/* Anchor tails to the straight middle of the edge, not the rounded corner.
+   The old bottom offset crossed the top curve on short mobile bubbles. */
+.guide-panel .speech-bubble::before,
+.mission-dialog .mission-speech::before,
+.kitchen-detail-dialog .detail-guide-copy::before {
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  top:50% !important;
+  bottom:auto !important;
+  left:-6px !important;
+  width:10px !important;
+  height:10px !important;
+  margin:0 !important;
+  box-sizing:border-box;
+  transform:translateY(-50%) rotate(45deg) !important;
+  background:var(--toon-cream) !important;
+  border:0 !important;
+  border-left:2px solid !important;
+  border-bottom:2px solid !important;
+  border-color:inherit !important;
+  box-shadow:none !important;
+  pointer-events:none;
+}
 #room #scene-world.approved-scenes .kitchen-towel-prop,
 #room #scene-world.approved-scenes .kitchen-lever,
 .kitchen-detail-dialog .kitchen-towel-prop,

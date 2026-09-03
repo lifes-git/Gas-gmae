@@ -11,8 +11,8 @@
 .new-scene-art > img, .kitchen-art { display:block; width:100%; height:100%; }
 .new-scene-art > .living-butane-prop { position:absolute; left:690px; top:710px; width:145px; height:auto; }
 #scene-world.approved-scenes .hotspot { width:105px; height:105px; min-width:0; min-height:0; right:auto; bottom:auto; transform:none; }
-#scene-world.approved-scenes .hotspot-valve { left:1383px; top:300px; }
-#scene-world.approved-scenes .hotspot-towel { left:710px; top:495px; }
+#scene-world.approved-scenes .hotspot-valve { left:1458px; top:300px; }
+#scene-world.approved-scenes .hotspot-towel { left:886px; top:501px; }
 #scene-world.approved-scenes .hotspot-butane { left:716px; top:719px; }
 #scene-world.approved-scenes .exit-door { left:408px; top:67px; width:230px; height:512px; right:auto; bottom:auto; }
 .scene-navigation, .scene-held-item { position:absolute; z-index:12; font:inherit; color:#263d43; background:#fff8de; border:1px solid #c9b98f; border-radius:10px; box-shadow:0 3px 8px #34271625; padding:12px 18px; }
@@ -34,7 +34,7 @@
 .detail-butane { aspect-ratio:16/9; width:auto; margin-inline:auto; }
 .butane-detail-art { position:absolute; inset:0; width:100%; height:100%; }
 .detail-target { position:absolute; border:2px dashed #ffe785; border-radius:50%; background:transparent; color:transparent; touch-action:none; box-shadow:0 0 14px #ffe68150; }
-.target-valve { left:54%; top:20%; width:30%; height:60%; }
+.target-valve { left:63.375%; top:20%; width:30%; height:60%; }
 .target-towel { left:26%; top:28%; width:40%; height:42%; }
 .target-butane { left:37%; top:34%; width:30%; height:38%; }
 .butane-pickup-target { display:grid; place-items:center; color:transparent; overflow:visible; }
@@ -97,7 +97,7 @@
 .kitchen-detail-dialog.show-fallback .detail-action { display:block; }
 .detail-back { display:none; background:#ade0f4; box-shadow:0 3px 0 #70aec9; }
 .kitchen-detail-dialog.is-success .detail-back { display:block; }
-.kitchen-basket-target { border:2px dashed #ffe785; background:rgba(255,246,186,.08); }
+.kitchen-basket-target { left:350px; top:440px; width:260px; height:110px; border:2px dashed #ffe785; background:rgba(255,246,186,.08); }
 
 @media (orientation:landscape) and (max-height:520px) {
   .scene-held-item { min-height:38px; bottom:6px; padding:5px 9px; font-size:11px; }

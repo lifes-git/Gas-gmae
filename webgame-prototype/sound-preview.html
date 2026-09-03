@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>효과음 비교 청취</title>
+<style>
+body{margin:0;background:#f4eddb;color:#24323b;font:18px/1.6 system-ui,sans-serif}main{max-width:760px;margin:48px auto;padding:24px}h1{font-size:30px}section{background:#fff9e5;border:1px solid #d8cfb5;border-radius:20px;padding:20px;margin:16px 0}button{font:inherit;background:#ffe078;border:1px solid #b7a765;border-radius:12px;padding:12px 18px;margin:4px;cursor:pointer}button:focus-visible{outline:3px solid #267ba0}small{display:block}label{display:block}input{width:200px}#status{min-height:2em}
+</style>
+<main><h1>효과음 비교 청취</h1>
+<p>게임에는 미적용된 합성 시안입니다. A와 B를 비교해주세요. 다른 소리를 누르면 이전 소리는 멈춥니다.</p>
+<label>청취 음량 <input id="volume" type="range" min="0" max="1" step="0.05" value="0.6"></label>
+<section><h2>1. 버튼</h2><small>멜로디 없이 짧고 부드러운 선택음</small><button data-kind="button" data-variant="0">A · 둥근 톡</button><button data-kind="button" data-variant="1">B · 가벼운 뽁</button></section>
+<section><h2>2. 수건</h2><small>금속성·음정 없이 천의 사락거림</small><button data-kind="cloth" data-variant="0">A · 포근한 사락</button><button data-kind="cloth" data-variant="1">B · 가벼운 스륵</button></section>
+<section><h2>3. 부탄캔 집기</h2><small>알림 멜로디가 아닌 짧은 금속 재질감</small><button data-kind="can" data-variant="0">A · 낮은 금속 울림</button><button data-kind="can" data-variant="1">B · 얇은 금속 울림</button></section>
+<button id="stop">정지</button><p id="status" role="status">재생 버튼을 눌러주세요.</p>
+<p>예: 버튼 A / 수건 B / 캔 A. 둘 다 맞지 않으면 느낌을 알려주세요.</p></main>
+<script src="sound-preview.js"></script>
+</html>

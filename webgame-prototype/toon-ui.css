@@ -224,7 +224,7 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
   background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-living-entry-map-v1.png") !important;
 }
 #room[data-map="kitchen"]::before {
-  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-stove-front-interaction-v1.png") !important;
+  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("assets/masters/bg-stove-counter-basket-v3.png") !important;
 }
 #scene-world.approved-scenes { z-index:1 !important; }
 .mission-dialog::backdrop,.kitchen-detail-dialog::backdrop {
@@ -602,7 +602,7 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
 .rotation-arrow-shadow { fill:var(--toon-ink); stroke:var(--toon-ink); stroke-width:8; stroke-linejoin:round; }
 .rotation-arrow { fill:var(--toon-coral); stroke:#fff; stroke-width:2.5; stroke-linejoin:round; }
 .rotation-highlight { fill:none; stroke:rgba(255,255,255,.86); stroke-width:5; stroke-linecap:round; }
-.rotation-cue-valve { left:61%; top:49%; }
+.rotation-cue-valve { left:70.375%; top:49%; }
 .rotation-cue-valve.rotation-cue-reverse { transform:scale(-1,-1); }
 .rotation-cue-butane { left:39%; top:27%; width:28%; height:28%; }
 .rotation-cue svg { animation:rotation-cue-nudge 1.45s ease-in-out infinite; }

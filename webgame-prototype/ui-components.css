@@ -1,4 +1,46 @@
 /* Reusable component layer approved from ui-component-system-concept-v1. */
+#scene-world .kitchen-basket-target { overflow:visible; }
+#scene-world .basket-target-label {
+  position:absolute;
+  bottom:calc(100% + 12px);
+  left:50%;
+  transform:translateX(-50%);
+  padding:9px 16px;
+  border:2px solid #24323b;
+  border-radius:12px;
+  background:#fff9df;
+  color:#24323b;
+  font-size:24px;
+  font-weight:800;
+  line-height:1.3;
+  white-space:nowrap;
+  text-shadow:none;
+  box-shadow:0 3px 0 #24323b;
+  pointer-events:none;
+}
+#intro-screen #intro-settings-button {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  background:var(--ui-cream) !important;
+}
+#intro-screen #intro-settings-button svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.6; flex-shrink:0; }
+/* One speaker for instructions and success/error feedback, no duplicate strip. */
+#mission-feedback { display:none !important; }
+.mission-dialog #mission-copy,
+.kitchen-detail-dialog .detail-instruction {
+  font-size:clamp(18px,1.55vw,23px) !important;
+  line-height:1.5 !important;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+.kitchen-detail-dialog .detail-guide { width:min(74%,850px) !important; }
+.mission-dialog .mission-speech { min-width:0; }
+@media (max-height:500px) {
+  .mission-dialog #mission-copy,
+  .kitchen-detail-dialog .detail-instruction { font-size:16px !important; line-height:1.35 !important; }
+}
 /* Completion sticker: informational, not a filled action button. */
 #room-complete {
   padding:12px 22px 12px 12px;
@@ -32,6 +74,7 @@
   min-height:0;
 }
 #app .game-header {
+  top:calc(20px + env(safe-area-inset-top, 0px)) !important;
   background:transparent !important;
   box-shadow:none !important;
   border:0 !important;

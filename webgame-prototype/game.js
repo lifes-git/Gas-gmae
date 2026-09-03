@@ -75,6 +75,7 @@
   });
 
   var effectContext;
+  var itemSoundEndsAt = 0;
   function playFeedback(kind) {
     if ((kind === "success" || kind === "error") && elements.vibrationSetting.checked && navigator.vibrate) navigator.vibrate(kind === "success" ? 45 : [25, 35, 25]);
     if (!elements.soundSetting.checked) return;
@@ -83,8 +84,46 @@
       if (!AudioContextClass) return;
       var context = effectContext || (effectContext = new AudioContextClass());
       if (context.state === "suspended") context.resume().catch(function () {});
+      // Approved preview: button B, cloth A (-25%), can A; preview master was 0.6.
+      if (kind === "tap" || kind === "open" || kind === "can") {
+        var partials = kind === "can" ? [1, 2.31, 3.87] : [1];
+        partials.forEach(function (ratio, index) {
+          var tone = context.createOscillator(), level = context.createGain();
+          var begin = context.currentTime;
+          var length = kind === "can" ? .22 + index * .035 : .16;
+          var frequency = kind === "can" ? 410 * ratio : 650;
+          tone.frequency.setValueAtTime(frequency, begin);
+          tone.frequency.exponentialRampToValueAtTime(kind === "can" ? frequency * .97 : 260, begin + length);
+          level.gain.setValueAtTime(0, begin);
+          level.gain.linearRampToValueAtTime((kind === "can" ? .14 / (index + 1) : .25) * .6, begin + (kind === "can" ? .018 : .015));
+          level.gain.exponentialRampToValueAtTime(.00006, begin + length);
+          tone.connect(level); level.connect(context.destination);
+          tone.start(); tone.stop(begin + length + .01);
+          tone.onended = function () { tone.disconnect(); level.disconnect(); };
+          if (kind === "can") itemSoundEndsAt = Math.max(itemSoundEndsAt, begin + length + .01);
+        });
+        return;
+      }
+      if (kind === "cloth" || kind === "basket") {
+        var length = kind === "cloth" ? .65 : .42;
+        var rustle = context.createBufferSource();
+        var clothBuffer = context.createBuffer(1, Math.ceil(context.sampleRate * length), context.sampleRate);
+        var data = clothBuffer.getChannelData(0), seed = 7241;
+        for (var j = 0; j < data.length; j++) {
+          seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+          var t = j / data.length;
+          data[j] = (seed / 2147483648 - 1) * Math.pow(Math.sin(Math.PI * t), 2) * (.7 + .3 * Math.sin(t * 24));
+        }
+        rustle.buffer = clothBuffer;
+        var clothFilter = context.createBiquadFilter(), clothGain = context.createGain();
+        clothFilter.type = "bandpass"; clothFilter.Q.value = .5; clothFilter.frequency.value = 1700;
+        clothGain.gain.value = .32 * .6 * .75;
+        rustle.connect(clothFilter); clothFilter.connect(clothGain); clothGain.connect(context.destination);
+        rustle.start(); itemSoundEndsAt = context.currentTime + length;
+        rustle.onended = function () { rustle.disconnect(); clothFilter.disconnect(); clothGain.disconnect(); };
+        return;
+      }
       var materials = {
-        cloth:[.48,3200,.14], basket:[.38,1800,.12],
         hiss:[.95,4200,.12]
       };
       if (materials[kind]) {
@@ -125,7 +164,7 @@
       notes.forEach(function (frequency, index) {
         var oscillator = context.createOscillator();
         var gain = context.createGain();
-        var at = context.currentTime + (kind === "success" ? .32 : 0) + index * (metallic ? .025 : .085);
+        var at = (kind === "success" ? Math.max(context.currentTime + .32, itemSoundEndsAt + .06) : context.currentTime) + index * (metallic ? .025 : .085);
         oscillator.type = "sine";
         oscillator.frequency.value = frequency;
         if (travel || kind === "turn") oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.18, at + duration);
@@ -141,20 +180,31 @@
 
   function syncBackgroundMusic() {
     if (!elements.music) return;
+    // A single audio element owns both tracks: two songs can never overlap.
+    var completion = !elements.result.hidden;
+    var track = completion ? "Walking_Toward_The_Sun.mp3" : "Suitcase_and_Sunlight.mp3";
+    if (elements.music.getAttribute("src") !== track) {
+      elements.music.pause();
+      elements.music.setAttribute("src", track);
+      elements.music.load();
+    }
+    elements.music.loop = !completion;
     elements.music.volume = .16;
     if (!elements.soundSetting.checked || document.hidden) {
       elements.music.pause();
       return;
     }
-    if (!elements.music.paused) return;
+    if (!elements.music.paused || (completion && elements.music.ended)) return;
     var playback = elements.music.play();
     if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
   }
 
   function setMissionStatus(kind, message) {
     elements.missionSpeech.classList.remove("is-error", "is-success");
-    elements.feedback.className = "mission-feedback" + (kind ? " is-" + kind : "");
-    elements.feedback.textContent = message || "";
+    // All instructional feedback belongs to the mascot, not a second banner.
+    elements.feedback.hidden = true;
+    elements.feedback.textContent = "";
+    if (message) elements.copy.textContent = message;
     if (!kind) {
       elements.missionMascot.src = "assets/runtime/mascots/mascot-somyeongi-question-v1.png";
       return;
@@ -345,8 +395,7 @@
     });
     door.addEventListener("click", function () {
       if (!picked) {
-        elements.feedback.className = "mission-feedback is-error";
-        elements.feedback.textContent = "먼저 다 쓴 부탄캔을 클릭해 집어주세요.";
+        setMissionStatus("error", "먼저 다 쓴 부탄캔을 클릭해 집어주세요.");
         announce("먼저 다 쓴 부탄캔을 클릭해 집어주세요.");
         prop.focus();
         return;
@@ -788,6 +837,9 @@
   });
 
   elements.fullscreen.addEventListener("click", async function () {
+    // Close the modal before fullscreen changes top-layer ordering. Otherwise
+    // the hidden modal can leave the visible game inert and block all input.
+    if (elements.settings.open) elements.settings.close();
     try {
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen();
@@ -806,6 +858,7 @@
     var active = Boolean(document.fullscreenElement);
     elements.fullscreen.innerHTML = active ? "↙ <span>전체화면 종료</span>" : "⛶ <span>전체화면</span>";
     elements.fullscreen.setAttribute("aria-label", active ? "전체화면 종료" : "전체화면으로 보기");
+    updateOrientationGate();
     window.requestAnimationFrame(updateSceneScale);
   });
 
@@ -859,10 +912,21 @@
     resetHintTimer();
   });
 
-  document.getElementById("settings-button").addEventListener("click", function () {
+  var introSettings = document.getElementById("settings-button").cloneNode(true);
+  introSettings.id = "intro-settings-button";
+  introSettings.className = "retro-button ui-button ui-button--neutral";
+  introSettings.removeAttribute("data-ui-icon");
+  var settingsLabel = document.createElement("span");
+  settingsLabel.textContent = "설정";
+  introSettings.appendChild(settingsLabel);
+  elements.intro.querySelector(".retro-actions").appendChild(introSettings);
+  function openSettings() {
     playFeedback("tap");
+    document.getElementById("restart-game-button").hidden = !elements.intro.hidden;
     elements.settings.showModal();
-  });
+  }
+  document.getElementById("settings-button").addEventListener("click", openSettings);
+  introSettings.addEventListener("click", openSettings);
 
   // Only explicit close controls: automatic closes after pickup keep their item sound.
   document.querySelectorAll('dialog button[value="cancel"]').forEach(function (button) {
@@ -894,7 +958,7 @@
     if (elements.exitDoor.disabled) return;
     elements.app.hidden = true;
     elements.result.hidden = false;
-    playFeedback("finish");
+    syncBackgroundMusic();
     document.getElementById("result-title").focus();
   });
 

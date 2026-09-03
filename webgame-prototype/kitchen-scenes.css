@@ -13,7 +13,7 @@
 .new-scene-art > .living-butane-prop { position:absolute; left:992.56px; top:587.37px; width:145px; height:auto; }
 #scene-world.approved-scenes .hotspot { width:105px; height:105px; min-width:0; min-height:0; right:auto; bottom:auto; transform:none; }
 #scene-world.approved-scenes .hotspot-valve { left:1458px; top:300px; }
-#scene-world.approved-scenes .hotspot-towel { left:886px; top:501px; }
+#scene-world.approved-scenes .hotspot-towel { left:782px; top:487px; }
 #scene-world.approved-scenes .hotspot-butane { left:1012.56px; top:577.03px; }
 #scene-world.approved-scenes .exit-door { left:408px; top:67px; width:230px; height:512px; right:auto; bottom:auto; }
 .scene-navigation, .scene-held-item { position:absolute; z-index:12; font:inherit; color:#263d43; background:#fff8de; border:1px solid #c9b98f; border-radius:10px; box-shadow:0 3px 8px #34271625; padding:12px 18px; }

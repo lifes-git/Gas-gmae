@@ -15,40 +15,40 @@ window.createKitchenScenes = function (options) {
     return node;
   }
   function art(viewBox) {
-    var svg = svgNode("svg", {viewBox: viewBox, "aria-hidden": "true", class: "kitchen-art"});
+    var svg = svgNode("svg", { viewBox: viewBox, "aria-hidden": "true", class: "kitchen-art" });
     var outlineId = "prop-outline-" + (++artSequence);
     var outlineDefs = svgNode("defs", {});
-    var outline = svgNode("filter", {id:outlineId, x:"-100%", y:"-100%", width:"300%", height:"300%", "color-interpolation-filters":"sRGB"});
-    outline.appendChild(svgNode("feMorphology", {in:"SourceAlpha", operator:"dilate", radius:1.5, result:"edge"}));
-    outline.appendChild(svgNode("feFlood", {"flood-color":"#fff", result:"white"}));
-    outline.appendChild(svgNode("feComposite", {in:"white", in2:"edge", operator:"in", result:"outline"}));
-    outline.appendChild(svgNode("feGaussianBlur", {in:"outline", stdDeviation:4, result:"glow"}));
+    var outline = svgNode("filter", { id: outlineId, x: "-100%", y: "-100%", width: "300%", height: "300%", "color-interpolation-filters": "sRGB" });
+    outline.appendChild(svgNode("feMorphology", { in: "SourceAlpha", operator: "dilate", radius: 1.5, result: "edge" }));
+    outline.appendChild(svgNode("feFlood", { "flood-color": "#fff", result: "white" }));
+    outline.appendChild(svgNode("feComposite", { in: "white", in2: "edge", operator: "in", result: "outline" }));
+    outline.appendChild(svgNode("feGaussianBlur", { in: "outline", stdDeviation: 4, result: "glow" }));
     var merge = svgNode("feMerge", {});
-    merge.appendChild(svgNode("feMergeNode", {in:"glow"}));
-    merge.appendChild(svgNode("feMergeNode", {in:"glow"}));
-    merge.appendChild(svgNode("feMergeNode", {in:"outline"}));
-    merge.appendChild(svgNode("feMergeNode", {in:"SourceGraphic"}));
+    merge.appendChild(svgNode("feMergeNode", { in: "glow" }));
+    merge.appendChild(svgNode("feMergeNode", { in: "glow" }));
+    merge.appendChild(svgNode("feMergeNode", { in: "outline" }));
+    merge.appendChild(svgNode("feMergeNode", { in: "SourceGraphic" }));
     outline.appendChild(merge); outlineDefs.appendChild(outline); svg.appendChild(outlineDefs);
     function outlined(node) {
       // Filter in scene units, outside the towel's high-resolution nested viewBox.
       node.style.setProperty("filter", "none", "important");
-      var group = svgNode("g", {filter:"url(#" + outlineId + ")"});
+      var group = svgNode("g", { filter: "url(#" + outlineId + ")" });
       group.appendChild(node); svg.appendChild(group);
     }
-    svg.appendChild(svgNode("image", {href: background, width: 1672, height: 941}));
+    svg.appendChild(svgNode("image", { href: background, width: 1672, height: 941 }));
     if (heldItem !== "towel" && !options.solved("towel")) {
-      var cloth = svgNode("svg", {x:794, y:476, width:300, height:162, viewBox:"107 184 1262 682", class:"kitchen-towel-prop"});
-      cloth.appendChild(svgNode("image", {href:towel, width:1536, height:1024}));
+      var cloth = svgNode("svg", { x: 690, y: 462, width: 300, height: 162, viewBox: "107 184 1262 682", class: "kitchen-towel-prop" });
+      cloth.appendChild(svgNode("image", { href: towel, width: 1536, height: 1024 }));
       outlined(cloth);
     } else if (options.solved("towel")) {
       var defs = svgNode("defs", {});
-      var clip = svgNode("clipPath", {id:"stored-towel-clip"});
-      clip.appendChild(svgNode("rect", {x:430, y:456, width:162, height:79, rx:12}));
+      var clip = svgNode("clipPath", { id: "stored-towel-clip" });
+      clip.appendChild(svgNode("rect", { x: 430, y: 456, width: 162, height: 79, rx: 12 }));
       defs.appendChild(clip); svg.appendChild(defs);
-      var storedCloth = svgNode("image", {href:towel, x:420, y:431, width:176, height:117, preserveAspectRatio:"xMidYMid meet", "clip-path":"url(#stored-towel-clip)", class:"kitchen-towel-stored"});
+      var storedCloth = svgNode("image", { href: towel, x: 420, y: 431, width: 176, height: 117, preserveAspectRatio: "xMidYMid meet", "clip-path": "url(#stored-towel-clip)", class: "kitchen-towel-stored" });
       svg.appendChild(storedCloth);
     }
-    var lever = svgNode("image", {href:handle, x:1398, y:214, width:224, height:224, class:"kitchen-lever"});
+    var lever = svgNode("image", { href: handle, x: 1398, y: 214, width: 224, height: 224, class: "kitchen-lever" });
     if (options.solved("valve")) lever.style.setProperty("--valve-angle", "90deg");
     outlined(lever);
     return svg;
@@ -109,7 +109,7 @@ window.createKitchenScenes = function (options) {
     if (modal.open) return;
     modal.classList.remove("show-fallback");
     if (origin && !origin.hidden) origin.focus();
-  }, {variant:"info", iconOnly:true, ariaLabel:"주방으로 이동"});
+  }, { variant: "info", iconOnly: true, ariaLabel: "주방으로 이동" });
   navigation.innerHTML = '<svg viewBox="0 0 72 54" aria-hidden="true" focusable="false"><path class="nav-arrow-shadow" d="M7 35C19 15 42 12 56 22L52 10L68 28L48 43L54 31C42 23 25 26 16 42Z"/><path class="nav-arrow" d="M7 35C19 15 42 12 56 22L52 10L68 28L48 43L54 31C42 23 25 26 16 42Z"/><path class="nav-arrow-highlight" d="M17 30C27 18 42 18 51 23"/></svg>';
   modal.addEventListener("keydown", function (event) {
     if (event.key === "Tab") modal.classList.add("show-fallback");
@@ -176,15 +176,15 @@ window.createKitchenScenes = function (options) {
     var header = document.createElement("header");
     var title = document.createElement("h2"); title.id = "kitchen-detail-title";
     title.textContent = id === "valve" ? "밸브 손잡이를 돌려요" : id === "towel" ? "수건을 집어주세요" : "다 쓴 부탄캔을 집어주세요";
-    header.append(title, button("닫기 ×", "detail-close", function () { options.sound("tap"); modal.close(); }, {variant:"danger", iconOnly:true, ariaLabel:"확대 화면 닫기"}));
+    header.append(title, button("닫기 ×", "detail-close", function () { options.sound("tap"); modal.close(); }, { variant: "danger", iconOnly: true, ariaLabel: "확대 화면 닫기" }));
     var view = document.createElement("div"); view.className = "kitchen-detail-view detail-" + id;
     var svg = null;
     if (id === "butane") {
-      svg = svgNode("svg", {viewBox:"467 286 1150 647", "aria-hidden":"true", class:"kitchen-art butane-detail-art"});
-      svg.appendChild(svgNode("image", {href:root + "bg-living-entry-no-towel-v2.png", width:1672, height:941}));
+      svg = svgNode("svg", { viewBox: "467 286 1150 647", "aria-hidden": "true", class: "kitchen-art butane-detail-art" });
+      svg.appendChild(svgNode("image", { href: root + "bg-living-entry-no-towel-v2.png", width: 1672, height: 941 }));
       view.appendChild(svg);
     } else {
-      svg = art(id === "valve" ? "872 100 800 450" : "526 306 900 506");
+      svg = art(id === "valve" ? "872 100 800 450" : "422 292 900 506");
       view.appendChild(svg);
     }
     svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
@@ -199,7 +199,7 @@ window.createKitchenScenes = function (options) {
     instruction.textContent = id === "valve"
       ? "손잡이 끝을 왼쪽으로 밀어 돌려요."
       : id === "towel"
-        ? "불은 꺼졌어요. 수건을 집어요."
+        ? "불은 꺼져있어요. 수건을 집어요."
         : "부탄캔을 집어 문밖으로 옮겨요.";
     guideCopy.appendChild(instruction); guide.append(guideMascot, guideCopy);
     var done = false;
@@ -228,7 +228,7 @@ window.createKitchenScenes = function (options) {
         action.disabled = true; target.disabled = true; close.focus();
       }
     }
-    var target = button(id === "valve" ? "손잡이 돌리기" : id === "towel" ? "수건 집기" : "다 쓴 부탄캔 집기", "detail-target target-" + id, id === "valve" ? function () {} : act);
+    var target = button(id === "valve" ? "손잡이 돌리기" : id === "towel" ? "수건 집기" : "다 쓴 부탄캔 집기", "detail-target target-" + id, id === "valve" ? function () { } : act);
     if (id === "butane") {
       target.classList.add("butane-pickup-target");
       var can = document.createElement("img");
@@ -244,9 +244,9 @@ window.createKitchenScenes = function (options) {
       turnCue.innerHTML = '<svg viewBox="0 0 120 90"><path class="rotation-arrow-shadow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-arrow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-highlight" d="M35 48C49 25 77 22 94 36"/></svg>';
       view.appendChild(turnCue);
     }
-    var action = button(id === "valve" ? "손잡이 90° 돌리기" : id === "towel" ? "수건 집기" : "부탄캔 집기", "detail-action", act, {variant:"primary"});
+    var action = button(id === "valve" ? "손잡이 90° 돌리기" : id === "towel" ? "수건 집기" : "부탄캔 집기", "detail-action", act, { variant: "primary" });
     var closeLabel = id === "butane" ? "거실로 돌아가기" : "주방으로 돌아가기";
-    var close = button(closeLabel, "detail-back", function () { options.sound("tap"); modal.close(); }, {variant:"info", iconOnly:true, ariaLabel:closeLabel});
+    var close = button(closeLabel, "detail-back", function () { options.sound("tap"); modal.close(); }, { variant: "info", iconOnly: true, ariaLabel: closeLabel });
     close.setAttribute("aria-label", closeLabel);
     var controls = document.createElement("footer"); controls.append(action, close);
     modal.append(header, view, guide, controls);
@@ -263,7 +263,7 @@ window.createKitchenScenes = function (options) {
       });
       target.addEventListener("pointermove", function (event) {
         if (start === null || done) return;
-        var nextAngle = Math.max(0, Math.min(90, (start-event.clientX) * 2));
+        var nextAngle = Math.max(0, Math.min(90, (start - event.clientX) * 2));
         if (Math.abs(nextAngle - angle) > 1 && performance.now() - lastTurnSound > 140) {
           options.sound("turn"); lastTurnSound = performance.now();
         }
@@ -298,6 +298,6 @@ window.createKitchenScenes = function (options) {
     open: open,
     heldItem: function () { return heldItem; },
     clearHeld: function () { heldItem = null; options.hold(null); render(); },
-    reset: function () { heldItem=null; options.hold(null); room="living"; if(modal.open) modal.close(); render(); }
+    reset: function () { heldItem = null; options.hold(null); room = "living"; if (modal.open) modal.close(); render(); }
   };
 };

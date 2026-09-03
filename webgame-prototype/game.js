@@ -57,9 +57,11 @@
   var kitchenScenes = window.createKitchenScenes({
     solved: function (id) { return state.solved.has(id); },
     announce: announce,
+    sound: playFeedback,
     guide: function (message) { elements.guide.textContent = message; },
     hold: function (item) {
       state.butaneCarried = item === "butane";
+      if (item) playFeedback(item === "towel" ? "cloth" : "can");
     },
     complete: function (id) {
       if (state.solved.has(id)) return;
@@ -72,32 +74,79 @@
     }
   });
 
+  var effectContext;
   function playFeedback(kind) {
-    if (elements.vibrationSetting.checked && navigator.vibrate) navigator.vibrate(kind === "success" ? 45 : [25, 35, 25]);
+    if ((kind === "success" || kind === "error") && elements.vibrationSetting.checked && navigator.vibrate) navigator.vibrate(kind === "success" ? 45 : [25, 35, 25]);
     if (!elements.soundSetting.checked) return;
     try {
       var AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) return;
-      var context = new AudioContextClass();
-      var oscillator = context.createOscillator();
-      var gain = context.createGain();
-      oscillator.frequency.value = kind === "success" ? 660 : 230;
-      gain.gain.setValueAtTime(.045, context.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .12);
-      oscillator.connect(gain); gain.connect(context.destination);
-      oscillator.start(); oscillator.stop(context.currentTime + .12);
-      oscillator.addEventListener("ended", function () { context.close(); });
+      var context = effectContext || (effectContext = new AudioContextClass());
+      if (context.state === "suspended") context.resume().catch(function () {});
+      var materials = {
+        cloth:[.48,3200,.14], basket:[.38,1800,.12],
+        hiss:[.95,4200,.12]
+      };
+      if (materials[kind]) {
+        var spec = materials[kind];
+        var source = context.createBufferSource();
+        var buffer = context.createBuffer(1, Math.ceil(context.sampleRate * spec[0]), context.sampleRate);
+        var samples = buffer.getChannelData(0);
+        for (var i = 0; i < samples.length; i++) samples[i] = Math.random() * 2 - 1;
+        source.buffer = buffer;
+        var filter = context.createBiquadFilter();
+        filter.type = "bandpass"; filter.frequency.value = spec[1];
+        filter.Q.value = .55;
+        filter.frequency.exponentialRampToValueAtTime(spec[1] * .65, context.currentTime + spec[0]);
+        var envelope = context.createGain();
+        var now = context.currentTime;
+        envelope.gain.setValueAtTime(0, now);
+        // A soft attack and sustained rustle, rather than an impact-shaped click.
+        envelope.gain.linearRampToValueAtTime(spec[2], now + .09);
+        envelope.gain.linearRampToValueAtTime(spec[2] * .65, now + spec[0] * .65);
+        envelope.gain.exponentialRampToValueAtTime(.001, now + spec[0]);
+        source.connect(filter); filter.connect(envelope); envelope.connect(context.destination);
+        source.start();
+        source.onended = function () { source.disconnect(); filter.disconnect(); envelope.disconnect(); };
+        var stopped = false;
+        return function () {
+          if (!stopped) {
+            stopped = true;
+            envelope.gain.cancelScheduledValues(context.currentTime);
+            envelope.gain.setTargetAtTime(.0001, context.currentTime, .008);
+            source.stop(context.currentTime + .035);
+          }
+        };
+      }
+      var notes = ({success:[523,659,784], finish:[523,659,784,1047], pickup:[660,880], move:[659,988], door:[659,988], open:[880,1320], error:[220,196], tap:[1047,1568], can:[1175,1810], latch:[1397,2095], turn:[480]})[kind] || [880];
+      var travel = kind === "move" || kind === "door";
+      var metallic = kind === "can" || kind === "latch";
+      var duration = travel ? .42 : metallic ? .36 : .28;
+      notes.forEach(function (frequency, index) {
+        var oscillator = context.createOscillator();
+        var gain = context.createGain();
+        var at = context.currentTime + (kind === "success" ? .32 : 0) + index * (metallic ? .025 : .085);
+        oscillator.type = "sine";
+        oscillator.frequency.value = frequency;
+        if (travel || kind === "turn") oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.18, at + duration);
+        gain.gain.setValueAtTime(0, at);
+        gain.gain.linearRampToValueAtTime(kind === "turn" ? .035 : kind === "success" ? .045 : .065, at + (travel ? .07 : .025));
+        gain.gain.exponentialRampToValueAtTime(.0001, at + duration);
+        oscillator.connect(gain); gain.connect(context.destination);
+        oscillator.start(at); oscillator.stop(at + duration + .025);
+        oscillator.onended = function () { oscillator.disconnect(); gain.disconnect(); };
+      });
     } catch (error) { /* visual feedback remains available */ }
   }
 
-  function syncBackgroundMusic(restart) {
+  function syncBackgroundMusic() {
     if (!elements.music) return;
     elements.music.volume = .16;
-    if (!state.started || !elements.soundSetting.checked || document.hidden) {
+    if (!elements.soundSetting.checked || document.hidden) {
       elements.music.pause();
       return;
     }
-    if (restart) elements.music.currentTime = 0;
+    if (!elements.music.paused) return;
     var playback = elements.music.play();
     if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
   }
@@ -416,6 +465,7 @@
   }
 
   function enableNozzleHold(nozzle) {
+    var stopHiss = function () {};
     var timer = null;
     var started = 0;
     var frame = null;
@@ -429,17 +479,20 @@
       if (progress < 100) frame = requestAnimationFrame(update);
     }
     function cancel() {
+      stopHiss();
       window.clearTimeout(timer);
       cancelAnimationFrame(frame);
       timer = null;
       ring.style.setProperty("--hold", "0%");
     }
     nozzle.addEventListener("pointerdown", function (event) {
+      if (timer || state.solved.has("butane")) return;
       event.preventDefault();
       nozzle.setPointerCapture(event.pointerId);
       started = performance.now();
+      stopHiss = playFeedback("hiss") || function () {};
       update();
-      timer = window.setTimeout(function () { timer = null; handleChoice(correctAction()); }, 900);
+      timer = window.setTimeout(function () { timer = null; stopHiss(); handleChoice(correctAction()); }, 900);
     });
     nozzle.addEventListener("pointerup", function (event) {
       if (timer) {
@@ -449,6 +502,15 @@
       }
     });
     nozzle.addEventListener("pointercancel", cancel);
+    nozzle.addEventListener("lostpointercapture", cancel);
+    function pauseHidden() { if (document.hidden) cancel(); }
+    elements.dialog.addEventListener("close", function () {
+      cancel();
+      elements.soundSetting.removeEventListener("change", cancel);
+      document.removeEventListener("visibilitychange", pauseHidden);
+    }, {once:true});
+    elements.soundSetting.addEventListener("change", cancel);
+    document.addEventListener("visibilitychange", pauseHidden);
   }
 
   function enableButaneTurn(prop, nozzle, instruction) {
@@ -456,6 +518,7 @@
     var angle = 0;
 
     function completeTurn() {
+      playFeedback("can");
       angle = 96;
       prop.style.transform = "rotate(96deg)";
       prop.classList.remove("is-turnable");
@@ -566,7 +629,7 @@
       outdoorReturn.type = "button";
       outdoorReturn.className = "outdoor-return-door";
       outdoorReturn.setAttribute("aria-label", "현관문으로 방 안에 돌아가기");
-      if (window.GameUI) window.GameUI.enhanceButton(outdoorReturn, {variant:"info", iconOnly:true, ariaLabel:"현관문으로 방 안에 돌아가기"});
+      // The doorway is a transparent scene hit area, not a filled UI button.
       outdoorReturn.hidden = true;
       outdoorReturn.innerHTML = '<span aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><path d="M7 24h32M29 14l10 10-10 10"/></svg></span>';
       outdoorReturn.addEventListener("click", returnToRoom);
@@ -681,12 +744,17 @@
     state.butaneCarried = false;
     kitchenScenes.reset();
     elements.result.hidden = true;
-    elements.app.hidden = false;
+    elements.app.hidden = true;
+    elements.intro.hidden = false;
+    state.started = false;
+    if (elements.dialog.open) elements.dialog.close();
     elements.guide.textContent = "반짝이는 물건 3개를 찾아요!";
     elements.guideMascot.src = "assets/runtime/mascot-somyeongi-guide-v1.png";
     document.querySelectorAll(".is-solved").forEach(function (item) { item.classList.remove("is-solved"); });
     renderProgress();
-    resetHintTimer();
+    window.clearTimeout(state.hintTimer);
+    document.getElementById("start-button").focus();
+    syncBackgroundMusic();
   }
 
   function showSpeechBubbleTemporarily() {
@@ -707,7 +775,8 @@
     elements.intro.hidden = true;
     elements.app.hidden = false;
     state.started = true;
-    syncBackgroundMusic(true);
+    playFeedback("move");
+    syncBackgroundMusic(false);
     document.querySelector('.scene-navigation').focus();
     announce("게임이 시작되었습니다. 위험요소 3개를 찾아보세요.");
     resetHintTimer();
@@ -762,6 +831,7 @@
   window.requestAnimationFrame(updateSceneScale);
 
   function returnToRoom() {
+    playFeedback("door");
     elements.dialog.close();
     state.activeHazard = null;
     elements.console.classList.remove("is-success");
@@ -772,6 +842,10 @@
   elements.returnRoom.addEventListener("click", returnToRoom);
   elements.soundSetting.addEventListener("change", function () { syncBackgroundMusic(false); });
   document.addEventListener("visibilitychange", function () { syncBackgroundMusic(false); });
+  // Autoplay may be blocked; retry from the first trusted title-screen gesture.
+  document.addEventListener("pointerdown", function () { syncBackgroundMusic(false); });
+  document.addEventListener("keydown", function () { syncBackgroundMusic(false); });
+  syncBackgroundMusic(false);
 
   elements.explanationToggle.addEventListener("click", function () {
     var willOpen = elements.explanation.hidden;
@@ -786,25 +860,33 @@
   });
 
   document.getElementById("settings-button").addEventListener("click", function () {
+    playFeedback("tap");
     elements.settings.showModal();
   });
 
+  // Only explicit close controls: automatic closes after pickup keep their item sound.
+  document.querySelectorAll('dialog button[value="cancel"]').forEach(function (button) {
+    button.addEventListener("click", function () { playFeedback("tap"); });
+  });
+
   document.getElementById("restart-game-button").addEventListener("click", function () {
+    playFeedback("tap");
     elements.settings.close();
     resetGame();
   });
 
-  document.getElementById("rules-button").addEventListener("click", function () { elements.rulesDialog.showModal(); });
+  document.getElementById("rules-button").addEventListener("click", function () { playFeedback("tap"); elements.rulesDialog.showModal(); });
   var introRulesButton = document.getElementById("intro-rules-button");
   if (introRulesButton) {
-    introRulesButton.addEventListener("click", function () { elements.rulesDialog.showModal(); });
+    introRulesButton.addEventListener("click", function () { playFeedback("tap"); elements.rulesDialog.showModal(); });
   }
-  document.getElementById("result-rules-button").addEventListener("click", function () { elements.rulesDialog.showModal(); });
-  document.getElementById("restart-button").addEventListener("click", resetGame);
+  document.getElementById("result-rules-button").addEventListener("click", function () { playFeedback("tap"); elements.rulesDialog.showModal(); });
+  document.getElementById("restart-button").addEventListener("click", function () { playFeedback("tap"); resetGame(); });
   document.getElementById("size-fullscreen-button").addEventListener("click", function () { elements.fullscreen.click(); });
 
   elements.exitDoor.addEventListener("click", function () {
     if (kitchenScenes.heldItem() === "butane") {
+      playFeedback("door");
       state.butaneCarried = true;
       openMission("butane", "butane-step-2");
       return;
@@ -812,6 +894,7 @@
     if (elements.exitDoor.disabled) return;
     elements.app.hidden = true;
     elements.result.hidden = false;
+    playFeedback("finish");
     document.getElementById("result-title").focus();
   });
 

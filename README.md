@@ -21,6 +21,14 @@ python3 -m http.server 8080 --directory webgame-prototype
 
 브라우저에서 `http://127.0.0.1:8080`을 연다. `index.html`을 직접 열 수도 있지만, 브라우저별 `file://` 제한을 피하기 위해 로컬 서버 실행을 권장한다. Codex는 저장소 루트의 `AGENTS.md`와 `.agents/`의 역할·스킬 지침을 읽고 기존 작업을 이어간다.
 
-## 현재 상태
+## GitHub Pages 배포
+
+저장소 Settings → Pages → Build and deployment → Source를 **GitHub Actions**로 설정한다.
+`main`에 push하면 `.github/workflows/pages.yml`이 `webgame-prototype/`만 배포한다.
+최초 설정 후 Actions에서 `Deploy web game to GitHub Pages`를 수동 실행할 수도 있다.
+배포 성공 후 주소는 https://lifes-git.github.io/Gas-gmae/ 이다.
+브라우저의 소리 자동재생 제한이 있으면 첫 클릭부터 배경음악이 재생된다.
+
+## 프로토타입 검수 상태
 
 소멍이 캐릭터를 활용한 `외출 전 위험요소 3개 찾기` 프로토타입을 제작 중이다. 승인된 거실·주방 배경과 수건·밸브 분리 에셋을 기반으로 장면 이동 및 확대 상호작용을 연결한 상태다. 밸브의 최종 잠김 방향과 전체 브라우저 QA는 아직 최종 검수 전이다.

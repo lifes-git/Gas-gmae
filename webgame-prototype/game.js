@@ -812,7 +812,7 @@
     playScreenEntrance(elements.intro);
     state.started = false;
     if (elements.dialog.open) elements.dialog.close();
-    elements.guide.textContent = dialogue.initialGuide;
+    elements.guide.textContent = dialogue.intro;
     elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg";
     document.querySelectorAll(".is-solved").forEach(function (item) { item.classList.remove("is-solved"); });
     renderProgress();
@@ -829,7 +829,7 @@
   }
 
   document.querySelectorAll("[data-hazard]").forEach(function (button) {
-    button.addEventListener("click", function () { resetNextPromptTimer(); openMission(button.dataset.hazard); });
+    button.addEventListener("click", function () { openMission(button.dataset.hazard); });
   });
   document.querySelectorAll("[data-open-hazard]").forEach(function (button) {
     button.addEventListener("click", function () { openMission(button.dataset.openHazard); });
@@ -841,9 +841,10 @@
     state.started = true;
     playFeedback("move");
     syncBackgroundMusic(false);
+    window.clearTimeout(state.nextPromptTimer);
+    elements.guide.textContent = dialogue.intro;
     document.querySelector('.scene-navigation').focus();
     announce("게임이 시작되었습니다. 위험요소 3개를 찾아보세요.");
-    resetNextPromptTimer();
     showSpeechBubbleTemporarily();
   });
 
@@ -902,7 +903,6 @@
     playFeedback("door");
     elements.dialog.close();
     elements.console.classList.remove("is-success");
-    resetNextPromptTimer();
     document.getElementById("game-scene").focus({ preventScroll: true });
   }
 
@@ -930,9 +930,9 @@
       elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg";
       if (state.solved.size < HAZARDS.length) announce(elements.guide.textContent);
       renderProgress(); // All three solved: the exit-door message takes priority.
+      resetNextPromptTimer();
     }
     state.activeHazard = null;
-    resetNextPromptTimer();
   });
 
   var introSettings = document.getElementById("settings-button").cloneNode(true);

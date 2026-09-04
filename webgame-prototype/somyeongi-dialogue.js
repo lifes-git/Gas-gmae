@@ -1,6 +1,5 @@
 window.SOMYEONGI_DIALOGUE = {
   intro: "산책하러 가고 싶다 멍... 외출 전에 우리 집이 안전한지 확인해 볼까 멍?",
-  initialGuide: "반짝이는 물건 3개를 찾자 멍!",
   nextPrompt: "다음은 뭐 없을까 멍?",
   completion: {
     valve: "밸브 잠금 완료다 멍!",

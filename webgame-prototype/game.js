@@ -1,12 +1,13 @@
 (function () {
   "use strict";
 
+  var dialogue = window.SOMYEONGI_DIALOGUE;
   var HAZARDS = ["valve", "towel", "butane"];
   var state = {
     solved: new Set(),
     activeHazard: null,
     activeContentKey: null,
-    hintTimer: null,
+    nextPromptTimer: null,
     interactionFailures: 0,
     butaneCarried: false,
     started: false
@@ -62,6 +63,15 @@
     towel: document.getElementById("state-towel"),
     butane: document.getElementById("state-butane")
   };
+  elements.guide.textContent = dialogue.intro;
+
+  function playScreenEntrance(screen) {
+    screen.classList.remove("is-entering");
+    void screen.offsetWidth;
+    screen.classList.add("is-entering");
+  }
+
+  playScreenEntrance(elements.intro);
 
   var kitchenScenes = window.createKitchenScenes({
     solved: function (id) { return state.solved.has(id); },
@@ -75,11 +85,12 @@
     complete: function (id) {
       if (state.solved.has(id)) return;
       state.solved.add(id);
-      elements.guide.textContent = id === "valve" ? "밸브 잠금 완료!" : "수건 이동 완료!";
+      elements.guide.textContent = dialogue.completion[id];
       elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg";
       playFeedback("success");
       announce(window.GAME_CONTENT[id].success);
       renderProgress();
+      resetNextPromptTimer();
     }
   });
 
@@ -92,7 +103,7 @@
       var AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) return;
       var context = effectContext || (effectContext = new AudioContextClass());
-      if (context.state === "suspended") context.resume().catch(function () {});
+      if (context.state === "suspended") context.resume().catch(function () { });
       // Approved preview: button B, cloth A (-25%), can A; preview master was 0.6.
       if (kind === "tap" || kind === "open" || kind === "can") {
         var partials = kind === "can" ? [1, 2.31, 3.87] : [1];
@@ -133,7 +144,7 @@
         return;
       }
       var materials = {
-        hiss:[.95,4200,.12]
+        hiss: [.95, 4200, .12]
       };
       if (materials[kind]) {
         var spec = materials[kind];
@@ -166,7 +177,7 @@
           }
         };
       }
-      var notes = ({success:[523,659,784], finish:[523,659,784,1047], pickup:[660,880], move:[659,988], door:[659,988], open:[880,1320], error:[220,196], tap:[1047,1568], can:[1175,1810], latch:[1397,2095], turn:[480]})[kind] || [880];
+      var notes = ({ success: [523, 659, 784], finish: [523, 659, 784, 1047], pickup: [660, 880], move: [659, 988], door: [659, 988], open: [880, 1320], error: [220, 196], tap: [1047, 1568], can: [1175, 1810], latch: [1397, 2095], turn: [480] })[kind] || [880];
       var travel = kind === "move" || kind === "door";
       var metallic = kind === "can" || kind === "latch";
       var duration = travel ? .42 : metallic ? .36 : .28;
@@ -250,21 +261,13 @@
     return window.GAME_CONTENT[state.activeContentKey].actions.find(function (action) { return action.correct; });
   }
 
-  function resetHintTimer() {
-    window.clearTimeout(state.hintTimer);
-    elements.room.classList.remove("show-hints");
+  function resetNextPromptTimer() {
+    window.clearTimeout(state.nextPromptTimer);
     if (state.solved.size < HAZARDS.length) {
-      state.hintTimer = window.setTimeout(function () {
-        var nextHazard = HAZARDS.find(function (hazard) { return !state.solved.has(hazard); });
-        var directions = {
-          valve: "오른쪽 주방 수납장 쪽을 자세히 살펴보세요.",
-          towel: "오른쪽 아래 가스레인지 주변을 살펴보세요.",
-          butane: "방 중앙 아래쪽 바닥을 살펴보세요."
-        };
-        var message = directions[nextHazard] || "집 안을 천천히 둘러보세요.";
-        elements.guide.textContent = message;
-        announce("소멍이의 위치 힌트. " + message);
-      }, 12000);
+      state.nextPromptTimer = window.setTimeout(function () {
+        elements.guide.textContent = dialogue.nextPrompt;
+        announce(dialogue.nextPrompt);
+      }, 1000);
     }
   }
 
@@ -301,7 +304,7 @@
     elements.exitDoor.setAttribute("aria-label", complete ? "외출하기" : "모든 위험요소를 해결하면 활성화되는 현관문");
     elements.roomComplete.hidden = !complete;
     if (complete) {
-      elements.guide.textContent = "점검 완료! 현관문으로 나가요.";
+      elements.guide.textContent = dialogue.completion.all;
       announce("3가지 위험요소를 모두 해결했습니다. 외출하기 버튼이 활성화되었습니다.");
     }
     if (kitchenScenes) kitchenScenes.render();
@@ -309,7 +312,7 @@
 
   function makeActionButton(action) {
     var button = window.GameUI
-      ? window.GameUI.createButton({label:action.label, className:"choice-button", variant:"primary"})
+      ? window.GameUI.createButton({ label: action.label, className: "choice-button", variant: "primary" })
       : document.createElement("button");
     if (!window.GameUI) {
       button.type = "button";
@@ -381,8 +384,8 @@
       door.classList.add("is-ready");
       door.setAttribute("aria-disabled", "false");
       door.querySelector(".outdoor-door-guide").textContent = "이 문을 눌러 실외로 이동";
-      instruction.textContent = "부탄캔을 집었어요. 이제 열린 문을 선택하세요";
-      elements.copy.textContent = "부탄캔을 집었어요. 문밖의 통풍이 잘되는 곳으로 이동할까요?";
+      instruction.textContent = dialogue.butane.pickedInstruction;
+      elements.copy.textContent = dialogue.butane.pickedCopy;
       if (moveFocus) {
         announce("부탄캔을 집어 현재 들고 있는 물건 칸에 넣었습니다. 오른쪽 열린 문을 선택하세요.");
         door.focus();
@@ -420,16 +423,16 @@
     nozzle.hidden = true;
     inventory.classList.add("is-selectable");
     inventory.setAttribute("aria-label", "현재 들고 있는 다 쓴 부탄캔 선택하기");
-    instruction.textContent = "현재 들고 있는 부탄캔을 선택하세요";
-    elements.copy.textContent = "실외로 이동했어요. 현재 들고 있는 부탄캔을 선택해 안전 처리를 계속해요.";
+    instruction.textContent = dialogue.butane.outdoorInstruction;
+    elements.copy.textContent = dialogue.butane.outdoorCopy;
     inventory.addEventListener("click", function () {
       if (inventory.classList.contains("is-selected")) return;
       inventory.classList.add("is-selected");
       inventory.setAttribute("aria-pressed", "true");
       prop.hidden = false;
       nozzle.hidden = false;
-      instruction.textContent = "강조된 노즐을 원이 찰 때까지 눌러요";
-      elements.copy.textContent = "통풍이 잘되는 실외예요. 부탄캔을 거꾸로 들고 노즐을 눌러요.";
+      instruction.textContent = dialogue.butane.nozzleInstruction;
+      elements.copy.textContent = dialogue.butane.nozzleCopy;
       announce("현재 들고 있는 부탄캔을 선택했습니다. 강조된 노즐을 길게 누르세요.");
       nozzle.focus();
     });
@@ -524,7 +527,7 @@
   }
 
   function enableNozzleHold(nozzle) {
-    var stopHiss = function () {};
+    var stopHiss = function () { };
     var timer = null;
     var started = 0;
     var frame = null;
@@ -549,7 +552,7 @@
       event.preventDefault();
       nozzle.setPointerCapture(event.pointerId);
       started = performance.now();
-      stopHiss = playFeedback("hiss") || function () {};
+      stopHiss = playFeedback("hiss") || function () { };
       update();
       timer = window.setTimeout(function () { timer = null; stopHiss(); handleChoice(correctAction()); }, 900);
     });
@@ -567,7 +570,7 @@
       cancel();
       elements.soundSetting.removeEventListener("change", cancel);
       document.removeEventListener("visibilitychange", pauseHidden);
-    }, {once:true});
+    }, { once: true });
     elements.soundSetting.addEventListener("change", cancel);
     document.addEventListener("visibilitychange", pauseHidden);
   }
@@ -585,8 +588,8 @@
       var turnCue = elements.visual.querySelector(".rotation-cue-butane");
       if (turnCue) turnCue.hidden = true;
       nozzle.hidden = false;
-      instruction.textContent = "거꾸로 세웠어요. 강조된 노즐을 원이 찰 때까지 눌러요";
-      elements.copy.textContent = "좋아요! 이제 위쪽 노즐을 길게 눌러요.";
+      instruction.textContent = dialogue.butane.rotatedInstruction;
+      elements.copy.textContent = dialogue.butane.rotatedCopy;
       announce("부탄캔을 거꾸로 세웠습니다. 강조된 노즐을 길게 누르세요.");
       nozzle.focus();
     }
@@ -707,7 +710,7 @@
       enableButanePickup(prop, addOutdoorDoor(), butaneInstruction, addInventoryTray(state.butaneCarried));
     } else if (visualName === "butane-outdoor") {
       var outdoorInstruction = addInstruction("부탄캔을 잡고 돌려 거꾸로 세워요");
-      elements.copy.textContent = "화살표 방향으로 캔을 돌려 거꾸로 세워요.";
+      elements.copy.textContent = dialogue.butane.rotateCopy;
       nozzle.hidden = true;
       prop.classList.add("is-turnable");
       enableButaneTurn(prop, nozzle, outdoorInstruction);
@@ -716,12 +719,12 @@
   }
 
   function openMission(hazard, contentKey) {
-    if (!contentKey && kitchenScenes.open(hazard)) { window.clearTimeout(state.hintTimer); return; }
+    if (!contentKey && kitchenScenes.open(hazard)) { window.clearTimeout(state.nextPromptTimer); return; }
     if (state.solved.has(hazard)) {
       announce("이미 해결한 위험요소입니다.");
       return;
     }
-    window.clearTimeout(state.hintTimer);
+    window.clearTimeout(state.nextPromptTimer);
     state.activeHazard = hazard;
     state.activeContentKey = contentKey || hazard;
     state.interactionFailures = 0;
@@ -806,13 +809,14 @@
     elements.result.hidden = true;
     elements.app.hidden = true;
     elements.intro.hidden = false;
+    playScreenEntrance(elements.intro);
     state.started = false;
     if (elements.dialog.open) elements.dialog.close();
-    elements.guide.textContent = "반짝이는 물건 3개를 찾아요!";
+    elements.guide.textContent = dialogue.initialGuide;
     elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg";
     document.querySelectorAll(".is-solved").forEach(function (item) { item.classList.remove("is-solved"); });
     renderProgress();
-    window.clearTimeout(state.hintTimer);
+    window.clearTimeout(state.nextPromptTimer);
     document.getElementById("start-button").focus();
     syncBackgroundMusic();
   }
@@ -825,7 +829,7 @@
   }
 
   document.querySelectorAll("[data-hazard]").forEach(function (button) {
-    button.addEventListener("click", function () { resetHintTimer(); openMission(button.dataset.hazard); });
+    button.addEventListener("click", function () { resetNextPromptTimer(); openMission(button.dataset.hazard); });
   });
   document.querySelectorAll("[data-open-hazard]").forEach(function (button) {
     button.addEventListener("click", function () { openMission(button.dataset.openHazard); });
@@ -839,7 +843,7 @@
     syncBackgroundMusic(false);
     document.querySelector('.scene-navigation').focus();
     announce("게임이 시작되었습니다. 위험요소 3개를 찾아보세요.");
-    resetHintTimer();
+    resetNextPromptTimer();
     showSpeechBubbleTemporarily();
   });
 
@@ -898,7 +902,7 @@
     playFeedback("door");
     elements.dialog.close();
     elements.console.classList.remove("is-success");
-    resetHintTimer();
+    resetNextPromptTimer();
     document.getElementById("game-scene").focus({ preventScroll: true });
   }
 
@@ -922,13 +926,13 @@
     // Update the room guide for every exit path (door, close button, Escape).
     // Keep the completed hazard until this shared close handler has consumed it.
     if (state.started && state.activeHazard === "butane" && state.solved.has("butane")) {
-      elements.guide.textContent = "부탄캔 잔여가스 제거 완료!";
+      elements.guide.textContent = dialogue.completion.butane;
       elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-success-logo-v1.svg";
       if (state.solved.size < HAZARDS.length) announce(elements.guide.textContent);
       renderProgress(); // All three solved: the exit-door message takes priority.
     }
     state.activeHazard = null;
-    resetHintTimer();
+    resetNextPromptTimer();
   });
 
   var introSettings = document.getElementById("settings-button").cloneNode(true);
@@ -977,13 +981,14 @@
     if (elements.exitDoor.disabled) return;
     elements.app.hidden = true;
     elements.result.hidden = false;
+    playScreenEntrance(elements.result);
     syncBackgroundMusic();
     document.getElementById("result-title").focus();
   });
 
   const mascotArt = document.getElementById("mascot-art");
   if (mascotArt) {
-    mascotArt.addEventListener("click", function() {
+    mascotArt.addEventListener("click", function () {
       showSpeechBubbleTemporarily();
     });
   }

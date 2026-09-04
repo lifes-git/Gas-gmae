@@ -1,6 +1,7 @@
 /* Approved art, one coordinate system for scenery, props and targets. Prototype. */
 window.createKitchenScenes = function (options) {
   "use strict";
+  var dialogue = window.SOMYEONGI_DIALOGUE;
   var world = document.getElementById("scene-world");
   var room = "living", heldItem = null;
   var root = "assets/masters/";
@@ -197,10 +198,10 @@ window.createKitchenScenes = function (options) {
     var guideCopy = document.createElement("div"); guideCopy.className = "detail-guide-copy ui-speech";
     var instruction = document.createElement("p"); instruction.className = "detail-instruction";
     instruction.textContent = id === "valve"
-      ? "손잡이 끝을 왼쪽으로 밀어 돌려요."
+      ? dialogue.valve.detail
       : id === "towel"
-        ? "불은 꺼져있어요. 수건을 집어요."
-        : "부탄캔을 집어 문밖으로 옮겨요.";
+        ? dialogue.towel.detail
+        : dialogue.butane.detail;
     guideCopy.appendChild(instruction); guide.append(guideMascot, guideCopy);
     var done = false;
     function act() {
@@ -208,12 +209,12 @@ window.createKitchenScenes = function (options) {
       done = true;
       if (id === "towel") {
         heldItem = "towel"; options.hold("towel"); render(); modal.close(); basket.focus();
-        options.guide("왼쪽 조리대 위 바구니에 수건을 넣어요.");
+        options.guide(dialogue.towel.carry);
         options.announce("수건을 집었어요. 주방 왼쪽 조리대 위 바구니에 넣어주세요.");
       } else if (id === "butane") {
         heldItem = "butane"; options.hold("butane"); render(); modal.close();
         document.getElementById("exit-door").focus();
-        options.guide("현관문을 눌러 문밖으로 옮겨요.");
+        options.guide(dialogue.butane.carry);
         options.announce("부탄캔을 집었어요. 현관문을 눌러 문밖의 통풍이 잘되는 곳으로 옮겨주세요.");
       } else {
         options.sound("latch");

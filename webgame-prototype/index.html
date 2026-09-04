@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="kitchen-scenes.css">
   <link rel="stylesheet" href="toon-ui.css">
   <link rel="stylesheet" href="ui-components.css">
+  <link rel="stylesheet" href="entrance-motion.css">
   <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-valve-wall-handleless-v3.jpg">
   <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-room-layered-unsafe-hd-v3.webp">
   <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp">
@@ -38,8 +39,13 @@
 
       <div class="header-actions" aria-label="게임 메뉴"
         style="display: flex; gap: 0.5rem; pointer-events: auto; align-items: center;">
-        <button class="settings-button" id="settings-button" type="button" aria-label="설정 열기" data-ui-component="button" data-ui-variant="info" data-ui-icon="true">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z"/><path d="m19.4 13.5 1.1 1.9-2 3.45-2.2-.45a8.3 8.3 0 0 1-1.8 1.05L13.8 21h-4l-.7-1.55a8.3 8.3 0 0 1-1.8-1.05l-2.2.45-2-3.45 1.1-1.9a8.9 8.9 0 0 1 0-2.1L3.1 9.5l2-3.45 2.2.45A8.3 8.3 0 0 1 9.1 5.45L9.8 3h4l.7 2.45A8.3 8.3 0 0 1 16.3 6.5l2.2-.45 2 3.45-1.1 1.9a8.9 8.9 0 0 1 0 2.1Z"/></svg>
+        <button class="settings-button" id="settings-button" type="button" aria-label="설정 열기" data-ui-component="button"
+          data-ui-variant="info" data-ui-icon="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z" />
+            <path
+              d="m19.4 13.5 1.1 1.9-2 3.45-2.2-.45a8.3 8.3 0 0 1-1.8 1.05L13.8 21h-4l-.7-1.55a8.3 8.3 0 0 1-1.8-1.05l-2.2.45-2-3.45 1.1-1.9a8.9 8.9 0 0 1 0-2.1L3.1 9.5l2-3.45 2.2.45A8.3 8.3 0 0 1 9.1 5.45L9.8 3h4l.7 2.45A8.3 8.3 0 0 1 16.3 6.5l2.2-.45 2 3.45-1.1 1.9a8.9 8.9 0 0 1 0 2.1Z" />
+          </svg>
         </button>
       </div>
     </header>
@@ -99,13 +105,13 @@
       </section>
 
       <aside class="guide-panel" aria-labelledby="guide-title">
-        <img class="mascot-art" id="mascot-art" src="assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg" alt="소멍이"
-          aria-hidden="false" style="cursor: pointer; position: relative; z-index: 10;" title="클릭해서 힌트 보기">
+        <img class="mascot-art" id="mascot-art" src="assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg"
+          alt="소멍이" aria-hidden="false" style="cursor: pointer; position: relative; z-index: 10;" title="클릭해서 힌트 보기">
         <div class="speech-bubble ui-speech" id="speech-bubble"
           style="opacity: 1; pointer-events: auto; transition: opacity 0.3s ease; transform-origin: bottom left;">
           <h2 id="guide-title" class="visually-hidden">소멍이의 안내</h2>
           <p id="guide-message"
-            style="margin: 0; font-family: 'Jua', sans-serif; color: #2f3640; font-size: 1.2rem; line-height: 1.4;">반짝이는 물건 3개를 찾아요!</p>
+            style="margin: 0; font-family: 'Jua', sans-serif; color: #2f3640; font-size: 1.2rem; line-height: 1.4;"></p>
           <button class="bubble-link" id="rules-button" type="button">ⓘ 안전수칙</button>
         </div>
         <div class="hazard-list visually-hidden" aria-label="키보드용 위험요소 목록">
@@ -127,7 +133,8 @@
           가스안전 미션</p>
         <h2 id="mission-title" class="retro-title" style="font-size: clamp(2rem, 5vw, 3rem);">미션</h2>
       </header>
-      <button class="icon-button retro-close mission-close" value="cancel" aria-label="미션 닫기" data-ui-component="button" data-ui-variant="danger" data-ui-icon="true">✖</button>
+      <button class="icon-button retro-close mission-close" value="cancel" aria-label="미션 닫기" data-ui-component="button"
+        data-ui-variant="danger" data-ui-icon="true">✖</button>
       <div class="mission-visual" id="mission-visual"></div>
       <section class="mission-console">
         <div class="mission-dialogue">
@@ -143,19 +150,25 @@
           <p class="fallback-label">조작이 어려운가요? 버튼으로 안전 행동을 실행할 수 있어요.</p>
         </div>
         <p class="mission-feedback" id="mission-feedback" role="status" aria-live="polite"></p>
-        <button class="retro-button btn-blue" id="return-room-button" type="button" hidden data-ui-component="button" data-ui-variant="info"
-          style="width: 100%; margin-top: 1rem; padding: 1rem;"><span class="visually-hidden">방으로 돌아가기</span></button>
+        <button class="retro-button btn-blue" id="return-room-button" type="button" hidden data-ui-component="button"
+          data-ui-variant="info" style="width: 100%; margin-top: 1rem; padding: 1rem;"><span class="visually-hidden">방으로
+            돌아가기</span></button>
       </section>
     </form>
   </dialog>
 
   <dialog class="settings-dialog ui-modal" id="settings-dialog" aria-labelledby="settings-title">
     <form method="dialog" class="settings-card">
-      <header><h2 id="settings-title">설정</h2><button class="icon-button" value="cancel" aria-label="설정 닫기" data-ui-component="button" data-ui-variant="danger" data-ui-icon="true">×</button></header>
+      <header>
+        <h2 id="settings-title">설정</h2><button class="icon-button" value="cancel" aria-label="설정 닫기"
+          data-ui-component="button" data-ui-variant="danger" data-ui-icon="true">×</button>
+      </header>
       <label class="setting-row"><span>음악·효과음</span><input id="sound-setting" type="checkbox" checked></label>
       <label class="setting-row"><span>진동</span><input id="vibration-setting" type="checkbox" checked></label>
-      <button class="paper-button secondary" id="fullscreen-button" type="button" data-ui-component="button" data-ui-variant="info">전체화면으로 보기</button>
-      <button class="paper-button danger" id="restart-game-button" type="button" data-ui-component="button" data-ui-variant="danger">처음부터 다시하기</button>
+      <button class="paper-button secondary" id="fullscreen-button" type="button" data-ui-component="button"
+        data-ui-variant="info">전체화면으로 보기</button>
+      <button class="paper-button danger" id="restart-game-button" type="button" data-ui-component="button"
+        data-ui-variant="danger">처음부터 다시하기</button>
     </form>
   </dialog>
 
@@ -163,7 +176,8 @@
     <form method="dialog" class="dialog-frame rules-frame">
       <header class="rules-memo-header">
         <h2 id="rules-title" class="retro-title">가스안전 수칙</h2>
-        <button class="icon-button retro-close" value="cancel" aria-label="안전수칙 닫기" data-ui-component="button" data-ui-variant="danger" data-ui-icon="true">✖</button>
+        <button class="icon-button retro-close" value="cancel" aria-label="안전수칙 닫기" data-ui-component="button"
+          data-ui-variant="danger" data-ui-icon="true">✖</button>
       </header>
       <ol class="retro-list">
         <li><strong class="retro-label">가스밸브</strong><span>장기간 외출 전 가스밸브를 잠가요.</span></li>
@@ -176,10 +190,12 @@
 
   <section class="result-screen" id="result-screen" hidden aria-labelledby="result-title">
     <div class="result-card result-showcase ui-panel">
-      <img class="result-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-exit-logo-v1.svg" alt="" aria-hidden="true">
+      <img class="result-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-exit-logo-v1.svg" alt=""
+        aria-hidden="true">
       <div class="result-copy">
         <p class="result-kicker">★ 3 / 3</p>
-        <h2 id="result-title" class="image-title" tabindex="-1"><img src="assets/masters/title-result-alpha-v1.png" alt="안전점검 완료!" width="2005" height="453"></h2>
+        <h2 id="result-title" class="image-title" tabindex="-1"><img src="assets/masters/title-result-alpha-v1.png"
+            alt="안전점검 완료!" width="2005" height="453"></h2>
         <p class="result-message">안전하게 외출했어요!</p>
         <ul class="result-checklist">
           <li><strong>밸브 잠금</strong><span class="visually-hidden">장기간 외출 전 가스밸브 잠그기</span></li>
@@ -188,8 +204,10 @@
         </ul>
       </div>
       <div class="retro-actions result-actions">
-        <button class="retro-button btn-blue" id="restart-button" type="button" data-ui-component="button" data-ui-variant="success">다시하기</button>
-        <button class="retro-button btn-orange" id="result-rules-button" type="button" data-ui-component="button" data-ui-variant="info">수칙 보기</button>
+        <button class="retro-button btn-blue" id="restart-button" type="button" data-ui-component="button"
+          data-ui-variant="success">다시하기</button>
+        <button class="retro-button btn-orange" id="result-rules-button" type="button" data-ui-component="button"
+          data-ui-variant="info">수칙 보기</button>
       </div>
     </div>
   </section>
@@ -215,19 +233,32 @@
 
   <section class="intro-screen" id="intro-screen" aria-labelledby="intro-title">
     <div class="intro-card retro-ui intro-showcase ui-panel">
-      <img class="intro-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-title-logo-v1.svg" alt="" aria-hidden="true">
+      <img class="intro-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-title-logo-v1.svg" alt=""
+        aria-hidden="true">
       <div class="intro-copy">
         <span class="title-spark title-spark-one" aria-hidden="true">★</span>
         <span class="title-spark title-spark-two" aria-hidden="true">✓</span>
-        <h2 id="intro-title" class="retro-title image-title"><img src="assets/masters/title-start-alpha-v1.png" alt="장기 외출 전 가스안전 점검!" width="1676" height="683"></h2>
+        <h2 id="intro-title" class="retro-title image-title"><img src="assets/masters/title-start-alpha-v1.png"
+            alt="장기 외출 전 가스안전 점검!" width="1676" height="683"></h2>
         <div class="retro-actions">
-          <button class="retro-button btn-orange" id="start-button" type="button" data-ui-component="button" data-ui-variant="primary"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5 19 12 8 19Z" fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="2"/></svg><span>시작</span></button>
-          <button class="retro-button btn-blue" id="intro-rules-button" type="button" data-ui-component="button" data-ui-variant="info"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="m7 9 1.5 1.5L11 8M14 9h3m-10 6 1.5 1.5L11 14m3 1h3"/></svg><span>안전수칙</span></button>
+          <button class="retro-button btn-orange" id="start-button" type="button" data-ui-component="button"
+            data-ui-variant="primary"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true"
+              focusable="false">
+              <path d="M8 5 19 12 8 19Z" fill="currentColor" stroke="currentColor" stroke-linejoin="round"
+                stroke-width="2" />
+            </svg><span>시작</span></button>
+          <button class="retro-button btn-blue" id="intro-rules-button" type="button" data-ui-component="button"
+            data-ui-variant="info"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+              fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="3" width="16" height="18" rx="3" />
+              <path d="m7 9 1.5 1.5L11 8M14 9h3m-10 6 1.5 1.5L11 14m3 1h3" />
+            </svg><span>안전수칙</span></button>
         </div>
       </div>
     </div>
   </section>
 
+  <script src="somyeongi-dialogue.js"></script>
   <script src="game-data.js"></script>
   <script src="ui-components.js"></script>
   <script src="kitchen-scenes.js"></script>

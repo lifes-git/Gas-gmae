@@ -4,7 +4,7 @@ window.SOMYEONGI_DIALOGUE = {
   completion: {
     valve: "밸브 잠금 완료다 멍!",
     towel: "행주 이동 완료다 멍!",
-    butane: "부탄캔 잔여가스 제거 완료다 멍!",
+    butane: "부탄캔 안전 분리배출 완료다 멍!",
     all: "점검 완료다 멍! 현관문으로 나가자 멍!"
   },
   valve: {
@@ -37,7 +37,9 @@ window.SOMYEONGI_DIALOGUE = {
     rotatedInstruction: "거꾸로 세웠다 멍. 강조된 노즐을 원이 찰 때까지 누르자 멍.",
     rotatedCopy: "좋다 멍! 이제 위쪽 노즐을 길게 누르자 멍.",
     step2Question: "통풍이 잘되는 장소로 이동했다 멍. 다음 행동을 선택하자 멍.",
-    success: "부탄캔 잔여가스 제거 완료다 멍!",
+    disposalInstruction: "지역 분리배출 기준을 확인한 뒤, 표시된 캔 수거함에 넣자 멍!",
+    disposalCopy: "잔여가스를 모두 제거했다 멍. 이제 지역 기준에 맞는 캔 수거함에 넣자 멍!",
+    success: "잔여가스를 제거한 부탄캔을 캔 수거함에 잘 넣었다 멍!",
     step2Error: "멈추자 멍! 잔여가스를 제거하기 전에 구멍을 뚫으면 안 된다 멍.",
     explanation: "통풍이 잘되는 곳에서 잔여가스를 완전히 제거하고, 구멍을 뚫지 않은 채 지역 분리배출 기준을 확인하자 멍."
   }

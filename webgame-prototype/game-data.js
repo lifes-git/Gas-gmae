@@ -50,7 +50,7 @@ window.GAME_CONTENT = {
     copy: SOMYEONGI.butane.step2Question,
     visual: "butane-outdoor",
     actions: [
-      { id: "nozzle", label: "거꾸로 들고 노즐 눌러 제거하기", correct: true },
+      { id: "dispose-can", label: "잔여가스를 제거한 뒤 지역 기준에 맞게 분리배출하기", correct: true },
       { id: "puncture", label: "먼저 송곳으로 구멍 뚫기", correct: false }
     ],
     success: SOMYEONGI.butane.success,

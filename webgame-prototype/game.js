@@ -526,7 +526,51 @@
     window.addEventListener("pointerup", finishTurn);
   }
 
-  function enableNozzleHold(nozzle) {
+  function enableCanDisposal(bin, prop, nozzle, instruction) {
+    var active = false;
+    var completed = false;
+
+    function disposeCan() {
+      if (!active || completed) return;
+      completed = true;
+      playFeedback("success");
+      bin.classList.remove("is-ready");
+      bin.classList.add("is-receiving");
+      bin.setAttribute("aria-label", "캔 수거함: 부탄캔 분리배출 완료");
+      var propRect = prop.getBoundingClientRect();
+      var binRect = bin.getBoundingClientRect();
+      prop.style.setProperty("--dispose-x", (binRect.left + binRect.width / 2 - propRect.left - propRect.width / 2) + "px");
+      prop.style.setProperty("--dispose-y", (binRect.top + binRect.height * .25 - propRect.top - propRect.height / 2) + "px");
+      prop.classList.add("is-disposing");
+      window.setTimeout(function () {
+        prop.hidden = true;
+        bin.classList.remove("is-receiving");
+        bin.classList.add("is-filled");
+        handleChoice(correctAction());
+      }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 460);
+    }
+
+    function activate() {
+      active = true;
+      nozzle.hidden = true;
+      prop.classList.add("is-ready-to-dispose");
+      prop.removeAttribute("role");
+      prop.removeAttribute("tabindex");
+      prop.setAttribute("aria-hidden", "true");
+      bin.disabled = false;
+      bin.setAttribute("aria-disabled", "false");
+      bin.classList.add("is-ready");
+      instruction.textContent = dialogue.butane.disposalInstruction;
+      elements.copy.textContent = dialogue.butane.disposalCopy;
+      announce("잔여가스를 모두 제거했습니다. 지역 분리배출 기준을 확인한 뒤 강조된 캔 수거함에 넣으세요.");
+      bin.focus();
+    }
+
+    bin.addEventListener("click", disposeCan);
+    return activate;
+  }
+
+  function enableNozzleHold(nozzle, onComplete) {
     var stopHiss = function () { };
     var timer = null;
     var started = 0;
@@ -554,7 +598,7 @@
       started = performance.now();
       stopHiss = playFeedback("hiss") || function () { };
       update();
-      timer = window.setTimeout(function () { timer = null; stopHiss(); handleChoice(correctAction()); }, 900);
+      timer = window.setTimeout(function () { timer = null; stopHiss(); onComplete(); }, 900);
     });
     nozzle.addEventListener("pointerup", function (event) {
       if (timer) {
@@ -657,6 +701,18 @@
       elements.visual.appendChild(basket);
     }
 
+    var disposalBin = null;
+    if (visualName === "butane-outdoor") {
+      disposalBin = document.createElement("button");
+      disposalBin.type = "button";
+      disposalBin.className = "can-recycling-bin";
+      disposalBin.disabled = true;
+      disposalBin.setAttribute("aria-disabled", "true");
+      disposalBin.setAttribute("aria-label", "캔 수거함: 잔여가스 제거 후 이용 가능");
+      disposalBin.innerHTML = '<img src="assets/runtime/props/prop-can-recycling-bin-front-v2.png" alt="">';
+      elements.visual.appendChild(disposalBin);
+    }
+
     var prop = document.createElement("img");
     prop.className = "mission-prop mission-prop-" + visualName;
     prop.draggable = false;
@@ -714,7 +770,9 @@
       nozzle.hidden = true;
       prop.classList.add("is-turnable");
       enableButaneTurn(prop, nozzle, outdoorInstruction);
-      enableNozzleHold(nozzle);
+      var activateDisposal = enableCanDisposal(disposalBin, prop, nozzle, outdoorInstruction);
+      disposalBin.activateDisposal = activateDisposal;
+      enableNozzleHold(nozzle, activateDisposal);
     }
   }
 
@@ -776,6 +834,14 @@
       state.butaneCarried = true;
       openMission("butane", action.next);
       return;
+    }
+
+    if (state.activeContentKey === "butane-step-2" && action.id === "dispose-can") {
+      var bin = elements.visual.querySelector(".can-recycling-bin");
+      if (bin && bin.disabled && typeof bin.activateDisposal === "function") {
+        bin.activateDisposal();
+        return;
+      }
     }
 
     var hazard = state.activeHazard;

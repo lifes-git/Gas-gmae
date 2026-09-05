@@ -331,6 +331,8 @@ async function solveButane(page, keyboard = false, capture = false, heldCaptureN
   if (keyboard) await page.locator("#exit-door").press("Enter");
   else await page.locator("#exit-door").click();
   await page.locator(".visual-butane-outdoor").waitFor();
+  const recyclingBin = page.getByRole("button", { name: "캔 수거함: 잔여가스 제거 후 이용 가능" });
+  assert(await recyclingBin.isDisabled(), "outdoor: recycling bin must stay disabled before residual gas removal");
   assert(await page.locator("#return-room-button").isHidden(), "outdoor: return button must stay hidden before completion");
   assert(await page.locator(".rotation-cue-butane").isVisible(), "outdoor: rotation direction cue must be visible");
   assert(await page.locator(".visual-butane-outdoor .butane-step-tracker").count() === 0, "outdoor: numbered step tracker should be removed");
@@ -360,7 +362,28 @@ async function solveButane(page, keyboard = false, capture = false, heldCaptureN
     await page.waitForTimeout(1000);
     await page.mouse.up();
   }
+  const readyBin = page.getByRole("button", { name: "캔 수거함: 잔여가스 제거 후 이용 가능" });
+  await readyBin.waitFor({ state: "visible" });
+  assert(!(await readyBin.isDisabled()), "outdoor: recycling bin should unlock only after residual gas removal");
+  assert(await solvedCount(page) === before, "outdoor: residual gas removal alone must not finish disposal");
+  const binGeometry = await readyBin.evaluate(node => {
+    const bin = node.getBoundingClientRect();
+    const visual = document.querySelector(".visual-butane-outdoor").getBoundingClientRect();
+    const can = document.querySelector(".mission-prop-butane-outdoor.is-ready-to-dispose").getBoundingClientRect();
+    return {
+      centerX: (bin.left + bin.width / 2 - visual.left) / visual.width,
+      bottomY: (bin.bottom - visual.top) / visual.height,
+      overlapsCan: !(bin.right < can.left || bin.left > can.right || bin.bottom < can.top || bin.top > can.bottom)
+    };
+  });
+  assert(Math.abs(binGeometry.centerX - .32) < .015 && Math.abs(binGeometry.bottomY - .53) < .02, `outdoor: recycling bin coordinate mismatch (${JSON.stringify(binGeometry)})`);
+  assert(!binGeometry.overlapsCan, "outdoor: recycling bin must not overlap the butane can");
+  assert((await page.locator("#mission-copy").textContent()).includes("지역"), "outdoor: local disposal-standard reminder is missing");
+  if (keyboard) await readyBin.press("Enter");
+  else await readyBin.click();
   await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
+  assert(await page.locator(".can-recycling-bin.is-filled").isVisible(), "outdoor: recycling bin should remain visible after completion");
+  assert(await page.locator(".can-bin-check").count() === 0, "outdoor: recycling bin should not show a completion check badge");
   const outdoorReturn = page.getByRole("button", { name: "현관문으로 방 안에 돌아가기" });
   const returnGeometry = await outdoorReturn.evaluate(node => {
     const button = node.getBoundingClientRect();

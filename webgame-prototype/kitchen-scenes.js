@@ -75,7 +75,7 @@ window.createKitchenScenes = function (options) {
   world.prepend(layer);
   var navigation = button("→", "scene-navigation", function () {
     if (heldItem) {
-      options.announce(heldItem === "towel" ? "수건을 먼저 바구니에 넣어주세요." : "부탄캔을 먼저 문밖으로 옮겨주세요.");
+      options.announce(heldItem === "towel" ? "행주를 먼저 바구니에 넣어주세요." : "부탄캔을 먼저 문밖으로 옮겨주세요.");
       return;
     }
     room = room === "living" ? "kitchen" : "living";
@@ -87,7 +87,7 @@ window.createKitchenScenes = function (options) {
   inventory.className = "scene-held-item";
   inventory.setAttribute("role", "status");
   document.getElementById("room").appendChild(inventory);
-  var basket = button("바구니에 수건 넣기", "kitchen-basket-target", function () {
+  var basket = button("바구니에 행주 넣기", "kitchen-basket-target", function () {
     if (heldItem !== "towel") return;
     heldItem = null;
     options.hold(null);
@@ -98,7 +98,7 @@ window.createKitchenScenes = function (options) {
   });
   var basketLabel = document.createElement("span");
   basketLabel.className = "basket-target-label";
-  basketLabel.textContent = "바구니에 수건 넣기";
+  basketLabel.textContent = "바구니에 행주 넣기";
   basket.replaceChildren(basketLabel);
   world.appendChild(basket);
   var modal = document.createElement("dialog");
@@ -157,7 +157,7 @@ window.createKitchenScenes = function (options) {
     inventory.dataset.item = heldItem || "empty";
     inventory.textContent = "";
     inventory.setAttribute("aria-label", heldItem === "towel"
-      ? "현재 수건을 들고 있습니다. 왼쪽 바구니에 넣어주세요."
+      ? "현재 행주를 들고 있습니다. 왼쪽 바구니에 넣어주세요."
       : heldItem === "butane"
         ? "현재 다 쓴 부탄캔을 들고 있습니다. 현관문을 눌러주세요."
         : "현재 들고 있는 물건이 없습니다.");
@@ -167,7 +167,7 @@ window.createKitchenScenes = function (options) {
     if (id !== "valve" && id !== "towel" && id !== "butane") return false;
     if (options.solved(id)) { options.announce("이미 해결한 위험요소입니다."); return true; }
     if (heldItem) {
-      options.announce(heldItem === "towel" ? "수건을 먼저 바구니에 넣어주세요." : "부탄캔을 먼저 문밖으로 옮겨주세요.");
+      options.announce(heldItem === "towel" ? "행주를 먼저 바구니에 넣어주세요." : "부탄캔을 먼저 문밖으로 옮겨주세요.");
       return true;
     }
     room = id === "butane" ? "living" : "kitchen"; render();
@@ -176,7 +176,7 @@ window.createKitchenScenes = function (options) {
     modal.replaceChildren();
     var header = document.createElement("header");
     var title = document.createElement("h2"); title.id = "kitchen-detail-title";
-    title.textContent = id === "valve" ? "밸브 손잡이를 돌려요" : id === "towel" ? "수건을 집어주세요" : "다 쓴 부탄캔을 집어주세요";
+    title.textContent = id === "valve" ? "밸브 손잡이를 돌려요" : id === "towel" ? "행주를 집어주세요" : "다 쓴 부탄캔을 집어주세요";
     header.append(title, button("닫기 ×", "detail-close", function () { options.sound("tap"); modal.close(); }, { variant: "danger", iconOnly: true, ariaLabel: "확대 화면 닫기" }));
     var view = document.createElement("div"); view.className = "kitchen-detail-view detail-" + id;
     var svg = null;
@@ -210,7 +210,7 @@ window.createKitchenScenes = function (options) {
       if (id === "towel") {
         heldItem = "towel"; options.hold("towel"); render(); modal.close(); basket.focus();
         options.guide(dialogue.towel.carry);
-        options.announce("수건을 집었어요. 주방 왼쪽 조리대 위 바구니에 넣어주세요.");
+        options.announce("행주를 집었어요. 주방 왼쪽 조리대 위 바구니에 넣어주세요.");
       } else if (id === "butane") {
         heldItem = "butane"; options.hold("butane"); render(); modal.close();
         document.getElementById("exit-door").focus();
@@ -229,7 +229,7 @@ window.createKitchenScenes = function (options) {
         action.disabled = true; target.disabled = true; close.focus();
       }
     }
-    var target = button(id === "valve" ? "손잡이 돌리기" : id === "towel" ? "수건 집기" : "다 쓴 부탄캔 집기", "detail-target target-" + id, id === "valve" ? function () { } : act);
+    var target = button(id === "valve" ? "손잡이 돌리기" : id === "towel" ? "행주 집기" : "다 쓴 부탄캔 집기", "detail-target target-" + id, id === "valve" ? function () { } : act);
     if (id === "butane") {
       target.classList.add("butane-pickup-target");
       var can = document.createElement("img");
@@ -245,7 +245,7 @@ window.createKitchenScenes = function (options) {
       turnCue.innerHTML = '<svg viewBox="0 0 120 90"><path class="rotation-arrow-shadow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-arrow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-highlight" d="M35 48C49 25 77 22 94 36"/></svg>';
       view.appendChild(turnCue);
     }
-    var action = button(id === "valve" ? "손잡이 90° 돌리기" : id === "towel" ? "수건 집기" : "부탄캔 집기", "detail-action", act, { variant: "primary" });
+    var action = button(id === "valve" ? "손잡이 90° 돌리기" : id === "towel" ? "행주 집기" : "부탄캔 집기", "detail-action", act, { variant: "primary" });
     var closeLabel = id === "butane" ? "거실로 돌아가기" : "주방으로 돌아가기";
     var close = button(closeLabel, "detail-back", function () { options.sound("tap"); modal.close(); }, { variant: "info", iconOnly: true, ariaLabel: closeLabel });
     close.setAttribute("aria-label", closeLabel);

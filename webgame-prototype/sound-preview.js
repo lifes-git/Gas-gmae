@@ -53,7 +53,7 @@ async function play(kind, variant) {
       const base = variant ? 680 : 410;
       [1, 2.31, 3.87].forEach((ratio, i) => tone(base * ratio, base * ratio * .97, .22 + i * .035, .14 / (i + 1), .018));
     }
-    document.getElementById("status").textContent = ({button:"버튼",cloth:"수건",can:"부탄캔"})[kind] + " " + (variant ? "B" : "A") + " 시안";
+    document.getElementById("status").textContent = ({button:"버튼",cloth:"행주",can:"부탄캔"})[kind] + " " + (variant ? "B" : "A") + " 시안";
   } catch (_) { document.getElementById("status").textContent = "이 브라우저에서 소리를 재생할 수 없습니다."; }
 }
 document.querySelectorAll("[data-kind]").forEach(button => button.addEventListener("click", () => play(button.dataset.kind, Number(button.dataset.variant))));

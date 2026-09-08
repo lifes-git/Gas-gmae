@@ -1452,6 +1452,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
 
   .room.is-zooming,
+  .room.is-exiting,
+  .room.is-exiting::after,
   .mission-dialog[open] {
     animation: none !important;
   }
@@ -4323,6 +4325,8 @@ body {
   background: transparent;
   transform: translate(-50%, -100%);
   cursor: default;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .can-recycling-bin img {
@@ -4359,6 +4363,14 @@ body {
 .can-recycling-bin.is-ready:focus-visible img {
   filter:
     drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 0 4px #1769ff) drop-shadow(0 0 11px rgba(23, 105, 255, .82));
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .can-recycling-bin.is-ready:focus-visible img {
+    transform: none;
+    filter:
+      drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 0 9px rgba(85, 211, 239, .95));
+  }
 }
 
 .mission-prop-butane-outdoor.is-ready-to-dispose {

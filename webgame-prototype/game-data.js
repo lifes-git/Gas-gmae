@@ -17,7 +17,7 @@ window.GAME_CONTENT = {
   },
   towel: {
     title: "화기 주변을 정리해요",
-    hud: "화기 주변 · 수건을 안전한 곳으로",
+    hud: "화기 주변 · 행주를 안전한 곳으로",
     step: "스토리 4–6 · 위험요소 2 · GS-FIRE-01",
     copy: SOMYEONGI.towel.question,
     visual: "towel",

@@ -10,6 +10,7 @@
     nextPromptTimer: null,
     interactionFailures: 0,
     butaneCarried: false,
+    exiting: false,
     started: false
   };
 
@@ -30,7 +31,12 @@
     progressText: document.getElementById("progress-text"),
     progressDots: document.getElementById("progress-dots"),
     exitDoor: document.getElementById("exit-door"),
-    roomComplete: document.getElementById("room-complete")
+    roomComplete: document.getElementById("room-complete"),
+    safetyRuleDialog: document.getElementById("safety-rule-dialog"),
+    safetyRuleIcon: document.getElementById("safety-rule-icon"),
+    safetyRuleLead: document.getElementById("safety-rule-lead"),
+    safetyRuleHighlight: document.getElementById("safety-rule-highlight"),
+    safetyRuleConfirm: document.getElementById("safety-rule-confirm")
   };
 
   elements.room = document.getElementById("room");
@@ -73,6 +79,21 @@
 
   playScreenEntrance(elements.intro);
 
+  function showSafetyRuleCard(id) {
+    var rule = window.SAFETY_RULE_CARDS[id];
+    if (!rule || elements.safetyRuleDialog.open) return;
+    elements.safetyRuleDialog.dataset.hazard = id;
+    elements.safetyRuleDialog.setAttribute("aria-label", rule.label);
+    elements.safetyRuleIcon.src = rule.icon;
+    elements.safetyRuleLead.textContent = rule.lead + " ";
+    elements.safetyRuleHighlight.textContent = rule.highlight;
+    window.setTimeout(function () {
+      if (!state.started || !state.solved.has(id) || elements.safetyRuleDialog.open) return;
+      elements.safetyRuleDialog.showModal();
+      elements.safetyRuleConfirm.focus();
+    }, 0);
+  }
+
   var kitchenScenes = window.createKitchenScenes({
     solved: function (id) { return state.solved.has(id); },
     announce: announce,
@@ -90,7 +111,7 @@
       playFeedback("success");
       announce(window.GAME_CONTENT[id].success);
       renderProgress();
-      resetNextPromptTimer();
+      showSafetyRuleCard(id);
     }
   });
 
@@ -759,8 +780,8 @@
       addInstruction("밸브 손잡이 끝을 왼쪽으로 밀어 돌려요");
       enableValveTurn(prop);
     } else if (visualName === "towel") {
-      addInstruction("수건을 안전 보관 바구니로 옮겨요");
-      enableDrag(prop, addDropZone("drop-zone-towel", "안전 보관 바구니"), "수건은 화기와 떨어진 보관 바구니로 옮겨요.");
+      addInstruction("행주를 안전 보관 바구니로 옮겨요");
+      enableDrag(prop, addDropZone("drop-zone-towel", "안전 보관 바구니"), "행주는 화기와 떨어진 보관 바구니로 옮겨요.");
     } else if (visualName === "butane") {
       var butaneInstruction = addInstruction("부탄캔을 클릭해 집어주세요");
       enableButanePickup(prop, addOutdoorDoor(), butaneInstruction, addInventoryTray(state.butaneCarried));
@@ -858,6 +879,7 @@
     }
     announce(content.success);
     renderProgress();
+    showSafetyRuleCard(hazard);
     elements.console.classList.add("is-success");
     var outdoorReturn = elements.visual.querySelector(".outdoor-return-door");
     elements.returnRoom.hidden = Boolean(outdoorReturn);
@@ -871,13 +893,19 @@
     state.activeHazard = null;
     state.activeContentKey = null;
     state.butaneCarried = false;
+    state.exiting = false;
+    if (window.ExitTransition) window.ExitTransition.reset();
+    if (window.OutingTransition) window.OutingTransition.reset();
+    if (window.StageTwo) window.StageTwo.reset();
     kitchenScenes.reset();
+    elements.room.classList.remove("is-exiting");
     elements.result.hidden = true;
     elements.app.hidden = true;
     elements.intro.hidden = false;
     playScreenEntrance(elements.intro);
     state.started = false;
     if (elements.dialog.open) elements.dialog.close();
+    if (elements.safetyRuleDialog.open) elements.safetyRuleDialog.close();
     elements.guide.textContent = dialogue.intro;
     elements.guideMascot.src = "assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg";
     document.querySelectorAll(".is-solved").forEach(function (item) { item.classList.remove("is-solved"); });
@@ -1034,6 +1062,10 @@
     introRulesButton.addEventListener("click", function () { playFeedback("tap"); elements.rulesDialog.showModal(); });
   }
   document.getElementById("result-rules-button").addEventListener("click", function () { playFeedback("tap"); elements.rulesDialog.showModal(); });
+  elements.safetyRuleConfirm.addEventListener("click", function () { playFeedback("tap"); });
+  elements.safetyRuleDialog.addEventListener("close", function () {
+    if (state.started && state.solved.size < HAZARDS.length) resetNextPromptTimer();
+  });
   document.getElementById("restart-button").addEventListener("click", function () { playFeedback("tap"); resetGame(); });
   document.getElementById("size-fullscreen-button").addEventListener("click", function () { elements.fullscreen.click(); });
 
@@ -1044,12 +1076,24 @@
       openMission("butane", "butane-step-2");
       return;
     }
-    if (elements.exitDoor.disabled) return;
-    elements.app.hidden = true;
-    elements.result.hidden = false;
-    playScreenEntrance(elements.result);
-    syncBackgroundMusic();
-    document.getElementById("result-title").focus();
+    if (elements.exitDoor.disabled || state.exiting) return;
+    state.exiting = true;
+    elements.exitDoor.disabled = true;
+    playFeedback("door");
+
+    window.ExitTransition.play({
+      room: elements.room,
+      target: elements.exitDoor,
+      onComplete: function () {
+        elements.app.hidden = true;
+        window.OutingTransition.play({
+          onComplete: function () {
+            window.StageTwo.show();
+            syncBackgroundMusic();
+          }
+        });
+      }
+    });
   });
 
   const mascotArt = document.getElementById("mascot-art");

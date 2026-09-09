@@ -1,0 +1,18 @@
+/* Stage 1 exit: door focus -> camera push-in.
+   The completion hook can later open the walk/return interstitial. */
+.room.is-exiting {
+  pointer-events: none;
+  transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
+  animation: exit-door-zoom .9s cubic-bezier(.22, .65, .3, 1) both;
+}
+
+@keyframes exit-door-zoom {
+  0% { transform: scale(1); filter: brightness(1); }
+  100% { transform: scale(1.22); filter: brightness(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room.is-exiting {
+    animation: none !important;
+  }
+}

@@ -8,6 +8,7 @@ const target = pathToFileURL(path.join(root, "index.html")).href;
 const screenshots = path.resolve(root, "../production/game/qa/screenshots");
 const chromiumPath = [
   chromium.executablePath(),
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
   "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
 ].find(candidate => fs.existsSync(candidate));
@@ -47,11 +48,11 @@ async function start(page, capture = false) {
       const cardBox = card.getBoundingClientRect();
       const buttonBox = startButton.getBoundingClientRect();
       const cardStyle = getComputedStyle(card);
-      const titleStyle = getComputedStyle(document.querySelector("#intro-title"));
-      return { cardWidth: cardBox.width, cardBorder: parseFloat(cardStyle.borderTopWidth), cardBackground: cardStyle.backgroundColor, titleShadow: titleStyle.textShadow, buttonHeight: buttonBox.height, actionsDirection: getComputedStyle(document.querySelector("#intro-screen .retro-actions")).flexDirection };
+      const titleImage = document.querySelector("#intro-title img");
+      return { cardWidth: cardBox.width, cardBorder: parseFloat(cardStyle.borderTopWidth), cardBackground: cardStyle.backgroundColor, titleLoaded: titleImage.complete && titleImage.naturalWidth > 0, buttonHeight: buttonBox.height, actionsDirection: getComputedStyle(document.querySelector("#intro-screen .retro-actions")).flexDirection };
     });
     assert(introUi.cardWidth >= 800 && introUi.cardBorder === 0 && introUi.cardBackground === "rgba(0, 0, 0, 0)", "intro: free-floating showcase should not use a giant panel");
-    assert(introUi.titleShadow !== "none" && introUi.actionsDirection === "column", "intro: illustrated title or stacked plaque controls are missing");
+    assert(introUi.titleLoaded && introUi.actionsDirection === "column", "intro: illustrated title or stacked plaque controls are missing");
     assert(introUi.buttonHeight >= 54, "intro: primary controls should be visually prominent");
     await captureScreenshot(page, "intro.png");
     await page.locator("#intro-rules-button").click();
@@ -86,35 +87,35 @@ async function solveValve(page, keyboard = false, capture = false) {
   const before = await solvedCount(page);
   const toKitchen = page.getByRole("button", { name: "주방으로 이동" });
   if (await toKitchen.isVisible()) keyboard ? await toKitchen.press("Enter") : await toKitchen.click();
-  const open = page.locator('[data-hazard="valve"]');
+  const open = page.locator('button[data-hazard="valve"]');
   if (keyboard) await open.press("Enter");
   else await open.click();
-  await page.locator(".kitchen-detail-dialog").waitFor({ state: "visible" });
+  await page.locator(".kitchen-detail-dialog[open]").waitFor({ state: "visible" });
   if (capture) {
     const dynamicComponents = await page.evaluate(() => ({
-      modal: document.querySelector(".kitchen-detail-dialog").classList.contains("ui-modal"),
-      speech: document.querySelector(".kitchen-detail-dialog .detail-guide-copy").classList.contains("ui-speech"),
-      action: document.querySelector(".kitchen-detail-dialog .detail-action").classList.contains("ui-button"),
-      close: document.querySelector(".kitchen-detail-dialog .detail-close").classList.contains("ui-icon-button"),
-      back: document.querySelector(".kitchen-detail-dialog .detail-back").classList.contains("ui-icon-button")
+      modal: document.querySelector(".kitchen-detail-dialog[open]").classList.contains("ui-modal"),
+      speech: document.querySelector(".kitchen-detail-dialog[open] .detail-guide-copy").classList.contains("ui-speech"),
+      action: document.querySelector(".kitchen-detail-dialog[open] .detail-action").classList.contains("ui-button"),
+      close: document.querySelector(".kitchen-detail-dialog[open] .detail-close").classList.contains("ui-icon-button"),
+      back: document.querySelector(".kitchen-detail-dialog[open] .detail-back").classList.contains("ui-icon-button")
     }));
     assert(Object.values(dynamicComponents).every(Boolean), `components: dynamic detail UI is not fully enhanced (${JSON.stringify(dynamicComponents)})`);
   }
   if (capture) {
-    const modal = await page.locator(".kitchen-detail-dialog").boundingBox();
+    const modal = await page.locator(".kitchen-detail-dialog[open]").boundingBox();
     const viewport = page.viewportSize();
     assert(modal && viewport && modal.height <= viewport.height * .74, "detail modal should leave breathing room around the centered scene");
     await captureScreenshot(page, "mission-valve.png");
   }
-  const initialLeverTransform = await page.locator(".kitchen-detail-dialog .kitchen-lever").evaluate(node => getComputedStyle(node).transform);
+  const initialLeverTransform = await page.locator(".kitchen-detail-dialog[open] .kitchen-lever").evaluate(node => getComputedStyle(node).transform);
   if (keyboard) {
     await page.keyboard.press("Tab");
-    const action = page.locator(".kitchen-detail-dialog .detail-action");
+    const action = page.locator(".kitchen-detail-dialog[open] .detail-action");
     await action.waitFor({ state: "visible" });
     await action.focus();
     await page.keyboard.press("Space");
   } else {
-    const target = await page.locator(".kitchen-detail-dialog .detail-target").boundingBox();
+    const target = await page.locator(".kitchen-detail-dialog[open] .detail-target").boundingBox();
     assert(target, "valve: target geometry missing");
     await page.mouse.move(target.x + target.width * .72, target.y + target.height / 2);
     await page.mouse.down();
@@ -122,7 +123,7 @@ async function solveValve(page, keyboard = false, capture = false) {
     await page.mouse.up();
   }
   await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
-  const leverState = await page.locator(".kitchen-detail-dialog .kitchen-lever").evaluate(node => ({
+  const leverState = await page.locator(".kitchen-detail-dialog[open] .kitchen-lever").evaluate(node => ({
     transform: getComputedStyle(node).transform,
     angle: node.style.getPropertyValue("--valve-angle"),
     visible: node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0
@@ -131,9 +132,9 @@ async function solveValve(page, keyboard = false, capture = false) {
   if (capture) await captureScreenshot(page, "mission-valve-complete.png");
   if (capture) {
     const detailUi = await page.evaluate(() => {
-      const dialog = document.querySelector(".kitchen-detail-dialog").getBoundingClientRect();
-      const guide = document.querySelector(".kitchen-detail-dialog .detail-guide").getBoundingClientRect();
-      const back = document.querySelector(".kitchen-detail-dialog .detail-back");
+      const dialog = document.querySelector(".kitchen-detail-dialog[open]").getBoundingClientRect();
+      const guide = document.querySelector(".kitchen-detail-dialog[open] .detail-guide").getBoundingClientRect();
+      const back = document.querySelector(".kitchen-detail-dialog[open] .detail-back");
       const backBox = back.getBoundingClientRect();
       return {
         guideInside: guide.left >= dialog.left && guide.top >= dialog.top && guide.bottom <= dialog.bottom,
@@ -148,9 +149,12 @@ async function solveValve(page, keyboard = false, capture = false) {
     assert(detailUi.backWidth >= 56 && detailUi.backHeight >= 56 && detailUi.backFontSize === "0px", "detail: return should be a large icon-only control");
     assert(detailUi.label === "주방으로 돌아가기", "detail: icon-only return needs an accessible name");
   }
-  if (keyboard) await page.getByRole("button", { name: "주방으로 돌아가기" }).press("Enter");
-  else await page.getByRole("button", { name: "주방으로 돌아가기" }).click();
-  await page.locator(".kitchen-detail-dialog").waitFor({ state: "hidden" });
+  const safetyRuleConfirm = page.getByRole("button", { name: "확인했어요" });
+  await safetyRuleConfirm.waitFor({ state: "visible" });
+  if (keyboard) await safetyRuleConfirm.press("Enter");
+  else await safetyRuleConfirm.click();
+  await page.locator('[data-progress-item="valve"].is-collected').waitFor();
+  await page.locator(".kitchen-detail-dialog[open]").waitFor({ state: "hidden" });
 }
 
 async function assertViewportFit(page, label) {
@@ -178,7 +182,7 @@ async function assertCenteredScene(page, label) {
 }
 
 async function assertStableArrowHitbox(page) {
-  const arrow = page.locator(".scene-navigation");
+  const arrow = page.locator("#app .scene-navigation");
   const before = await arrow.boundingBox();
   const glyphBefore = await arrow.locator("svg").evaluate(node => getComputedStyle(node).transform);
   await page.waitForTimeout(950);
@@ -252,7 +256,7 @@ async function assertExitDoorTarget(page) {
 
 async function testSettings(page) {
   const musicState = await page.locator("#background-music").evaluate(audio => ({ paused: audio.paused, loop: audio.loop, volume: audio.volume, source: audio.getAttribute("src") }));
-  assert(!musicState.paused && musicState.loop && musicState.volume <= .2 && musicState.source === "Suitcase_and_Sunlight.mp3", "settings: background music should loop quietly after Start");
+  assert(!musicState.paused && musicState.loop && musicState.volume <= .2 && musicState.source === "assets/common/audio/Suitcase_and_Sunlight.mp3", "settings: background music should loop quietly after Start");
   await page.getByRole("button", { name: "설정 열기" }).click();
   await page.getByRole("dialog", { name: "설정" }).waitFor();
   const sound = page.locator("#sound-setting");
@@ -272,9 +276,12 @@ async function solveTowel(page, keyboard = false, capture = false) {
   const before = await solvedCount(page);
   const toKitchen = page.getByRole("button", { name: "주방으로 이동" });
   if (await toKitchen.isVisible()) keyboard ? await toKitchen.press("Enter") : await toKitchen.click();
-  const open = page.locator('[data-hazard="towel"]');
-  const outline = await page.locator(".new-scene-art .kitchen-towel-prop").evaluate(node => getComputedStyle(node).filter);
-  assert(outline.includes("drop-shadow"), "towel: white silhouette outline must be visible");
+  const open = page.locator('button[data-hazard="towel"]');
+  const outline = await page.locator(".new-scene-art .kitchen-towel-prop").evaluate(node => ({
+    filter: getComputedStyle(node).filter,
+    groupFilter: node.parentElement && node.parentElement.getAttribute("filter")
+  }));
+  assert(outline.filter.includes("drop-shadow") || (outline.groupFilter || "").startsWith("url("), "towel: white silhouette outline must be visible");
   if (capture && !keyboard) {
     await open.hover();
     await page.waitForTimeout(100);
@@ -284,50 +291,54 @@ async function solveTowel(page, keyboard = false, capture = false) {
   }
   if (keyboard) await open.press("Enter");
   else await open.click();
-  await page.locator(".kitchen-detail-dialog").waitFor({ state: "visible" });
+  await page.locator(".kitchen-detail-dialog[open]").waitFor({ state: "visible" });
   if (capture) await captureScreenshot(page, "mission-towel.png");
   if (keyboard) {
     await page.keyboard.press("Tab");
-    const action = page.locator(".kitchen-detail-dialog .detail-action");
+    const action = page.locator(".kitchen-detail-dialog[open] .detail-action");
     await action.waitFor({ state: "visible" });
     await action.focus();
     await page.keyboard.press("Space");
-  } else await page.locator(".kitchen-detail-dialog .detail-target").click();
+  } else await page.locator(".kitchen-detail-dialog[open] .detail-target").click();
   await page.locator('.scene-held-item[data-item="towel"]').waitFor();
   assert((await page.locator('.scene-held-item[data-item="towel"]').textContent()).trim() === "", "towel inventory should not render visible text");
-  assert((await page.locator('.scene-held-item[data-item="towel"]').getAttribute("aria-label")).includes("수건"), "towel inventory needs an accessible label");
+  assert((await page.locator('.scene-held-item[data-item="towel"]').getAttribute("aria-label")).includes("행주"), "towel inventory needs an accessible label");
   if (capture) await captureScreenshot(page, "held-towel.png");
-  assert(await page.locator('[data-hazard="butane"]').isHidden(), "butane must be locked while towel is held");
-  if (keyboard) await page.getByRole("button", { name: "바구니에 수건 넣기" }).press("Enter");
-  else await page.getByRole("button", { name: "바구니에 수건 넣기" }).click();
+  assert(await page.locator('button[data-hazard="butane"]').isHidden(), "butane must be locked while towel is held");
+  if (keyboard) await page.getByRole("button", { name: "바구니에 행주 넣기" }).press("Enter");
+  else await page.getByRole("button", { name: "바구니에 행주 넣기" }).click();
   await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
   await page.locator(".new-scene-art .kitchen-towel-stored").waitFor({ state: "visible" });
   if (capture) await captureScreenshot(page, "kitchen-towel-stored.png");
+  const safetyRuleConfirm = page.getByRole("button", { name: "확인했어요" });
+  await safetyRuleConfirm.waitFor({ state: "visible" });
+  if (keyboard) await safetyRuleConfirm.press("Enter");
+  else await safetyRuleConfirm.click();
 }
 
 async function solveButane(page, keyboard = false, capture = false, heldCaptureName = null) {
   const before = await solvedCount(page);
   const toLiving = page.getByRole("button", { name: "거실로 이동" });
   if (await toLiving.isVisible()) keyboard ? await toLiving.press("Enter") : await toLiving.click();
-  const open = page.locator('[data-hazard="butane"]');
+  const open = page.locator('button[data-hazard="butane"]');
   if (keyboard) await open.press("Enter");
   else await open.click();
-  await page.locator(".kitchen-detail-dialog").waitFor({ state: "visible" });
+  await page.locator(".kitchen-detail-dialog[open]").waitFor({ state: "visible" });
   if (capture) await captureScreenshot(page, "mission-butane-indoor.png");
   if (keyboard) {
     await page.keyboard.press("Tab");
-    const action = page.locator(".kitchen-detail-dialog .detail-action");
+    const action = page.locator(".kitchen-detail-dialog[open] .detail-action");
     await action.waitFor({ state: "visible" });
     await action.focus();
     await page.keyboard.press("Space");
-  } else await page.locator(".kitchen-detail-dialog .detail-target").click();
+  } else await page.locator(".kitchen-detail-dialog[open] .detail-target").click();
   await page.locator('.scene-held-item[data-item="butane"]').waitFor();
   assert((await page.locator('.scene-held-item[data-item="butane"]').textContent()).trim() === "", "butane inventory should not render visible text");
   assert((await page.locator('.scene-held-item[data-item="butane"]').getAttribute("aria-label")).includes("부탄캔"), "butane inventory needs an accessible label");
   await assertExitDoorTarget(page);
   assert((await page.locator("#guide-message").textContent()).includes("현관문"), "butane carry: Someongi should point to the door");
   if (capture || heldCaptureName) await captureScreenshot(page, heldCaptureName || "held-butane.png");
-  assert(await page.locator('[data-hazard="towel"]').isHidden(), "towel must be locked while butane is held");
+  assert(await page.locator('button[data-hazard="towel"]').isHidden(), "towel must be locked while butane is held");
   if (keyboard) await page.locator("#exit-door").press("Enter");
   else await page.locator("#exit-door").click();
   await page.locator(".visual-butane-outdoor").waitFor();
@@ -392,8 +403,11 @@ async function solveButane(page, keyboard = false, capture = false, heldCaptureN
   });
   assert(returnGeometry.visible && returnGeometry.x > .75 && returnGeometry.width < .22, "outdoor: return control should align with the drawn doorway");
   if (capture) await captureScreenshot(page, "mission-butane-outdoor-complete.png");
-  if (keyboard) await outdoorReturn.press("Enter");
-  else await outdoorReturn.click();
+  const safetyRuleConfirm = page.getByRole("button", { name: "확인했어요" });
+  await safetyRuleConfirm.waitFor({ state: "visible" });
+  if (keyboard) await safetyRuleConfirm.press("Enter");
+  else await safetyRuleConfirm.click();
+  await page.locator('[data-progress-item="butane"].is-collected').waitFor();
   await page.locator("#mission-dialog").waitFor({ state: "hidden" });
 }
 
@@ -439,19 +453,10 @@ async function fullFunctional(browserType, name) {
   assert(await exit.isEnabled(), `${name}: exit should be enabled`);
   await captureScreenshot(page, `${name}-complete.png`);
   await exit.click();
-  await page.getByRole("heading", { name: "안전점검 완료!" }).waitFor();
-  if (name === "chromium") {
-    const resultUi = await page.evaluate(() => {
-      const card = document.querySelector("#result-screen .result-card");
-      const tiles = Array.from(document.querySelectorAll("#result-screen .result-checklist li"));
-      const style = getComputedStyle(card);
-      const titleStyle = getComputedStyle(document.querySelector("#result-title"));
-      return { border: parseFloat(style.borderTopWidth), background: style.backgroundColor, titleShadow: titleStyle.textShadow, columns: getComputedStyle(document.querySelector("#result-screen .result-checklist")).gridTemplateColumns.split(" ").length, tileBorders: tiles.every(tile => parseFloat(getComputedStyle(tile).borderTopWidth) >= 4) };
-    });
-    assert(resultUi.border === 0 && resultUi.background === "rgba(0, 0, 0, 0)" && resultUi.titleShadow !== "none", "result: free-floating illustrated completion showcase is missing");
-    assert(resultUi.columns === 3 && resultUi.tileBorders, "result: three completion badges are missing");
-  }
-  if (name === "chromium") await captureScreenshot(page, "desktop-result.png");
+  await page.locator("#outing-transition").waitFor({ state: "visible" });
+  await page.getByRole("button", { name: "건너뛰기" }).click();
+  await page.getByRole("heading", { name: "스테이지 2 안전한 귀가" }).waitFor();
+  if (name === "chromium") await captureScreenshot(page, "desktop-stage-2.png");
   assert(errors.length === 0, `${name}: browser errors: ${errors.join(" | ")}`);
   await browser.close();
 }
@@ -468,7 +473,9 @@ async function keyboardFlow() {
   const exit = page.locator("#exit-door");
   await exit.focus();
   await page.keyboard.press("Enter");
-  await page.getByRole("heading", { name: "안전점검 완료!" }).waitFor();
+  await page.locator("#outing-transition").waitFor({ state: "visible" });
+  await page.getByRole("button", { name: "건너뛰기" }).press("Enter");
+  await page.getByRole("heading", { name: "스테이지 2 안전한 귀가" }).waitFor();
   await browser.close();
 }
 
@@ -488,8 +495,10 @@ async function mobileFlow() {
   await solveValve(page);
   await solveButane(page, false, false, "mobile-held-butane.png");
   await page.locator("#exit-door").click();
-  await page.getByRole("heading", { name: "안전점검 완료!" }).waitFor();
-  await captureScreenshot(page, "mobile-landscape-result.png");
+  await page.locator("#outing-transition").waitFor({ state: "visible" });
+  await page.getByRole("button", { name: "건너뛰기" }).click();
+  await page.getByRole("heading", { name: "스테이지 2 안전한 귀가" }).waitFor();
+  await captureScreenshot(page, "mobile-landscape-stage-2.png");
   const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
   assert(!horizontalOverflow, "mobile: horizontal overflow detected");
   await browser.close();
@@ -500,11 +509,11 @@ async function cancelAndCarryFlow() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   page.setDefaultTimeout(5000);
   await start(page);
-  await page.locator('[data-hazard="butane"]').click();
-  await page.locator(".kitchen-detail-dialog .detail-close").click();
+  await page.locator('button[data-hazard="butane"]').click();
+  await page.locator(".kitchen-detail-dialog[open] .detail-close").click();
   assert(await solvedCount(page) === 0, "cancel before pickup must not solve the item");
-  await page.locator('[data-hazard="butane"]').click();
-  await page.locator(".kitchen-detail-dialog .detail-target").click();
+  await page.locator('button[data-hazard="butane"]').click();
+  await page.locator(".kitchen-detail-dialog[open] .detail-target").click();
   await page.locator('.scene-held-item[data-item="butane"]').waitFor();
   await page.locator("#exit-door").click();
   await page.locator(".visual-butane-outdoor").waitFor();

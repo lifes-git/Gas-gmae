@@ -1,6 +1,6 @@
 # 완료 음악 연결
 
-- 사용자 제공 `webgame-prototype/Walking_Toward_The_Sun.mp3`를 외출 완료 화면에서 재생.
+- 사용자 제공 `webgame-prototype/assets/common/audio/Walking_Toward_The_Sun.mp3`를 외출 완료 화면에서 재생.
 - 단일 audio 요소의 소스를 정지 후 교체. 기본 BGM과 완료 음악을 동시에 재생하지 않음.
 - 다시하기는 완료 음악을 정지하고 기본 BGM을 처음부터 재생. 시작 버튼은 같은 기본 곡을 계속 재생.
 - 완료 음악은 한 번 재생. 음소거와 탭 숨김은 현재 곡을 일시정지하고, 복귀 시 이어 재생. 곡이 끝나면 후속 클릭으로 재시작하지 않음.

@@ -7,6 +7,7 @@ const root = path.resolve(__dirname, "..");
 const target = pathToFileURL(path.join(root, "index.html")).href;
 const chromiumPath = [
   chromium.executablePath(),
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
   "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
 ].find(candidate => fs.existsSync(candidate));

@@ -4,3 +4,4 @@ GS-FIRE-01,화기 사용 또는 사용 준비 중인 주방,towel-near-stove,수
 GS-BUTANE-DISPOSAL-01,다 쓴 부탄캔 배출 전,butane-location-choice,통풍이 잘되는 실외 선택,"잔여가스는 통풍이 잘되는 곳에서 제거해요.",실외 또는 충분히 통풍되는 장소,"실내 제거; 쓰레기봉투 안 제거; 열원 주변",Gas Safety Reviewer,approved,2026-08-31,v0.3
 GS-BUTANE-DISPOSAL-01,통풍이 잘되는 장소,butane-nozzle-step,거꾸로 들어 노즐 눌러 잔여가스 제거,"잔여가스 제거 전에 구멍을 뚫지 않아요.",거꾸로 든 채 노즐 누르기,"제거 전 송곳 천공; 폭발·중독 재현",Gas Safety Reviewer,approved,2026-08-31,v0.3
 GS-BUTANE-DISPOSAL-01,잔여가스 제거 후,butane-disposal-bin,지역 분리배출 기준을 확인한 뒤 장면의 캔 수거함 클릭,"지역 분리배출 기준을 확인한 뒤 캔 수거함에 넣어요.",잔여가스 제거 완료 뒤 지역 기준 확인과 캔류 분리배출,"잔여가스 제거 전 투입; 전국 공통 단일 배출함 단정",Gas Safety Reviewer,approved,2026-09-05,v0.4
+GS-LEAK-01,귀가 후 가스 누출 의심 점검,stage2-window-closed,전기 스위치를 조작하지 않고 창문 열어 자연환기,"가스 누출이 의심될 때는 전기 스위치를 건드리지 말고 창문을 열어 자연환기하자 멍!",닫힌 거실 창문을 열어 자연환기,"전기 환풍기·조명 조작; 환기만으로 대응이 끝난다는 표현",Gas Safety Reviewer,draft,2026-09-09,v0.1-stage2

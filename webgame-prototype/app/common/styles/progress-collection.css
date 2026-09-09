@@ -1,0 +1,176 @@
+.game-header,
+.stage-two .game-header {
+  width:auto !important;
+  box-sizing:border-box !important;
+}
+
+#app > .game-header {
+  left:0 !important;
+  right:0 !important;
+}
+
+.stage-two .game-header {
+  left:20px !important;
+  right:20px !important;
+}
+
+.game-header > .header-actions,
+.stage-two .game-header > .header-actions {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:12px !important;
+  margin-left:auto !important;
+  pointer-events:auto;
+}
+
+#app .progress-card.ui-progress,
+.stage-two .progress-card.ui-progress {
+  display:flex !important;
+  flex-direction:row !important;
+  justify-content:flex-start !important;
+  width:max-content !important;
+  min-width:max-content !important;
+  max-width:none !important;
+  height:68px !important;
+  max-height:68px !important;
+  box-sizing:border-box !important;
+  grid-template-columns:auto !important;
+  align-items:center !important;
+  min-height:68px !important;
+  padding:5px 10px !important;
+  gap:12px !important;
+}
+
+.progress-card.ui-progress::before { display:none !important; }
+.progress-card.ui-progress > #progress-text,
+.progress-card.ui-progress > .stage-two__progress-text {
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+.progress-card.ui-progress .progress-collection {
+  position:static !important;
+  flex:0 0 auto !important;
+  width:max-content !important;
+  min-width:max-content !important;
+  grid-column:auto !important;
+  display:flex !important;
+  align-items:center;
+  gap:9px !important;
+}
+
+#app .progress-card.ui-progress .progress-slot,
+.stage-two .progress-card.ui-progress .progress-slot {
+  position:relative;
+  display:grid !important;
+  place-items:center;
+  width:52px !important;
+  height:52px !important;
+  min-width:52px !important;
+  min-height:52px !important;
+  flex:0 0 52px !important;
+  box-sizing:border-box;
+  overflow:hidden;
+  border:3px solid #24323b !important;
+  border-radius:50%;
+  background:#fff4d6 !important;
+  box-shadow:0 4px 0 #24323b !important;
+  color:#24323b;
+}
+
+.progress-slot b {
+  font:900 32px/1 "Jua",sans-serif;
+  transform:translateY(1px);
+}
+
+.progress-slot img {
+  position:absolute;
+  inset:5px;
+  width:calc(100% - 10px);
+  height:calc(100% - 10px);
+  object-fit:contain;
+  opacity:0;
+  transform:scale(.35);
+}
+
+.progress-slot.is-collected b { display:none; }
+.progress-slot.is-collected img { opacity:1; transform:scale(1); }
+.progress-slot[data-progress-item="valve"].is-collected {
+  background:#ead9b8 !important;
+}
+.progress-slot[data-progress-item="valve"].is-collected::before {
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:50%;
+  top:-5px;
+  width:13px;
+  height:calc(100% + 10px);
+  transform:translateX(-50%);
+  border:2px solid #39434a;
+  border-radius:6px;
+  background:linear-gradient(90deg,#626b70 0 15%,#d8d6cb 38%,#898e8d 67%,#3d474d 100%);
+  box-shadow:inset 1px 0 rgba(255,255,255,.55),inset -2px 0 rgba(25,35,40,.24);
+}
+.progress-slot[data-progress-item="valve"].is-collected::after {
+  content:"";
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:50%;
+  width:25px;
+  height:25px;
+  box-sizing:border-box;
+  transform:translate(-50%,-50%);
+  border:3px solid #39434a;
+  border-radius:50%;
+  background:radial-gradient(circle,#bfc1bb 0 26%,#4d565b 29% 45%,#d8d6cb 48% 66%,#626b70 69%);
+}
+.progress-slot[data-progress-item="valve"].is-collected img {
+  z-index:3;
+  inset:4px;
+  width:calc(100% - 8px);
+  height:calc(100% - 8px);
+  transform:rotate(90deg) scale(1.08);
+}
+.progress-slot.is-receiving { animation:progress-slot-pop .48s cubic-bezier(.2,1.45,.35,1) both; }
+
+.progress-fly-token {
+  position:fixed;
+  z-index:2147483647;
+  margin:0;
+  object-fit:contain;
+  pointer-events:none;
+  filter:drop-shadow(0 4px 3px rgba(20,35,45,.3));
+  will-change:transform,opacity;
+}
+
+@keyframes progress-slot-pop {
+  0% { transform:scale(.72); }
+  55% { transform:scale(1.2) rotate(-5deg); }
+  100% { transform:scale(1) rotate(0); }
+}
+
+@media (orientation:landscape) and (max-height:500px),
+       (orientation:landscape) and (pointer:coarse) {
+  .stage-two .game-header { left:12px !important; right:12px !important; }
+  .game-header > .header-actions,
+  .stage-two .game-header > .header-actions { gap:8px !important; }
+  #app .progress-card.ui-progress,
+  .stage-two .progress-card.ui-progress { height:52px !important; min-height:52px !important; max-height:52px !important; padding:3px 6px !important; gap:8px !important; }
+  #app .progress-card.ui-progress .progress-slot,
+  .stage-two .progress-card.ui-progress .progress-slot { width:42px !important; height:42px !important; min-width:42px !important; min-height:42px !important; flex-basis:42px !important; border-width:2px !important; box-shadow:0 3px 0 #24323b !important; }
+  .progress-slot b { font-size:26px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .progress-slot.is-receiving { animation:none; }
+}

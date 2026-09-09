@@ -6,25 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="장기간 외출 전 가스안전 위험요소 3개를 찾는 교육용 웹게임 프로토타입">
   <title>소멍이의 외출 전 가스안전 점검</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="kitchen-scenes.css">
-  <link rel="stylesheet" href="toon-ui.css">
-  <link rel="stylesheet" href="ui-components.css">
-  <link rel="stylesheet" href="entrance-motion.css">
-  <link rel="stylesheet" href="exit-transition.css">
-  <link rel="stylesheet" href="outing-transition.css">
-  <link rel="stylesheet" href="stage-2.css">
-  <link rel="stylesheet" href="safety-rule-card.css">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-valve-wall-handleless-v3.jpg">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-room-layered-unsafe-hd-v3.webp">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-towel-counter-clean-v3.jpg">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-butane-floor-clean-v3.jpg">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-outdoor-open-walkway-v2.jpg">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-outdoor-sunset-return-v1.jpg">
-  <link rel="preload" as="image" href="assets/runtime/props/prop-butane-red-v4.png">
-  <link rel="preload" as="image" href="assets/runtime/backgrounds/bg-entry-open-v1.jpg">
-  <link rel="preload" as="image" href="assets/runtime/props/prop-basket-empty-v1.png">
+  <link rel="stylesheet" href="app/common/styles/styles.css">
+  <link rel="stylesheet" href="app/stage-1/styles/kitchen-scenes.css">
+  <link rel="stylesheet" href="app/common/styles/toon-ui.css">
+  <link rel="stylesheet" href="app/common/styles/ui-components.css">
+  <link rel="stylesheet" href="app/common/styles/entrance-motion.css">
+  <link rel="stylesheet" href="app/transitions/styles/exit-transition.css">
+  <link rel="stylesheet" href="app/transitions/styles/outing-transition.css">
+  <link rel="stylesheet" href="app/stage-2/styles/stage-2.css">
+  <link rel="stylesheet" href="app/stage-1/styles/safety-rule-card.css">
+  <link rel="stylesheet" href="app/common/styles/progress-collection.css?v=progress-slots-6">
+  <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-valve-wall-handleless-v3.jpg">
+  <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-room-layered-unsafe-hd-v3.webp">
+  <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-room-layered-solved-hd-v3.webp">
+  <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-towel-counter-clean-v3.jpg">
+  <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-butane-floor-clean-v3.jpg">
+  <link rel="preload" as="image" href="assets/transitions/backgrounds/bg-outdoor-open-walkway-v2.jpg">
+  <link rel="preload" as="image" href="assets/transitions/backgrounds/bg-outdoor-sunset-return-v1.jpg">
+  <link rel="preload" as="image" href="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.png">
+  <link rel="preload" as="image" href="assets/stage-2/props/prop-window-closed-inplace-v1.png">
+  <link rel="preload" as="image" href="assets/stage-2/backgrounds/bg-stage2-living-window-open-v1.jpg">
+  <link rel="preload" as="image" href="assets/stage-1/props/prop-butane-red-v4.png">
+  <link rel="preload" as="image" href="assets/common/backgrounds/bg-entry-open-v1.jpg">
+  <link rel="preload" as="image" href="assets/stage-1/props/prop-basket-empty-v1.png">
 </head>
 
 <body>
@@ -32,18 +36,16 @@
 
   <main class="app-shell game-stage" id="app">
     <header class="game-header">
-      <div class="header-tools" aria-label="게임 진행 상황" style="pointer-events: auto;">
+      <div class="header-actions" aria-label="게임 진행 상황과 메뉴">
         <div class="progress-card ui-progress" aria-label="위험요소 해결 진행도">
           <span class="progress-label visually-hidden">안전 점검</span>
           <span id="progress-text">0 / 3</span>
-          <div class="progress-dots" id="progress-dots" aria-hidden="true">
-            <span></span><span></span><span></span>
+          <div class="progress-dots progress-collection" id="progress-dots" aria-hidden="true">
+            <span class="progress-slot" data-progress-item="valve"><b>?</b><img alt=""></span>
+            <span class="progress-slot" data-progress-item="towel"><b>?</b><img alt=""></span>
+            <span class="progress-slot" data-progress-item="butane"><b>?</b><img alt=""></span>
           </div>
         </div>
-      </div>
-
-      <div class="header-actions" aria-label="게임 메뉴"
-        style="display: flex; gap: 0.5rem; pointer-events: auto; align-items: center;">
         <button class="settings-button" id="settings-button" type="button" aria-label="설정 열기" data-ui-component="button"
           data-ui-variant="info" data-ui-icon="true">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -72,11 +74,11 @@
             <div class="safe-basket" aria-hidden="true">안전 보관</div>
 
             <img class="room-state-layer state-valve" id="state-valve"
-              src="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
+              src="assets/stage-1/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
             <img class="room-state-layer state-towel" id="state-towel"
-              src="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
+              src="assets/stage-1/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
             <img class="room-state-layer state-butane" id="state-butane"
-              src="assets/runtime/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
+              src="assets/stage-1/backgrounds/bg-room-layered-solved-hd-v3.webp" alt="" aria-hidden="true" hidden>
 
             <button class="hotspot hotspot-valve" data-hazard="valve" type="button" aria-label="열려 있는 가스밸브 위험요소">
               <span class="hotspot-pulse" aria-hidden="true"></span>
@@ -110,7 +112,7 @@
       </section>
 
       <aside class="guide-panel" aria-labelledby="guide-title">
-        <img class="mascot-art" id="mascot-art" src="assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg"
+        <img class="mascot-art" id="mascot-art" src="assets/common/mascots/mascot-somyeongi-guide-logo-v1.svg"
           alt="소멍이" aria-hidden="false" style="cursor: pointer; position: relative; z-index: 10;" title="클릭해서 힌트 보기">
         <div class="speech-bubble ui-speech" id="speech-bubble"
           style="opacity: 1; pointer-events: auto; transition: opacity 0.3s ease; transform-origin: bottom left;">
@@ -143,7 +145,7 @@
       <div class="mission-visual" id="mission-visual"></div>
       <section class="mission-console">
         <div class="mission-dialogue">
-          <img src="assets/runtime/mascots/mascot-somyeongi-question-logo-v1.svg" alt="" aria-hidden="true">
+          <img src="assets/common/mascots/mascot-somyeongi-question-logo-v1.svg" alt="" aria-hidden="true">
           <div class="mission-speech ui-speech">
             <p class="mission-copy" id="mission-copy"></p>
             <button class="bubble-link explanation-toggle" id="explanation-toggle" type="button" hidden>왜
@@ -224,48 +226,86 @@
     <h2 class="visually-hidden" id="stage-two-title" tabindex="-1">스테이지 2 안전한 귀가</h2>
     <div class="stage-two__frame" id="stage-two-frame" data-room="living">
       <img class="stage-two__background stage-two__background--living is-active"
-        src="assets/runtime/backgrounds/bg-stage2-living-sunset-v1.jpg" alt="">
+        src="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.png" alt="">
       <img class="stage-two__background stage-two__background--kitchen"
-        src="assets/runtime/backgrounds/bg-stage2-kitchen-sunset-v1.jpg" alt="">
+        src="assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-v1.jpg" alt="">
+      <img class="stage-two__window-layer is-active" id="stage-two-window-layer"
+        src="assets/stage-2/props/prop-window-closed-inplace-v1.png" alt="" aria-hidden="true" draggable="false">
       <header class="game-header stage-two__header">
-        <div class="header-tools" aria-label="스테이지 2 진행 상황">
+        <div class="header-actions" aria-label="스테이지 2 진행 상황과 메뉴">
           <div class="progress-card ui-progress" role="status" aria-label="안전점검 진행도 0개 중 2개">
             <span class="progress-label visually-hidden">안전 점검</span>
             <span class="stage-two__progress-text">0 / 2</span>
-            <div class="progress-dots" aria-hidden="true"><span></span><span></span></div>
+            <div class="progress-dots progress-collection" aria-hidden="true">
+              <span class="progress-slot" data-progress-item="window"><b>?</b><img alt=""></span>
+              <span class="progress-slot" data-progress-item="pipe"><b>?</b><img alt=""></span>
+            </div>
           </div>
-        </div>
-        <div class="header-actions" aria-label="게임 메뉴">
           <button class="settings-button" id="stage-two-settings-button" type="button" aria-label="설정 열기"
             data-ui-component="button" data-ui-variant="info" data-ui-icon="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z" />
-              <path d="m19.4 13.5 1.1 1.9-2 3.45-2.2-.45a8.3 8.3 0 0 1-1.8 1.05L13.8 21h-4l-.7-1.55a8.3 8.3 0 0 1-1.8-1.05l-2.2.45-2-3.45 1.1-1.9a8.9 8.9 0 0 1 0-2.1L3.1 9.5l2-3.45 2.2.45A8.3 8.3 0 0 1 9.1 5.45L9.8 3h4l.7 2.45A8.3 8.3 0 0 1 16.3 6.5l2.2-.45 2-3.45 1.1 1.9a8.9 8.9 0 0 1 0 2.1Z" />
-            </svg>
           </button>
         </div>
       </header>
       <aside class="guide-panel stage-two__guide-panel" aria-labelledby="stage-two-guide-title">
-        <img class="mascot-art" src="assets/runtime/mascots/mascot-somyeongi-guide-logo-v1.svg" alt="소멍이">
+        <img class="mascot-art" src="assets/common/mascots/mascot-somyeongi-guide-logo-v1.svg" alt="소멍이">
         <div class="speech-bubble ui-speech">
           <h3 class="visually-hidden" id="stage-two-guide-title">소멍이의 안내</h3>
-          <p id="stage-two-guide">오랫동안 집을 비웠어요. 귀가 후 안전점검을 시작해요.</p>
+          <p id="stage-two-guide"></p>
           <button class="bubble-link" id="stage-two-rules-button" type="button">ⓘ 안전수칙</button>
         </div>
       </aside>
       <button class="scene-navigation" id="stage-two-navigation" type="button" aria-label="주방으로 이동">
         <svg viewBox="0 0 72 54" aria-hidden="true" focusable="false"><path class="nav-arrow-shadow" d="M7 35C19 15 42 12 56 22L52 10L68 28L48 43L54 31C42 23 25 26 16 42Z"/><path class="nav-arrow" d="M7 35C19 15 42 12 56 22L52 10L68 28L48 43L54 31C42 23 25 26 16 42Z"/><path class="nav-arrow-highlight" d="M17 30C27 18 42 18 51 23"/></svg>
       </button>
+      <button class="stage-two__window-hotspot" id="stage-two-window-hotspot" type="button"
+        aria-label="닫힌 거실 창문 열기">
+        <svg class="stage-two__window-outline" viewBox="0 0 310 380" preserveAspectRatio="none"
+          aria-hidden="true" focusable="false">
+          <rect x="33" y="50" width="241" height="298" rx="2" />
+        </svg>
+        <span class="visually-hidden">거실 창문</span>
+      </button>
+      <p class="live-region" id="stage-two-status" role="status" aria-live="polite"></p>
     </div>
   </section>
 
+  <dialog class="kitchen-detail-dialog stage-two-window-dialog ui-modal" id="stage-two-window-dialog"
+    aria-labelledby="stage-two-window-title" aria-describedby="stage-two-window-copy">
+    <header>
+      <h2 id="stage-two-window-title">창문 열어 환기하기</h2>
+      <button class="detail-close" id="stage-two-window-close" type="button" aria-label="확대 화면 닫기">닫기 ×</button>
+    </header>
+    <div class="kitchen-detail-view stage-two-window-view">
+      <img class="stage-two-window-view__image is-active" id="stage-two-window-closed-image"
+        src="assets/stage-2/backgrounds/bg-stage2-living-sunset-v1.jpg" alt="">
+      <img class="stage-two-window-view__image" id="stage-two-window-open-image"
+        src="assets/stage-2/backgrounds/bg-stage2-living-window-open-v1.jpg" alt="">
+      <button class="detail-target stage-two-window-drag-target" id="stage-two-window-drag-target" type="button"
+        aria-label="창문 손잡이를 오른쪽으로 밀어 열기">
+        <span class="stage-two-window-handle"></span>
+      </button>
+      <span class="stage-two-window-drag-cue" aria-hidden="true">→</span>
+    </div>
+    <div class="detail-guide">
+      <img id="stage-two-window-mascot" src="assets/common/mascots/mascot-somyeongi-question-logo-v1.svg" alt=""
+        aria-hidden="true">
+      <div class="detail-guide-copy ui-speech" id="stage-two-window-guide-copy">
+        <p class="detail-instruction" id="stage-two-window-copy"></p>
+      </div>
+    </div>
+    <footer>
+      <button class="detail-action" id="stage-two-window-action" type="button">버튼으로 창문 열기</button>
+      <button class="detail-back" id="stage-two-window-back" type="button" aria-label="거실로 돌아가기">거실로 돌아가기</button>
+    </footer>
+  </dialog>
+
   <section class="result-screen" id="result-screen" hidden aria-labelledby="result-title">
     <div class="result-card result-showcase ui-panel">
-      <img class="result-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-exit-logo-v1.svg" alt=""
+      <img class="result-mascot-art" src="assets/common/mascots/mascot-somyeongi-exit-logo-v1.svg" alt=""
         aria-hidden="true">
       <div class="result-copy">
         <p class="result-kicker">★ 3 / 3</p>
-        <h2 id="result-title" class="image-title" tabindex="-1"><img src="assets/masters/title-result-alpha-v1.png"
+        <h2 id="result-title" class="image-title" tabindex="-1"><img src="assets/masters/common/ui/title-result-alpha-v1.png"
             alt="안전점검 완료!" width="2005" height="453"></h2>
         <p class="result-message">안전하게 외출했어요!</p>
         <ul class="result-checklist">
@@ -283,7 +323,7 @@
     </div>
   </section>
 
-  <audio id="background-music" src="Suitcase_and_Sunlight.mp3" preload="auto" autoplay loop></audio>
+  <audio id="background-music" src="assets/common/audio/Suitcase_and_Sunlight.mp3" preload="auto" autoplay loop></audio>
 
   <section class="rotate-screen" id="rotate-screen" aria-labelledby="rotate-title" hidden>
     <div class="rotate-card">
@@ -304,12 +344,12 @@
 
   <section class="intro-screen" id="intro-screen" aria-labelledby="intro-title">
     <div class="intro-card retro-ui intro-showcase ui-panel">
-      <img class="intro-mascot-art" src="assets/runtime/mascots/mascot-somyeongi-title-logo-v1.svg" alt=""
+      <img class="intro-mascot-art" src="assets/common/mascots/mascot-somyeongi-title-logo-v1.svg" alt=""
         aria-hidden="true">
       <div class="intro-copy">
         <span class="title-spark title-spark-one" aria-hidden="true">★</span>
         <span class="title-spark title-spark-two" aria-hidden="true">✓</span>
-        <h2 id="intro-title" class="retro-title image-title"><img src="assets/masters/title-start-alpha-v1.png"
+        <h2 id="intro-title" class="retro-title image-title"><img src="assets/masters/common/ui/title-start-alpha-v1.png"
             alt="장기 외출 전 가스안전 점검!" width="1676" height="683"></h2>
         <div class="retro-actions">
           <button class="retro-button btn-orange" id="start-button" type="button" data-ui-component="button"
@@ -329,15 +369,17 @@
     </div>
   </section>
 
-  <script src="somyeongi-dialogue.js"></script>
-  <script src="safety-rule-cards.js"></script>
-  <script src="game-data.js"></script>
-  <script src="ui-components.js"></script>
-  <script src="kitchen-scenes.js"></script>
-  <script src="exit-transition.js"></script>
-  <script src="outing-transition.js"></script>
-  <script src="stage-2.js"></script>
-  <script src="game.js?v=completion-208c51f32d89"></script>
+  <script src="app/stage-1/dialogue/somyeongi-dialogue.js"></script>
+  <script src="app/stage-2/dialogue/somyeongi-dialogue.js"></script>
+  <script src="app/stage-1/scripts/safety-rule-cards.js"></script>
+  <script src="app/stage-1/scripts/game-data.js"></script>
+  <script src="app/common/scripts/ui-components.js"></script>
+  <script src="app/common/scripts/progress-collection.js"></script>
+  <script src="app/stage-1/scripts/kitchen-scenes.js"></script>
+  <script src="app/transitions/scripts/exit-transition.js"></script>
+  <script src="app/transitions/scripts/outing-transition.js"></script>
+  <script src="app/stage-2/scripts/stage-2.js"></script>
+  <script src="app/stage-1/scripts/game.js?v=completion-208c51f32d89"></script>
 </body>
 
 </html>

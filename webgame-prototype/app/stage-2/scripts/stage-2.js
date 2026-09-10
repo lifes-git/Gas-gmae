@@ -5,7 +5,7 @@
   var frame = document.getElementById("stage-two-frame");
   var livingBackground = frame.querySelector(".stage-two__background--living");
   var kitchenBackground = frame.querySelector(".stage-two__background--kitchen");
-  var closedWindowLayer = document.getElementById("stage-two-window-layer");
+  var windowArt = document.getElementById("stage-two-window-art");
   var navigation = document.getElementById("stage-two-navigation");
   var title = document.getElementById("stage-two-title");
   var settings = document.getElementById("stage-two-settings-button");
@@ -19,7 +19,7 @@
   var windowClose = document.getElementById("stage-two-window-close");
   var windowAction = document.getElementById("stage-two-window-action");
   var windowBack = document.getElementById("stage-two-window-back");
-  var windowDragTarget = document.getElementById("stage-two-window-drag-target");
+  var windowHandleTarget = document.getElementById("stage-two-window-handle-target");
   var windowCopy = document.getElementById("stage-two-window-copy");
   var windowGuideCopy = document.getElementById("stage-two-window-guide-copy");
   var windowMascot = document.getElementById("stage-two-window-mascot");
@@ -35,8 +35,10 @@
   var room = "living";
   var solved = { window: false, pipe: false };
   var collected = { window: false, pipe: false };
-  var closedLivingSource = "assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.png";
-  var openLivingSource = "assets/stage-2/backgrounds/bg-stage2-living-window-open-v1.jpg";
+  var windowOpenTimer = 0;
+  var closedLivingSource = "assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.jpg";
+  var closedWindowSource = "assets/common/props/prop-window-casement-wall-perspective-closed-v4.png";
+  var openWindowSource = "assets/common/props/prop-window-casement-wall-perspective-open-v4.png";
   settings.innerHTML = document.getElementById("settings-button").innerHTML;
   guide.textContent = dialogue.intro;
 
@@ -69,10 +71,18 @@
     var scale = width / 1672;
     var offsetX = 0;
     var offsetY = (height - 941 * scale) / 2;
-    windowHotspot.style.left = offsetX + "px";
-    windowHotspot.style.top = offsetY + 24 * scale + "px";
-    windowHotspot.style.width = 310 * scale + "px";
-    windowHotspot.style.height = 380 * scale + "px";
+    var windowLeft = offsetX + 38 * scale;
+    var windowTop = offsetY + 38 * scale;
+    var windowHeight = 290 * scale;
+    var windowWidth = windowHeight * (solved.window ? 687 / 743 : 682 / 743);
+    windowArt.style.left = windowLeft + "px";
+    windowArt.style.top = windowTop + "px";
+    windowArt.style.width = windowWidth + "px";
+    windowArt.style.height = windowHeight + "px";
+    windowHotspot.style.left = windowLeft + "px";
+    windowHotspot.style.top = windowTop + "px";
+    windowHotspot.style.width = windowWidth + "px";
+    windowHotspot.style.height = windowHeight + "px";
   }
 
   function render() {
@@ -80,7 +90,6 @@
     frame.dataset.room = room;
     livingBackground.classList.toggle("is-active", room === "living");
     kitchenBackground.classList.toggle("is-active", room === "kitchen");
-    closedWindowLayer.classList.toggle("is-active", room === "living" && !solved.window);
     navigation.dataset.direction = nextRoom === "kitchen" ? "right" : "left";
     navigation.setAttribute("aria-label", nextRoom === "kitchen" ? "주방으로 이동" : "거실로 이동");
     windowHotspot.hidden = room !== "living" || solved.window;
@@ -102,6 +111,8 @@
 
   function reset() {
     if (!screen) return;
+    window.clearTimeout(windowOpenTimer);
+    windowOpenTimer = 0;
     if (windowDialog.open) windowDialog.close();
     room = "living";
     solved.window = false;
@@ -109,13 +120,12 @@
     collected.window = false;
     collected.pipe = false;
     livingBackground.src = closedLivingSource;
+    windowArt.src = closedWindowSource;
     frame.classList.remove("is-window-open");
     windowClosedImage.classList.add("is-active");
     windowOpenImage.classList.remove("is-active");
-    windowDialog.classList.remove("is-success", "show-fallback");
-    windowDialog.dataset.failures = "0";
-    windowDragTarget.disabled = false;
-    windowDragTarget.style.removeProperty("--window-drag-x");
+    windowDialog.classList.remove("is-success", "is-opening");
+    windowHandleTarget.disabled = false;
     windowMascot.src = "assets/common/mascots/mascot-somyeongi-question-logo-v1.svg";
     windowGuideCopy.classList.remove("is-success");
     windowCopy.textContent = dialogue.windowPrompt;
@@ -135,20 +145,21 @@
     windowCopy.textContent = solved.window ? dialogue.windowSuccess : dialogue.windowPrompt;
     windowDialog.classList.toggle("is-success", solved.window);
     windowDialog.showModal();
-    (solved.window ? windowBack : windowDragTarget).focus();
+    (solved.window ? windowBack : windowHandleTarget).focus();
   });
 
   function completeWindow() {
     if (solved.window) return;
+    windowOpenTimer = 0;
     solved.window = true;
-    livingBackground.src = openLivingSource;
+    windowArt.src = openWindowSource;
     frame.classList.add("is-window-open");
     windowClosedImage.classList.remove("is-active");
     windowOpenImage.classList.add("is-active");
     windowCopy.textContent = dialogue.windowSuccess;
     guide.textContent = dialogue.windowSuccess;
-    windowDragTarget.disabled = true;
-    windowDialog.classList.remove("show-fallback");
+    windowHandleTarget.disabled = true;
+    windowDialog.classList.remove("is-opening");
     windowDialog.classList.add("is-success");
     windowGuideCopy.classList.add("is-success");
     windowMascot.src = "assets/common/mascots/mascot-somyeongi-success-logo-v1.svg";
@@ -186,47 +197,26 @@
     });
   });
 
-  windowAction.addEventListener("click", completeWindow);
-  windowBack.addEventListener("click", function () { windowDialog.close(); navigation.focus(); });
-  windowClose.addEventListener("click", function () { windowDialog.close(); });
-
-  var dragStart = null;
-  var dragDistance = 0;
-  windowDragTarget.addEventListener("pointerdown", function (event) {
-    if (solved.window) return;
-    event.preventDefault();
-    dragStart = event.clientX;
-    dragDistance = 0;
-    windowDragTarget.setPointerCapture(event.pointerId);
-    windowDragTarget.classList.add("is-dragging");
-  });
-  windowDragTarget.addEventListener("click", function (event) {
-    if (event.detail !== 0 || solved.window) return;
-    windowDialog.classList.add("show-fallback");
-    windowAction.focus();
-  });
-  windowDragTarget.addEventListener("pointermove", function (event) {
-    if (dragStart === null || solved.window) return;
-    dragDistance = Math.max(0, Math.min(120, event.clientX - dragStart));
-    windowDragTarget.style.setProperty("--window-drag-x", dragDistance + "px");
-    if (dragDistance >= 92) {
-      dragStart = null;
-      windowDragTarget.classList.remove("is-dragging");
-      completeWindow();
-    }
-  });
-  function cancelWindowDrag(event) {
-    if (event && windowDragTarget.hasPointerCapture(event.pointerId)) windowDragTarget.releasePointerCapture(event.pointerId);
-    windowDragTarget.classList.remove("is-dragging");
-    if (dragStart !== null && !solved.window) {
-      windowDialog.dataset.failures = String(Number(windowDialog.dataset.failures || 0) + 1);
-      if (Number(windowDialog.dataset.failures) >= 2) windowDialog.classList.add("show-fallback");
-      windowDragTarget.style.setProperty("--window-drag-x", "0px");
-    }
-    dragStart = null;
+  function beginWindowOpen() {
+    if (solved.window || windowDialog.classList.contains("is-opening")) return;
+    windowDialog.classList.add("is-opening");
+    windowHandleTarget.disabled = true;
+    status.textContent = "창문 손잡이를 눌러 창문을 열고 있습니다.";
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    windowOpenTimer = window.setTimeout(completeWindow, reduceMotion ? 0 : 380);
   }
-  windowDragTarget.addEventListener("pointerup", cancelWindowDrag);
-  windowDragTarget.addEventListener("pointercancel", cancelWindowDrag);
+
+  windowAction.addEventListener("click", beginWindowOpen);
+  windowHandleTarget.addEventListener("click", beginWindowOpen);
+  function cancelWindowOpen() {
+    if (!windowOpenTimer) return;
+    window.clearTimeout(windowOpenTimer);
+    windowOpenTimer = 0;
+    windowDialog.classList.remove("is-opening");
+    windowHandleTarget.disabled = false;
+  }
+  windowBack.addEventListener("click", function () { cancelWindowOpen(); windowDialog.close(); navigation.focus(); });
+  windowClose.addEventListener("click", function () { cancelWindowOpen(); windowDialog.close(); });
   window.addEventListener("resize", updateSceneLayout);
   window.addEventListener("orientationchange", function () { window.requestAnimationFrame(updateSceneLayout); });
   settings.addEventListener("click", function () { document.getElementById("settings-button").click(); });

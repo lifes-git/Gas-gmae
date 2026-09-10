@@ -221,7 +221,7 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
   transform:scale(1.08) !important;
 }
 #room[data-map="living"]::before {
-  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("../../../assets/masters/stage-1/backgrounds/bg-living-entry-no-towel-v2.png") !important;
+  background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("../../../assets/masters/stage-1/backgrounds/bg-living-entry-windowless-v1.png") !important;
 }
 #room[data-map="kitchen"]::before {
   background-image:linear-gradient(rgba(25,39,47,.18),rgba(25,39,47,.18)),url("../../../assets/masters/stage-1/backgrounds/bg-stove-controls-v4.png") !important;

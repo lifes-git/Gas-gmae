@@ -80,11 +80,18 @@ async function drag(page, selector, fromX, toX) {
     settings:document.getElementById("stage-two-settings-button").getBoundingClientRect().height
   }));
   assert(Math.abs(stageTwoHeights.progress - stageTwoHeights.settings) < .5, `stage 2 progress and settings heights must match: ${JSON.stringify(stageTwoHeights)}`);
-  assert((await page.locator(".stage-two__background--living").getAttribute("src")).includes("bg-stage2-living-sunset-windowless-v1.png"), "stage 2 living room must use the windowless base background");
-  assert(await page.locator("#stage-two-window-layer").evaluate(node => node.classList.contains("is-active")), "closed window layer must be visible in the living room");
+  assert((await page.locator(".stage-two__background--living").getAttribute("src")).includes("bg-stage2-living-sunset-windowless-v1.jpg"), "stage 2 living room must use the windowless layered background");
+  assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-closed-v4.png"), "stage 2 must begin with the closed shared window layer");
   await page.locator("#stage-two-window-hotspot").click();
-  await drag(page, "#stage-two-window-drag-target", .2, 1.5);
-  assert(!await page.locator("#stage-two-window-layer").evaluate(node => node.classList.contains("is-active")), "closed window layer must hide after opening the window");
+  assert((await page.locator("#stage-two-window-handle-target").getAttribute("aria-label")) === "창문 손잡이를 눌러 열기", "window interaction must explain tap/click instead of drag");
+  await page.locator("#stage-two-window-handle-target").click();
+  await page.locator("#stage-two-window-close").click();
+  await page.waitForTimeout(450);
+  assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-closed-v4.png"), "closing during the handle response must keep the closed window layer");
+  await page.locator("#stage-two-window-hotspot").click();
+  await page.locator("#stage-two-window-handle-target").click();
+  await page.waitForTimeout(450);
+  assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-open-v4.png"), "opening must switch to the shared open-window layer");
   await page.getByRole("button", { name:"확인했어요" }).click();
   await page.locator('#stage-two [data-progress-item="window"].is-collected').waitFor();
   assert(await page.locator('#stage-two [data-progress-item="window"] img').getAttribute("src"), "stage 2 icon missing");

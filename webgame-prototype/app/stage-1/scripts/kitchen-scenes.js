@@ -124,8 +124,13 @@ window.createKitchenScenes = function (options) {
     if (room === "kitchen") layer.appendChild(art("0 0 1672 941"));
     else {
       var image = document.createElement("img");
-      image.src = backgroundRoot + "bg-living-entry-no-towel-v2.png"; image.alt = "";
+      image.src = backgroundRoot + "bg-living-entry-windowless-v1.png"; image.alt = "";
       layer.appendChild(image);
+      var livingWindow = document.createElement("img");
+      livingWindow.src = "assets/common/props/prop-window-casement-wall-perspective-closed-v4.png";
+      livingWindow.className = "living-window-prop";
+      livingWindow.alt = "";
+      layer.appendChild(livingWindow);
       if (!options.solved("butane") && heldItem !== "butane") {
         var can = document.createElement("img");
         can.src = "assets/stage-1/props/prop-butane-red-v4.png";
@@ -183,7 +188,7 @@ window.createKitchenScenes = function (options) {
     var svg = null;
     if (id === "butane") {
       svg = svgNode("svg", { viewBox: "467 286 1150 647", "aria-hidden": "true", class: "kitchen-art butane-detail-art" });
-      svg.appendChild(svgNode("image", { href: backgroundRoot + "bg-living-entry-no-towel-v2.png", width: 1672, height: 941 }));
+      svg.appendChild(svgNode("image", { href: backgroundRoot + "bg-living-entry-windowless-v1.png", width: 1672, height: 941 }));
       view.appendChild(svg);
     } else {
       svg = art(id === "valve" ? "872 100 800 450" : "422 292 900 506");

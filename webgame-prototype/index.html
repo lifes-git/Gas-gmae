@@ -23,9 +23,12 @@
   <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-butane-floor-clean-v3.jpg">
   <link rel="preload" as="image" href="assets/transitions/backgrounds/bg-outdoor-open-walkway-v2.jpg">
   <link rel="preload" as="image" href="assets/transitions/backgrounds/bg-outdoor-sunset-return-v1.jpg">
-  <link rel="preload" as="image" href="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.png">
-  <link rel="preload" as="image" href="assets/stage-2/props/prop-window-closed-inplace-v1.png">
+  <link rel="preload" as="image" href="assets/stage-2/backgrounds/bg-stage2-living-sunset-v1.jpg">
   <link rel="preload" as="image" href="assets/stage-2/backgrounds/bg-stage2-living-window-open-v1.jpg">
+  <link rel="preload" as="image" href="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.jpg">
+  <link rel="preload" as="image" href="assets/masters/stage-1/backgrounds/bg-living-entry-windowless-v1.png">
+  <link rel="preload" as="image" href="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png">
+  <link rel="preload" as="image" href="assets/common/props/prop-window-casement-wall-perspective-open-v4.png">
   <link rel="preload" as="image" href="assets/stage-1/props/prop-butane-red-v4.png">
   <link rel="preload" as="image" href="assets/common/backgrounds/bg-entry-open-v1.jpg">
   <link rel="preload" as="image" href="assets/stage-1/props/prop-basket-empty-v1.png">
@@ -226,11 +229,11 @@
     <h2 class="visually-hidden" id="stage-two-title" tabindex="-1">스테이지 2 안전한 귀가</h2>
     <div class="stage-two__frame" id="stage-two-frame" data-room="living">
       <img class="stage-two__background stage-two__background--living is-active"
-        src="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.png" alt="">
+        src="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.jpg" alt="">
+      <img class="stage-two__window-art" id="stage-two-window-art"
+        src="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png" alt="">
       <img class="stage-two__background stage-two__background--kitchen"
         src="assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-v1.jpg" alt="">
-      <img class="stage-two__window-layer is-active" id="stage-two-window-layer"
-        src="assets/stage-2/props/prop-window-closed-inplace-v1.png" alt="" aria-hidden="true" draggable="false">
       <header class="game-header stage-two__header">
         <div class="header-actions" aria-label="스테이지 2 진행 상황과 메뉴">
           <div class="progress-card ui-progress" role="status" aria-label="안전점검 진행도 0개 중 2개">
@@ -259,9 +262,9 @@
       </button>
       <button class="stage-two__window-hotspot" id="stage-two-window-hotspot" type="button"
         aria-label="닫힌 거실 창문 열기">
-        <svg class="stage-two__window-outline" viewBox="0 0 310 380" preserveAspectRatio="none"
+        <svg class="stage-two__window-outline" viewBox="0 0 238 322" preserveAspectRatio="none"
           aria-hidden="true" focusable="false">
-          <rect x="33" y="50" width="241" height="298" rx="2" />
+          <rect x="3" y="3" width="232" height="316" rx="2" />
         </svg>
         <span class="visually-hidden">거실 창문</span>
       </button>
@@ -280,11 +283,10 @@
         src="assets/stage-2/backgrounds/bg-stage2-living-sunset-v1.jpg" alt="">
       <img class="stage-two-window-view__image" id="stage-two-window-open-image"
         src="assets/stage-2/backgrounds/bg-stage2-living-window-open-v1.jpg" alt="">
-      <button class="detail-target stage-two-window-drag-target" id="stage-two-window-drag-target" type="button"
-        aria-label="창문 손잡이를 오른쪽으로 밀어 열기">
-        <span class="stage-two-window-handle"></span>
+      <button class="detail-target stage-two-window-handle-target" id="stage-two-window-handle-target" type="button"
+        aria-label="창문 손잡이를 눌러 열기">
+        <span class="stage-two-window-handle-cue" aria-hidden="true"></span>
       </button>
-      <span class="stage-two-window-drag-cue" aria-hidden="true">→</span>
     </div>
     <div class="detail-guide">
       <img id="stage-two-window-mascot" src="assets/common/mascots/mascot-somyeongi-question-logo-v1.svg" alt=""
@@ -294,7 +296,7 @@
       </div>
     </div>
     <footer>
-      <button class="detail-action" id="stage-two-window-action" type="button">버튼으로 창문 열기</button>
+      <button class="detail-action" id="stage-two-window-action" type="button">창문 열기</button>
       <button class="detail-back" id="stage-two-window-back" type="button" aria-label="거실로 돌아가기">거실로 돌아가기</button>
     </footer>
   </dialog>

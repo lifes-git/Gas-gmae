@@ -7,8 +7,10 @@
 .stage-two__frame[data-room="kitchen"]::before { background-image:url("../../../assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-v1.jpg"); }
 .stage-two__background { position:absolute; z-index:1; top:50%; left:0; width:100%; height:auto; opacity:0; transform:translateY(-50%); user-select:none; -webkit-user-drag:none; transition:opacity .32s ease; }
 .stage-two__background.is-active { opacity:1; }
-.stage-two__window-art { position:absolute; z-index:2; width:auto; height:auto; transform:perspective(900px) rotateY(-7deg); transform-origin:center; user-select:none; -webkit-user-drag:none; pointer-events:none; }
-.stage-two__frame[data-room="kitchen"] .stage-two__window-art { display:none; }
+.stage-two__window-stack { position:absolute; z-index:2; transform:perspective(900px) rotateY(-7deg); transform-origin:center; user-select:none; pointer-events:none; }
+.stage-two__window-view { position:absolute; z-index:0; left:13.16%; top:10.69%; width:73.68%; height:76.55%; object-fit:cover; -webkit-user-drag:none; }
+.stage-two__window-art { position:absolute; z-index:1; inset:0; width:auto; height:100%; -webkit-user-drag:none; }
+.stage-two__frame[data-room="kitchen"] .stage-two__window-stack { display:none; }
 .stage-two__window-hotspot { position:absolute; z-index:3; padding:0; border:0; background:transparent; transform:perspective(900px) rotateY(-7deg); transform-origin:center; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
 .stage-two__window-outline { display:block; width:100%; height:100%; overflow:visible; pointer-events:none; opacity:.72; filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px rgba(255,255,255,.78)); transition:opacity .2s ease,transform .2s ease,filter .2s ease; animation:stage-two-window-glow 2.4s ease-in-out infinite; }
 .stage-two__window-outline rect { fill:none; stroke:#fff; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }

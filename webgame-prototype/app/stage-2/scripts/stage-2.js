@@ -5,6 +5,7 @@
   var frame = document.getElementById("stage-two-frame");
   var livingBackground = frame.querySelector(".stage-two__background--living");
   var kitchenBackground = frame.querySelector(".stage-two__background--kitchen");
+  var windowStack = document.getElementById("stage-two-window-stack");
   var windowArt = document.getElementById("stage-two-window-art");
   var navigation = document.getElementById("stage-two-navigation");
   var title = document.getElementById("stage-two-title");
@@ -72,13 +73,13 @@
     var offsetX = 0;
     var offsetY = (height - 941 * scale) / 2;
     var windowLeft = offsetX + 38 * scale;
-    var windowTop = offsetY + 38 * scale;
+    var windowTop = offsetY + 50 * scale;
     var windowHeight = 290 * scale;
     var windowWidth = windowHeight * (solved.window ? 687 / 743 : 682 / 743);
-    windowArt.style.left = windowLeft + "px";
-    windowArt.style.top = windowTop + "px";
-    windowArt.style.width = windowWidth + "px";
-    windowArt.style.height = windowHeight + "px";
+    windowStack.style.left = windowLeft + "px";
+    windowStack.style.top = windowTop + "px";
+    windowStack.style.width = windowWidth + "px";
+    windowStack.style.height = windowHeight + "px";
     windowHotspot.style.left = windowLeft + "px";
     windowHotspot.style.top = windowTop + "px";
     windowHotspot.style.width = windowWidth + "px";

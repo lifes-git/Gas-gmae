@@ -126,11 +126,20 @@ window.createKitchenScenes = function (options) {
       var image = document.createElement("img");
       image.src = backgroundRoot + "bg-living-entry-windowless-v1.png"; image.alt = "";
       layer.appendChild(image);
+      var livingWindowStack = document.createElement("div");
+      livingWindowStack.className = "living-window-stack";
+      livingWindowStack.setAttribute("aria-hidden", "true");
+      var livingWindowView = document.createElement("img");
+      livingWindowView.src = "assets/common/backgrounds/bg-window-view-day-v1.jpg";
+      livingWindowView.className = "living-window-view";
+      livingWindowView.alt = "";
       var livingWindow = document.createElement("img");
       livingWindow.src = "assets/common/props/prop-window-casement-wall-perspective-closed-v4.png";
       livingWindow.className = "living-window-prop";
       livingWindow.alt = "";
-      layer.appendChild(livingWindow);
+      livingWindowStack.appendChild(livingWindowView);
+      livingWindowStack.appendChild(livingWindow);
+      layer.appendChild(livingWindowStack);
       if (!options.solved("butane") && heldItem !== "butane") {
         var can = document.createElement("img");
         can.src = "assets/stage-1/props/prop-butane-red-v4.png";

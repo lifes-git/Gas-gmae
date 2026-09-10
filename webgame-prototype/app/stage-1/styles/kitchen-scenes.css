@@ -9,7 +9,9 @@
 .approved-scenes > .safe-basket { display:none !important; }
 .new-scene-art { position:absolute; inset:0; pointer-events:none; }
 .new-scene-art > img, .kitchen-art { display:block; width:100%; height:100%; }
-.new-scene-art > .living-window-prop { position:absolute; left:38px; top:38px; width:auto; height:290px; transform:perspective(900px) rotateY(-7deg); transform-origin:center; }
+.new-scene-art > .living-window-stack { position:absolute; left:38px; top:50px; width:266px; height:290px; transform:perspective(900px) rotateY(-7deg); transform-origin:center; }
+.living-window-view { position:absolute; z-index:0; left:35px; top:31px; width:196px !important; height:222px !important; object-fit:cover; }
+.living-window-prop { position:absolute; z-index:1; inset:0; width:auto !important; height:290px !important; }
 /* Can center: 63.7% / 66.9% of the 1672 × 941 world. */
 .new-scene-art > .living-butane-prop { position:absolute; left:992.56px; top:587.37px; width:145px; height:auto; }
 #scene-world.approved-scenes .hotspot { width:105px; height:105px; min-width:0; min-height:0; right:auto; bottom:auto; transform:none; }

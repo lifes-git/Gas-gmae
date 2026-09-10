@@ -29,6 +29,8 @@
   <link rel="preload" as="image" href="assets/masters/stage-1/backgrounds/bg-living-entry-windowless-v1.png">
   <link rel="preload" as="image" href="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png">
   <link rel="preload" as="image" href="assets/common/props/prop-window-casement-wall-perspective-open-v4.png">
+  <link rel="preload" as="image" href="assets/common/backgrounds/bg-window-view-day-v1.jpg">
+  <link rel="preload" as="image" href="assets/common/backgrounds/bg-window-view-sunset-v1.jpg">
   <link rel="preload" as="image" href="assets/stage-1/props/prop-butane-red-v4.png">
   <link rel="preload" as="image" href="assets/common/backgrounds/bg-entry-open-v1.jpg">
   <link rel="preload" as="image" href="assets/stage-1/props/prop-basket-empty-v1.png">
@@ -230,8 +232,11 @@
     <div class="stage-two__frame" id="stage-two-frame" data-room="living">
       <img class="stage-two__background stage-two__background--living is-active"
         src="assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.jpg" alt="">
-      <img class="stage-two__window-art" id="stage-two-window-art"
-        src="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png" alt="">
+      <div class="stage-two__window-stack" id="stage-two-window-stack" aria-hidden="true">
+        <img class="stage-two__window-view" src="assets/common/backgrounds/bg-window-view-sunset-v1.jpg" alt="">
+        <img class="stage-two__window-art" id="stage-two-window-art"
+          src="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png" alt="">
+      </div>
       <img class="stage-two__background stage-two__background--kitchen"
         src="assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-v1.jpg" alt="">
       <header class="game-header stage-two__header">

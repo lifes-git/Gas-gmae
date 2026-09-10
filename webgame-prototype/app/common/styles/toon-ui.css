@@ -768,7 +768,38 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
 .kitchen-detail-dialog .kitchen-lever,
 .kitchen-detail-dialog .butane-pickup-target img,
 .visual-butane-outdoor .mission-prop-butane-outdoor {
-  filter:drop-shadow(0 0 4.8px #fff) drop-shadow(0 0 3.8px #fff) drop-shadow(0 5px 5px rgba(28,43,51,.3)) !important;
+  filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 4px 4px rgba(28,43,51,.3)) !important;
+}
+
+#scene-world.approved-scenes:has(.hotspot-towel:focus-visible) .kitchen-towel-prop {
+  transform:rotate(-1.5deg) scale(1.018) !important;
+}
+#scene-world.approved-scenes:has(.hotspot-butane:focus-visible) .living-butane-prop {
+  transform:rotate(1.5deg) scale(1.018) !important;
+}
+#scene-world.approved-scenes:has(.hotspot-valve:focus-visible) .kitchen-lever {
+  transform:rotate(var(--valve-angle,0deg)) scale(1.018) !important;
+}
+#scene-world.approved-scenes:has(.hotspot-towel:focus-visible) .kitchen-towel-prop,
+#scene-world.approved-scenes:has(.hotspot-valve:focus-visible) .kitchen-lever,
+#scene-world.approved-scenes:has(.hotspot-butane:focus-visible) .living-butane-prop {
+  filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 0 7px rgba(85,211,239,.88)) !important;
+}
+@media (hover:hover) {
+  #scene-world.approved-scenes:has(.hotspot-towel:hover) .kitchen-towel-prop {
+    transform:rotate(-1.5deg) scale(1.018) !important;
+  }
+  #scene-world.approved-scenes:has(.hotspot-butane:hover) .living-butane-prop {
+    transform:rotate(1.5deg) scale(1.018) !important;
+  }
+  #scene-world.approved-scenes:has(.hotspot-valve:hover) .kitchen-lever {
+    transform:rotate(var(--valve-angle,0deg)) scale(1.018) !important;
+  }
+  #scene-world.approved-scenes:has(.hotspot-towel:hover) .kitchen-towel-prop,
+  #scene-world.approved-scenes:has(.hotspot-valve:hover) .kitchen-lever,
+  #scene-world.approved-scenes:has(.hotspot-butane:hover) .living-butane-prop {
+    filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 0 7px rgba(85,211,239,.88)) !important;
+  }
 }
 
 .kitchen-detail-dialog .detail-guide { left:3.2% !important; bottom:5.2% !important; width:min(62%,720px) !important; align-items:center !important; }

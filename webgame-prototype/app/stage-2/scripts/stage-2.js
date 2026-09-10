@@ -18,9 +18,8 @@
   var windowHotspot = document.getElementById("stage-two-window-hotspot");
   var windowDialog = document.getElementById("stage-two-window-dialog");
   var windowClose = document.getElementById("stage-two-window-close");
-  var windowAction = document.getElementById("stage-two-window-action");
   var windowBack = document.getElementById("stage-two-window-back");
-  var windowHandleTarget = document.getElementById("stage-two-window-handle-target");
+  var windowTarget = document.getElementById("stage-two-window-target");
   var windowCopy = document.getElementById("stage-two-window-copy");
   var windowGuideCopy = document.getElementById("stage-two-window-guide-copy");
   var windowMascot = document.getElementById("stage-two-window-mascot");
@@ -73,7 +72,7 @@
     var offsetX = 0;
     var offsetY = (height - 941 * scale) / 2;
     var windowLeft = offsetX + 38 * scale;
-    var windowTop = offsetY + 50 * scale;
+    var windowTop = offsetY + 90 * scale;
     var windowHeight = 290 * scale;
     var windowWidth = windowHeight * (solved.window ? 687 / 743 : 682 / 743);
     windowStack.style.left = windowLeft + "px";
@@ -126,7 +125,7 @@
     windowClosedImage.classList.add("is-active");
     windowOpenImage.classList.remove("is-active");
     windowDialog.classList.remove("is-success", "is-opening");
-    windowHandleTarget.disabled = false;
+    windowTarget.disabled = false;
     windowMascot.src = "assets/common/mascots/mascot-somyeongi-question-logo-v1.svg";
     windowGuideCopy.classList.remove("is-success");
     windowCopy.textContent = dialogue.windowPrompt;
@@ -146,7 +145,7 @@
     windowCopy.textContent = solved.window ? dialogue.windowSuccess : dialogue.windowPrompt;
     windowDialog.classList.toggle("is-success", solved.window);
     windowDialog.showModal();
-    (solved.window ? windowBack : windowHandleTarget).focus();
+    (solved.window ? windowBack : windowTarget).focus();
   });
 
   function completeWindow() {
@@ -159,7 +158,7 @@
     windowOpenImage.classList.add("is-active");
     windowCopy.textContent = dialogue.windowSuccess;
     guide.textContent = dialogue.windowSuccess;
-    windowHandleTarget.disabled = true;
+    windowTarget.disabled = true;
     windowDialog.classList.remove("is-opening");
     windowDialog.classList.add("is-success");
     windowGuideCopy.classList.add("is-success");
@@ -201,20 +200,19 @@
   function beginWindowOpen() {
     if (solved.window || windowDialog.classList.contains("is-opening")) return;
     windowDialog.classList.add("is-opening");
-    windowHandleTarget.disabled = true;
-    status.textContent = "창문 손잡이를 눌러 창문을 열고 있습니다.";
+    windowTarget.disabled = true;
+    status.textContent = "창문을 열고 있습니다.";
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     windowOpenTimer = window.setTimeout(completeWindow, reduceMotion ? 0 : 380);
   }
 
-  windowAction.addEventListener("click", beginWindowOpen);
-  windowHandleTarget.addEventListener("click", beginWindowOpen);
+  windowTarget.addEventListener("click", beginWindowOpen);
   function cancelWindowOpen() {
     if (!windowOpenTimer) return;
     window.clearTimeout(windowOpenTimer);
     windowOpenTimer = 0;
     windowDialog.classList.remove("is-opening");
-    windowHandleTarget.disabled = false;
+    windowTarget.disabled = false;
   }
   windowBack.addEventListener("click", function () { cancelWindowOpen(); windowDialog.close(); navigation.focus(); });
   windowClose.addEventListener("click", function () { cancelWindowOpen(); windowDialog.close(); });

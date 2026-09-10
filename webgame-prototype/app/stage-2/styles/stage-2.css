@@ -7,31 +7,55 @@
 .stage-two__frame[data-room="kitchen"]::before { background-image:url("../../../assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-v1.jpg"); }
 .stage-two__background { position:absolute; z-index:1; top:50%; left:0; width:100%; height:auto; opacity:0; transform:translateY(-50%); user-select:none; -webkit-user-drag:none; transition:opacity .32s ease; }
 .stage-two__background.is-active { opacity:1; }
-.stage-two__window-stack { position:absolute; z-index:2; transform:perspective(900px) rotateY(-7deg); transform-origin:center; user-select:none; pointer-events:none; }
+.stage-two__window-stack { position:absolute; z-index:2; transform:perspective(900px) rotateY(-7deg); transform-origin:center; user-select:none; pointer-events:none; transition:transform .16s ease; }
 .stage-two__window-view { position:absolute; z-index:0; left:13.16%; top:10.69%; width:73.68%; height:76.55%; object-fit:cover; -webkit-user-drag:none; }
-.stage-two__window-art { position:absolute; z-index:1; inset:0; width:auto; height:100%; -webkit-user-drag:none; }
+.stage-two__window-art { position:absolute; z-index:1; inset:0; width:auto; height:100%; -webkit-user-drag:none; transition:filter .16s ease; }
 .stage-two__frame[data-room="kitchen"] .stage-two__window-stack { display:none; }
 .stage-two__window-hotspot { position:absolute; z-index:3; padding:0; border:0; background:transparent; transform:perspective(900px) rotateY(-7deg); transform-origin:center; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
-.stage-two__window-outline { display:block; width:100%; height:100%; overflow:visible; pointer-events:none; opacity:.72; filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px rgba(255,255,255,.78)); transition:opacity .2s ease,transform .2s ease,filter .2s ease; animation:stage-two-window-glow 2.4s ease-in-out infinite; }
-.stage-two__window-outline rect { fill:none; stroke:#fff; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
 .stage-two__window-hotspot:is(:hover,:focus-visible) { outline:none; }
-.stage-two__window-hotspot:is(:hover,:focus-visible) .stage-two__window-outline { opacity:1; transform:scale(1.008); filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 10px rgba(255,255,255,.92)); }
-@keyframes stage-two-window-glow {
-  0%,100% { opacity:.62; }
-  50% { opacity:.86; }
+.stage-two__frame:has(.stage-two__window-hotspot:not([hidden])) .stage-two__window-art {
+  filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 4px 4px rgba(28,43,51,.3));
+}
+.stage-two__frame:has(.stage-two__window-hotspot:focus-visible) .stage-two__window-stack {
+  transform:perspective(900px) rotateY(-7deg) rotateZ(-1.5deg) scale(1.018);
+}
+.stage-two__frame:has(.stage-two__window-hotspot:focus-visible) .stage-two__window-art {
+  filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 0 7px rgba(85,211,239,.88));
+}
+@media (hover:hover) {
+  .stage-two__frame:has(.stage-two__window-hotspot:hover) .stage-two__window-stack {
+    transform:perspective(900px) rotateY(-7deg) rotateZ(-1.5deg) scale(1.018);
+  }
+  .stage-two__frame:has(.stage-two__window-hotspot:hover) .stage-two__window-art {
+    filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 0 7px rgba(85,211,239,.88));
+  }
 }
 
-.stage-two-window-view { background:#172b39; }
-.stage-two-window-view__image { position:absolute; z-index:1; inset:0; width:100%; height:100%; object-fit:cover; object-position:left center; opacity:0; transform:scale(2.65); transform-origin:0 25%; transition:opacity .52s ease; user-select:none; -webkit-user-drag:none; }
+.stage-two-window-dialog__header { position:absolute !important; z-index:8; inset:0 0 auto auto !important; width:auto !important; padding:0 !important; border:0 !important; background:transparent !important; pointer-events:none; }
+.stage-two-window-dialog__header .detail-close { pointer-events:auto; }
+.stage-two-window-view { display:grid; place-items:center; overflow:hidden; background:radial-gradient(circle at 50% 42%,#fff0cf 0 36%,#e4b978 72%,#996839 100%); }
+.stage-two-window-modal-stack { position:relative; height:94%; aspect-ratio:682/743; max-width:84%; filter:drop-shadow(0 15px 16px rgba(35,28,20,.28)); }
+.stage-two-window-modal-exterior { position:absolute; z-index:0; left:13.16%; top:10.69%; width:73.68%; height:76.55%; object-fit:cover; object-position:center; user-select:none; -webkit-user-drag:none; }
+.stage-two-window-view__image { position:absolute; z-index:1; top:0; left:50%; width:auto; height:100%; object-fit:contain; opacity:0; transform:translateX(-50%); transition:opacity .52s ease; user-select:none; -webkit-user-drag:none; }
 .stage-two-window-view__image.is-active { opacity:1; }
-.stage-two-window-handle-target { z-index:4; left:17.5%; top:12.5%; width:76px; height:76px; display:grid; place-items:center; border-radius:50%; color:transparent; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
-.stage-two-window-handle-cue { display:block; width:34px; height:34px; border:3px solid rgba(255,255,255,.96); border-radius:50%; background:rgba(36,50,59,.18); box-shadow:0 2px 0 rgba(36,50,59,.72),0 0 0 5px rgba(85,211,239,.28),0 0 12px rgba(85,211,239,.65); pointer-events:none; animation:stage-two-window-handle-cue 1.7s ease-in-out infinite; }
-.stage-two-window-handle-cue::after { content:""; display:block; width:8px; height:8px; margin:10px; border-radius:50%; background:#fff; box-shadow:0 1px 0 rgba(36,50,59,.7); }
-.stage-two-window-handle-target:is(:hover,:focus-visible) .stage-two-window-handle-cue { box-shadow:0 2px 0 rgba(36,50,59,.72),0 0 0 7px rgba(85,211,239,.36),0 0 16px rgba(85,211,239,.86); }
-.stage-two-window-dialog.is-opening .stage-two-window-handle-cue { animation:stage-two-window-handle-press .38s ease both; }
-.stage-two-window-dialog.is-success .stage-two-window-handle-target { display:none; }
-@keyframes stage-two-window-handle-cue { 0%,100% { transform:scale(.94); opacity:.72; } 50% { transform:scale(1.05); opacity:1; } }
-@keyframes stage-two-window-handle-press { 0% { transform:scale(1); } 45% { transform:scale(.78) rotate(-8deg); } 100% { transform:scale(1.08) rotate(10deg); opacity:0; } }
+.stage-two-window-target { position:absolute; z-index:4; inset:0; min-width:44px; min-height:44px; padding:0; border:0; background:transparent; color:transparent; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+.stage-two-window-target:focus-visible { outline:none; }
+.stage-two-window-pane-outline { position:absolute; z-index:1; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; opacity:.78; filter:drop-shadow(0 0 2px rgba(255,255,255,.95)); transition:opacity .16s ease,filter .16s ease; animation:stage-two-window-pane-glow 2.2s ease-in-out infinite; }
+.stage-two-window-pane-outline path { fill:none; stroke:#fff; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+.stage-two-window-target:is(:hover,:focus-visible) .stage-two-window-pane-outline { opacity:1; filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px rgba(85,211,239,.9)); }
+.stage-two-window-open-cue { position:absolute; z-index:2; left:51%; top:45%; width:16%; height:auto; overflow:visible; color:#55d3ef; filter:drop-shadow(0 2px 0 #24323b) drop-shadow(0 0 5px rgba(85,211,239,.75)); pointer-events:none; animation:stage-two-window-cue 1.65s ease-in-out infinite; }
+.stage-two-window-open-cue path { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.stage-two-window-open-cue__shadow { stroke:#24323b; stroke-width:12; }
+.stage-two-window-open-cue__line { stroke:#fff; stroke-width:8; }
+.stage-two-window-open-cue__head { stroke:#55d3ef; stroke-width:8; }
+.stage-two-window-open-cue circle { fill:#fff; stroke:#24323b; stroke-width:2; }
+.stage-two-window-target:is(:hover,:focus-visible) .stage-two-window-open-cue { filter:drop-shadow(0 2px 0 #24323b) drop-shadow(0 0 9px rgba(85,211,239,.95)); }
+.stage-two-window-dialog.is-opening .stage-two-window-open-cue { animation:stage-two-window-cue-press .38s ease both; }
+.stage-two-window-dialog.is-opening .stage-two-window-pane-outline { opacity:0; transition:opacity .28s ease; animation:none; }
+.stage-two-window-dialog.is-success .stage-two-window-target { display:none; }
+@keyframes stage-two-window-pane-glow { 0%,100% { opacity:.68; } 50% { opacity:.88; } }
+@keyframes stage-two-window-cue { 0%,100% { opacity:.72; transform:translateX(-3px) rotate(-3deg); } 50% { opacity:1; transform:translateX(3px) rotate(2deg); } }
+@keyframes stage-two-window-cue-press { 0% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(.8) translateX(8px); } }
 
 /* Stage 2 reuses the Stage 1 HUD, progress, settings, guide and navigation components. */
 .stage-two .game-header { position:absolute; z-index:4; top:calc(20px + env(safe-area-inset-top,0px)); left:20px; right:20px; display:flex; justify-content:space-between; align-items:flex-start; border:0; background:transparent; box-shadow:none; pointer-events:none; }
@@ -73,16 +97,15 @@
   .stage-two__guide-panel .speech-bubble { padding:8px 10px; flex-wrap:wrap; gap:2px 8px; }
   .stage-two__guide-panel p { flex-basis:100%; font-size:clamp(14px,1.7vw,18px); line-height:1.35; }
   .stage-two__guide-panel .bubble-link { margin-left:auto; min-height:32px; padding:6px 0; font-size:12px; }
-  .stage-two-window-handle-target { width:60px; height:60px; }
-  .stage-two-window-handle-cue { width:28px; height:28px; }
-  .stage-two-window-handle-cue::after { width:7px; height:7px; margin:8px; }
+  .stage-two-window-modal-stack { height:96%; }
 }
 
 @media (prefers-reduced-motion:reduce) {
   .stage-two.is-entering .stage-two__frame { animation:none; }
   .stage-two__background { transition:none; }
+  .stage-two__window-stack,.stage-two__window-art { transition:none; }
   .stage-two-window-view__image { transition:none; }
-  .stage-two__window-outline { animation:none; }
-  .stage-two-window-handle-cue { animation:none; }
-  .stage-two-window-dialog.is-opening .stage-two-window-handle-cue { animation:none; }
+  .stage-two-window-open-cue { animation:none; }
+  .stage-two-window-pane-outline { animation:none; }
+  .stage-two-window-dialog.is-opening .stage-two-window-open-cue { animation:none; opacity:0; }
 }

@@ -3,7 +3,9 @@ const { pathToFileURL } = require("node:url");
 const path = require("node:path");
 
 const target = pathToFileURL(path.resolve(__dirname, "../index.html")).href;
-const executablePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const executablePath = process.env.CHROME_PATH || (process.platform === "win32"
+  ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -58,7 +60,7 @@ async function drag(page, selector, fromX, toX) {
   await drag(page, ".kitchen-detail-dialog[open] .detail-target", .72, .08);
   await page.getByRole("button", { name:"확인했어요" }).click();
   await page.locator('[data-progress-item="valve"].is-collected').waitFor();
-  assert((await page.locator('[data-progress-item="valve"] img').getAttribute("src")).includes("prop-valve-handle-alpha-v2.png"), "stage 1 valve slot must reuse the active handle asset");
+  assert((await page.locator('[data-progress-item="valve"] img').getAttribute("src")).includes("progress-valve-closed-v1.png"), "stage 1 valve slot must use the dedicated composite progress asset");
   assert(await page.locator(".kitchen-detail-dialog[open]").count() === 0, "stage 1 interaction modal should close before collection");
 
   await page.evaluate(() => {
@@ -83,19 +85,26 @@ async function drag(page, selector, fromX, toX) {
   assert((await page.locator(".stage-two__background--living").getAttribute("src")).includes("bg-stage2-living-sunset-windowless-v1.jpg"), "stage 2 living room must use the windowless layered background");
   assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-closed-v4.png"), "stage 2 must begin with the closed shared window layer");
   await page.locator("#stage-two-window-hotspot").click();
-  assert((await page.locator("#stage-two-window-handle-target").getAttribute("aria-label")) === "창문 손잡이를 눌러 열기", "window interaction must explain tap/click instead of drag");
-  await page.locator("#stage-two-window-handle-target").click();
+  assert((await page.locator("#stage-two-window-target").getAttribute("aria-label")) === "창문을 눌러 열기", "window interaction must expose the full window as the target");
+  assert(await page.locator("#stage-two-window-action").count() === 0, "window modal must not duplicate the interaction with a text action button");
+  assert(await page.locator(".stage-two-window-handle-art").count() === 0, "window modal must not use a detached handle overlay");
+  assert(await page.locator(".stage-two-window-pane-outline path").count() === 2, "window modal must outline both inner window panes");
+  const windowBox = await page.locator("#stage-two-window-target").boundingBox();
+  assert(windowBox && windowBox.width >= 44 && windowBox.height >= 44, `full window target must remain touch accessible: ${JSON.stringify(windowBox)}`);
+  if (process.env.QA_SCREENSHOT) await page.screenshot({ path:process.env.QA_SCREENSHOT });
+  await page.locator("#stage-two-window-target").click();
   await page.locator("#stage-two-window-close").click();
   await page.waitForTimeout(450);
   assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-closed-v4.png"), "closing during the handle response must keep the closed window layer");
   await page.locator("#stage-two-window-hotspot").click();
-  await page.locator("#stage-two-window-handle-target").click();
+  await page.locator("#stage-two-window-target").click();
   await page.waitForTimeout(450);
   assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-open-v4.png"), "opening must switch to the shared open-window layer");
   await page.getByRole("button", { name:"확인했어요" }).click();
   await page.locator('#stage-two [data-progress-item="window"].is-collected').waitFor();
-  assert(await page.locator('#stage-two [data-progress-item="window"] img').getAttribute("src"), "stage 2 icon missing");
+  assert((await page.locator('#stage-two [data-progress-item="window"] img').getAttribute("src")).includes("progress-window-open-v1.png"), "stage 2 progress slot must use the open-window PNG");
   assert(await page.locator("#stage-two-window-dialog").isHidden(), "stage 2 interaction modal should close before collection");
+  if (process.env.QA_PROGRESS_SCREENSHOT) await page.screenshot({ path:process.env.QA_PROGRESS_SCREENSHOT });
   await browser.close();
   console.log("Progress collection flow passed.");
 })().catch(error => {

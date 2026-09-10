@@ -267,10 +267,6 @@
       </button>
       <button class="stage-two__window-hotspot" id="stage-two-window-hotspot" type="button"
         aria-label="닫힌 거실 창문 열기">
-        <svg class="stage-two__window-outline" viewBox="0 0 238 322" preserveAspectRatio="none"
-          aria-hidden="true" focusable="false">
-          <rect x="3" y="3" width="232" height="316" rx="2" />
-        </svg>
         <span class="visually-hidden">거실 창문</span>
       </button>
       <p class="live-region" id="stage-two-status" role="status" aria-live="polite"></p>
@@ -279,19 +275,32 @@
 
   <dialog class="kitchen-detail-dialog stage-two-window-dialog ui-modal" id="stage-two-window-dialog"
     aria-labelledby="stage-two-window-title" aria-describedby="stage-two-window-copy">
-    <header>
-      <h2 id="stage-two-window-title">창문 열어 환기하기</h2>
-      <button class="detail-close" id="stage-two-window-close" type="button" aria-label="확대 화면 닫기">닫기 ×</button>
+    <header class="stage-two-window-dialog__header">
+      <h2 class="visually-hidden" id="stage-two-window-title">창문 열어 자연환기하기</h2>
+      <button class="detail-close" id="stage-two-window-close" type="button" aria-label="확대 화면 닫기"><span aria-hidden="true">×</span></button>
     </header>
     <div class="kitchen-detail-view stage-two-window-view">
-      <img class="stage-two-window-view__image is-active" id="stage-two-window-closed-image"
-        src="assets/stage-2/backgrounds/bg-stage2-living-sunset-v1.jpg" alt="">
-      <img class="stage-two-window-view__image" id="stage-two-window-open-image"
-        src="assets/stage-2/backgrounds/bg-stage2-living-window-open-v1.jpg" alt="">
-      <button class="detail-target stage-two-window-handle-target" id="stage-two-window-handle-target" type="button"
-        aria-label="창문 손잡이를 눌러 열기">
-        <span class="stage-two-window-handle-cue" aria-hidden="true"></span>
-      </button>
+      <div class="stage-two-window-modal-stack">
+        <img class="stage-two-window-modal-exterior" src="assets/common/backgrounds/bg-window-view-sunset-v1.jpg" alt="">
+        <img class="stage-two-window-view__image is-active" id="stage-two-window-closed-image"
+          src="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png" alt="">
+        <img class="stage-two-window-view__image" id="stage-two-window-open-image"
+          src="assets/common/props/prop-window-casement-wall-perspective-open-v4.png" alt="">
+        <button class="detail-target stage-two-window-target" id="stage-two-window-target" type="button"
+          aria-label="창문을 눌러 열기">
+          <svg class="stage-two-window-pane-outline" viewBox="0 0 682 743" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <path d="M88 103 L312 107 L312 643 L88 647 Z" />
+            <path d="M371 110 L580 116 L580 639 L371 642 Z" />
+          </svg>
+          <svg class="stage-two-window-open-cue" viewBox="0 0 88 70" aria-hidden="true" focusable="false">
+            <path class="stage-two-window-open-cue__shadow" d="M18 50 C22 24 50 15 67 30" />
+            <path class="stage-two-window-open-cue__line" d="M18 50 C22 24 50 15 67 30" />
+            <path class="stage-two-window-open-cue__head" d="M58 20 L72 31 L58 41" />
+            <circle cx="16" cy="18" r="3" />
+            <circle cx="77" cy="13" r="2.5" />
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="detail-guide">
       <img id="stage-two-window-mascot" src="assets/common/mascots/mascot-somyeongi-question-logo-v1.svg" alt=""
@@ -301,8 +310,7 @@
       </div>
     </div>
     <footer>
-      <button class="detail-action" id="stage-two-window-action" type="button">창문 열기</button>
-      <button class="detail-back" id="stage-two-window-back" type="button" aria-label="거실로 돌아가기">거실로 돌아가기</button>
+      <button class="detail-back" id="stage-two-window-back" type="button" aria-label="거실로 돌아가기"><span aria-hidden="true">↩</span></button>
     </footer>
   </dialog>
 

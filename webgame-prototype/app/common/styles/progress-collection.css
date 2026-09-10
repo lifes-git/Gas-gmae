@@ -103,44 +103,6 @@
 
 .progress-slot.is-collected b { display:none; }
 .progress-slot.is-collected img { opacity:1; transform:scale(1); }
-.progress-slot[data-progress-item="valve"].is-collected {
-  background:#ead9b8 !important;
-}
-.progress-slot[data-progress-item="valve"].is-collected::before {
-  content:"";
-  position:absolute;
-  z-index:1;
-  left:50%;
-  top:-5px;
-  width:13px;
-  height:calc(100% + 10px);
-  transform:translateX(-50%);
-  border:2px solid #39434a;
-  border-radius:6px;
-  background:linear-gradient(90deg,#626b70 0 15%,#d8d6cb 38%,#898e8d 67%,#3d474d 100%);
-  box-shadow:inset 1px 0 rgba(255,255,255,.55),inset -2px 0 rgba(25,35,40,.24);
-}
-.progress-slot[data-progress-item="valve"].is-collected::after {
-  content:"";
-  position:absolute;
-  z-index:2;
-  left:50%;
-  top:50%;
-  width:25px;
-  height:25px;
-  box-sizing:border-box;
-  transform:translate(-50%,-50%);
-  border:3px solid #39434a;
-  border-radius:50%;
-  background:radial-gradient(circle,#bfc1bb 0 26%,#4d565b 29% 45%,#d8d6cb 48% 66%,#626b70 69%);
-}
-.progress-slot[data-progress-item="valve"].is-collected img {
-  z-index:3;
-  inset:4px;
-  width:calc(100% - 8px);
-  height:calc(100% - 8px);
-  transform:rotate(90deg) scale(1.08);
-}
 .progress-slot.is-receiving { animation:progress-slot-pop .48s cubic-bezier(.2,1.45,.35,1) both; }
 
 .progress-fly-token {

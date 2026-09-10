@@ -232,12 +232,6 @@
   box-shadow:none !important;
   pointer-events:none;
 }
-#room #scene-world.approved-scenes .kitchen-towel-prop,
-#room #scene-world.approved-scenes .kitchen-lever,
-.kitchen-detail-dialog .kitchen-towel-prop,
-.kitchen-detail-dialog .kitchen-lever {
-  filter:drop-shadow(0 0 2.8px #fff) drop-shadow(0 0 2.8px #fff) drop-shadow(0 3px 3px #24323b80) !important;
-}
 .kitchen-towel-prop { overflow:visible; }
 :root {
   --ui-ink:#24323b;

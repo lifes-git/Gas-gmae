@@ -18,30 +18,18 @@ window.createKitchenScenes = function (options) {
   }
   function art(viewBox) {
     var svg = svgNode("svg", { viewBox: viewBox, "aria-hidden": "true", class: "kitchen-art" });
-    var outlineId = "prop-outline-" + (++artSequence);
-    var outlineDefs = svgNode("defs", {});
-    var outline = svgNode("filter", { id: outlineId, x: "-100%", y: "-100%", width: "300%", height: "300%", "color-interpolation-filters": "sRGB" });
-    outline.appendChild(svgNode("feMorphology", { in: "SourceAlpha", operator: "dilate", radius: 1.5, result: "edge" }));
-    outline.appendChild(svgNode("feFlood", { "flood-color": "#fff", result: "white" }));
-    outline.appendChild(svgNode("feComposite", { in: "white", in2: "edge", operator: "in", result: "outline" }));
-    outline.appendChild(svgNode("feGaussianBlur", { in: "outline", stdDeviation: 4, result: "glow" }));
-    var merge = svgNode("feMerge", {});
-    merge.appendChild(svgNode("feMergeNode", { in: "glow" }));
-    merge.appendChild(svgNode("feMergeNode", { in: "glow" }));
-    merge.appendChild(svgNode("feMergeNode", { in: "outline" }));
-    merge.appendChild(svgNode("feMergeNode", { in: "SourceGraphic" }));
-    outline.appendChild(merge); outlineDefs.appendChild(outline); svg.appendChild(outlineDefs);
-    function outlined(node) {
-      // Filter in scene units, outside the towel's high-resolution nested viewBox.
-      node.style.setProperty("filter", "none", "important");
-      var group = svgNode("g", { filter: "url(#" + outlineId + ")" });
-      group.appendChild(node); svg.appendChild(group);
-    }
+    var instanceId = ++artSequence;
     svg.appendChild(svgNode("image", { href: background, width: 1672, height: 941 }));
     if (heldItem !== "towel" && !options.solved("towel")) {
-      var cloth = svgNode("svg", { x: 690, y: 462, width: 300, height: 162, viewBox: "107 184 1262 682", class: "kitchen-towel-prop" });
-      cloth.appendChild(svgNode("image", { href: towel, width: 1536, height: 1024 }));
-      outlined(cloth);
+      var towelClipId = "active-towel-clip-" + instanceId;
+      var towelDefs = svgNode("defs", {});
+      var towelClip = svgNode("clipPath", { id: towelClipId });
+      towelClip.appendChild(svgNode("rect", { x: 690, y: 462, width: 300, height: 162 }));
+      towelDefs.appendChild(towelClip);
+      svg.appendChild(towelDefs);
+      var cloth = svgNode("g", { class: "kitchen-towel-prop" });
+      cloth.appendChild(svgNode("image", { href: towel, x: 664.56, y: 418.29, width: 365.13, height: 243.24, preserveAspectRatio: "none", "clip-path": "url(#" + towelClipId + ")" }));
+      svg.appendChild(cloth);
     } else if (options.solved("towel")) {
       var defs = svgNode("defs", {});
       var clip = svgNode("clipPath", { id: "stored-towel-clip" });
@@ -52,7 +40,7 @@ window.createKitchenScenes = function (options) {
     }
     var lever = svgNode("image", { href: handle, x: 1398, y: 214, width: 224, height: 224, class: "kitchen-lever" });
     if (options.solved("valve")) lever.style.setProperty("--valve-angle", "90deg");
-    outlined(lever);
+    svg.appendChild(lever);
     return svg;
   }
   function button(label, className, action, uiOptions) {

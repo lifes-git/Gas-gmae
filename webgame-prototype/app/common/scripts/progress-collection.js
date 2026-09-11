@@ -30,6 +30,7 @@
 
     var token = document.createElement("img");
     token.className = "progress-fly-token";
+    token.dataset.progressItem = options.item;
     token.src = options.icon;
     token.alt = "";
     token.style.left = source.left + "px";

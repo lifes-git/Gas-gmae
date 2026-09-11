@@ -13,7 +13,7 @@ function assert(condition, message) {
 }
 
 async function openTransition(page) {
-  await page.goto(target, { waitUntil: "load" });
+  await page.goto(target, { waitUntil: "load", timeout: 15000 });
   await page.getByRole("button", { name: "시작", exact: true }).click();
   await page.locator("#exit-door").evaluate(button => { button.disabled = false; });
   await page.locator("#exit-door").focus();

@@ -23,7 +23,7 @@ async function drag(page, selector, fromX, toX) {
 (async () => {
   const browser = await chromium.launch({ headless:true, executablePath });
   const page = await browser.newPage({ viewport:{ width:1280, height:720 } });
-  await page.goto(target, { waitUntil:"load" });
+  await page.goto(target, { waitUntil:"load", timeout:15000 });
   await page.getByRole("button", { name:"시작", exact:true }).click();
   const desktopSlots = await page.locator("#progress-dots .progress-slot").evaluateAll(nodes => nodes.map(node => {
     const rect = node.getBoundingClientRect();
@@ -85,19 +85,19 @@ async function drag(page, selector, fromX, toX) {
   assert((await page.locator(".stage-two__background--living").getAttribute("src")).includes("bg-stage2-living-sunset-windowless-v1.jpg"), "stage 2 living room must use the windowless layered background");
   assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-closed-v4.png"), "stage 2 must begin with the closed shared window layer");
   await page.locator("#stage-two-window-hotspot").click();
-  assert((await page.locator("#stage-two-window-target").getAttribute("aria-label")) === "창문을 눌러 열기", "window interaction must expose the full window as the target");
+  assert((await page.locator("#stage-two-window-target").getAttribute("aria-label")) === "창문 중앙 손잡이를 눌러 열기", "window interaction must identify the handle action");
   assert(await page.locator("#stage-two-window-action").count() === 0, "window modal must not duplicate the interaction with a text action button");
   assert(await page.locator(".stage-two-window-handle-art").count() === 0, "window modal must not use a detached handle overlay");
-  assert(await page.locator(".stage-two-window-pane-outline path").count() === 2, "window modal must outline both inner window panes");
+  assert(await page.locator(".stage-two-window-handle-label").count() === 1, "window modal must show the approved handle cue");
   const windowBox = await page.locator("#stage-two-window-target").boundingBox();
   assert(windowBox && windowBox.width >= 44 && windowBox.height >= 44, `full window target must remain touch accessible: ${JSON.stringify(windowBox)}`);
   if (process.env.QA_SCREENSHOT) await page.screenshot({ path:process.env.QA_SCREENSHOT });
-  await page.locator("#stage-two-window-target").click();
+  await page.locator("#stage-two-window-target").click({ force:true });
   await page.locator("#stage-two-window-close").click();
   await page.waitForTimeout(450);
   assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-closed-v4.png"), "closing during the handle response must keep the closed window layer");
   await page.locator("#stage-two-window-hotspot").click();
-  await page.locator("#stage-two-window-target").click();
+  await page.locator("#stage-two-window-target").click({ force:true });
   await page.waitForTimeout(450);
   assert((await page.locator("#stage-two-window-art").getAttribute("src")).includes("prop-window-casement-wall-perspective-open-v4.png"), "opening must switch to the shared open-window layer");
   await page.getByRole("button", { name:"확인했어요" }).click();

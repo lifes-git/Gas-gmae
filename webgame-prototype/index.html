@@ -7,14 +7,14 @@
   <meta name="description" content="장기간 외출 전 가스안전 위험요소 3개를 찾는 교육용 웹게임 프로토타입">
   <title>소멍이의 외출 전 가스안전 점검</title>
   <link rel="stylesheet" href="app/common/styles/styles.css">
-  <link rel="stylesheet" href="app/stage-1/styles/kitchen-scenes.css">
+  <link rel="stylesheet" href="app/stage-1/styles/kitchen-scenes.css?v=valve-handle-focus-1">
   <link rel="stylesheet" href="app/common/styles/toon-ui.css">
   <link rel="stylesheet" href="app/common/styles/ui-components.css">
   <link rel="stylesheet" href="app/common/styles/entrance-motion.css">
   <link rel="stylesheet" href="app/transitions/styles/exit-transition.css">
   <link rel="stylesheet" href="app/transitions/styles/outing-transition.css">
-  <link rel="stylesheet" href="app/stage-2/styles/stage-2.css">
-  <link rel="stylesheet" href="app/stage-1/styles/safety-rule-card.css">
+  <link rel="stylesheet" href="app/stage-2/styles/stage-2.css?v=stage2-pipe-13">
+  <link rel="stylesheet" href="app/stage-1/styles/safety-rule-card.css?v=pipe-steps-1">
   <link rel="stylesheet" href="app/common/styles/progress-collection.css?v=progress-slots-6">
   <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-valve-wall-handleless-v3.jpg">
   <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-room-layered-unsafe-hd-v3.webp">
@@ -213,6 +213,26 @@
           <mark id="safety-rule-highlight"></mark>
         </p>
       </div>
+      <ol class="safety-rule-steps" aria-label="가스 누출 의심 시 안전조치 순서">
+        <li class="safety-rule-step safety-rule-step--stop">
+          <span class="safety-rule-step__number" aria-hidden="true">1</span>
+          <strong>가스 사용 중단</strong>
+          <span class="safety-rule-step__visual" aria-hidden="true"><b>OFF</b></span>
+          <p>가스레인지 사용을<br>즉시 중단해요.</p>
+        </li>
+        <li class="safety-rule-step safety-rule-step--valve">
+          <span class="safety-rule-step__number" aria-hidden="true">2</span>
+          <strong>밸브 잠금 확인</strong>
+          <span class="safety-rule-step__visual"><img src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="잠긴 가스밸브"></span>
+          <p>가스밸브가 잠겼는지<br>확인해요.</p>
+        </li>
+        <li class="safety-rule-step safety-rule-step--request">
+          <span class="safety-rule-step__number" aria-hidden="true">3</span>
+          <strong>자연환기·점검 요청</strong>
+          <span class="safety-rule-step__visual"><img src="assets/common/props/progress-window-open-v1.png" alt="열린 창문"></span>
+          <p>창문을 열어 자연환기하고<br>가스공급자에 점검을 요청해요.</p>
+        </li>
+      </ol>
       <button class="safety-rule-card__confirm" id="safety-rule-confirm" value="confirm">확인했어요</button>
     </form>
   </dialog>
@@ -238,7 +258,7 @@
           src="assets/common/props/prop-window-casement-wall-perspective-closed-v4.png" alt="">
       </div>
       <img class="stage-two__background stage-two__background--kitchen"
-        src="assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-v1.jpg" alt="">
+        src="assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-clean-v2.jpg" alt="">
       <header class="game-header stage-two__header">
         <div class="header-actions" aria-label="스테이지 2 진행 상황과 메뉴">
           <div class="progress-card ui-progress" role="status" aria-label="안전점검 진행도 0개 중 2개">
@@ -269,6 +289,11 @@
         aria-label="닫힌 거실 창문 열기">
         <span class="visually-hidden">거실 창문</span>
       </button>
+      <button class="stage-two__pipe-hotspot" id="stage-two-pipe-hotspot" type="button"
+        aria-label="주방 가스배관 연결부 점검">
+        <img class="stage-two__pipe-art" src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="">
+        <span class="visually-hidden">가스배관 연결부</span>
+      </button>
       <p class="live-region" id="stage-two-status" role="status" aria-live="polite"></p>
     </div>
   </section>
@@ -287,18 +312,8 @@
         <img class="stage-two-window-view__image" id="stage-two-window-open-image"
           src="assets/common/props/prop-window-casement-wall-perspective-open-v4.png" alt="">
         <button class="detail-target stage-two-window-target" id="stage-two-window-target" type="button"
-          aria-label="창문을 눌러 열기">
-          <svg class="stage-two-window-pane-outline" viewBox="0 0 682 743" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <path d="M88 103 L312 107 L312 643 L88 647 Z" />
-            <path d="M371 110 L580 116 L580 639 L371 642 Z" />
-          </svg>
-          <svg class="stage-two-window-open-cue" viewBox="0 0 88 70" aria-hidden="true" focusable="false">
-            <path class="stage-two-window-open-cue__shadow" d="M18 50 C22 24 50 15 67 30" />
-            <path class="stage-two-window-open-cue__line" d="M18 50 C22 24 50 15 67 30" />
-            <path class="stage-two-window-open-cue__head" d="M58 20 L72 31 L58 41" />
-            <circle cx="16" cy="18" r="3" />
-            <circle cx="77" cy="13" r="2.5" />
-          </svg>
+          aria-label="창문 중앙 손잡이를 눌러 열기">
+          <span class="stage-two-window-handle-label" aria-hidden="true">손잡이를 눌러 열기</span>
         </button>
       </div>
     </div>
@@ -311,6 +326,51 @@
     </div>
     <footer>
       <button class="detail-back" id="stage-two-window-back" type="button" aria-label="거실로 돌아가기"><span aria-hidden="true">↩</span></button>
+    </footer>
+  </dialog>
+
+  <dialog class="kitchen-detail-dialog stage-two-pipe-dialog ui-modal" id="stage-two-pipe-dialog"
+    aria-labelledby="stage-two-pipe-title" aria-describedby="stage-two-pipe-copy">
+    <header class="stage-two-pipe-dialog__header">
+      <h2 class="visually-hidden" id="stage-two-pipe-title">가스배관 연결부 점검하기</h2>
+      <button class="detail-close" id="stage-two-pipe-close" type="button" aria-label="확대 화면 닫기"><span aria-hidden="true">×</span></button>
+    </header>
+    <div class="kitchen-detail-view stage-two-pipe-view">
+      <img class="stage-two-pipe-view__art" src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="" aria-hidden="true">
+      <section class="stage-two-pipe-tool-choice" aria-labelledby="stage-two-pipe-tool-title">
+        <h3 id="stage-two-pipe-tool-title">무엇으로 확인해야 할까?</h3>
+        <div class="stage-two-pipe-tool-options" role="group" aria-label="배관 점검 도구 선택">
+          <button class="stage-two-pipe-tool-card" type="button" data-pipe-tool="lighter">
+            <img src="assets/stage-2/tools/tool-lighter-v1.png" alt=""><strong>라이터</strong>
+          </button>
+          <button class="stage-two-pipe-tool-card" type="button" data-pipe-tool="soap">
+            <img src="assets/stage-2/tools/tool-soapy-solution-v1.png" alt=""><strong>비눗물 점검액</strong>
+          </button>
+        </div>
+      </section>
+      <div class="stage-two-pipe-kit scene-held-item" id="stage-two-pipe-kit" data-item="pipe-brush" role="status" aria-label="손에 든 비눗물이 묻은 점검용 붓" hidden>
+        <span class="stage-two-pipe-brush" id="stage-two-pipe-brush" aria-hidden="true">
+          <img src="assets/stage-2/tools/tool-inspection-brush-v1.png" alt="">
+        </span>
+      </div>
+      <button class="stage-two-pipe-point is-active" type="button" data-pipe-point="1" aria-label="위쪽 배관 연결부 점검">
+        <b aria-hidden="true">1</b><span class="stage-two-pipe-soap-film" aria-hidden="true"></span><span class="stage-two-pipe-result" aria-hidden="true"><em class="is-normal">정상</em><em class="is-warning">거품 발생!</em></span>
+      </button>
+      <button class="stage-two-pipe-point" type="button" data-pipe-point="2" aria-label="가운데 배관 연결부 점검">
+        <b aria-hidden="true">2</b><span class="stage-two-pipe-soap-film" aria-hidden="true"></span><span class="stage-two-pipe-result" aria-hidden="true"><em class="is-normal">정상</em><em class="is-warning">거품 발생!</em></span>
+      </button>
+      <button class="stage-two-pipe-point" type="button" data-pipe-point="3" aria-label="아래쪽 배관 연결부 점검">
+        <b aria-hidden="true">3</b><span class="stage-two-pipe-soap-film" aria-hidden="true"></span><span class="stage-two-pipe-result" aria-hidden="true"><em class="is-normal">정상</em><em class="is-warning">거품 발생!</em></span>
+      </button>
+    </div>
+    <div class="detail-guide">
+      <img id="stage-two-pipe-mascot" src="assets/common/mascots/mascot-somyeongi-question-logo-v1.svg" alt="" aria-hidden="true">
+      <div class="detail-guide-copy ui-speech" id="stage-two-pipe-guide-copy">
+        <p class="detail-instruction" id="stage-two-pipe-copy"></p>
+      </div>
+    </div>
+    <footer>
+      <button class="detail-back" id="stage-two-pipe-back" type="button" aria-label="주방으로 돌아가기"><span aria-hidden="true">↩</span></button>
     </footer>
   </dialog>
 
@@ -388,12 +448,14 @@
   <script src="app/stage-2/dialogue/somyeongi-dialogue.js"></script>
   <script src="app/stage-1/scripts/safety-rule-cards.js"></script>
   <script src="app/stage-1/scripts/game-data.js"></script>
+  <script src="app/common/audio/sound-data.js"></script>
+  <script src="app/common/audio/audio-manager.js"></script>
   <script src="app/common/scripts/ui-components.js"></script>
   <script src="app/common/scripts/progress-collection.js"></script>
-  <script src="app/stage-1/scripts/kitchen-scenes.js"></script>
+  <script src="app/stage-1/scripts/kitchen-scenes.js?v=valve-handle-focus-1"></script>
   <script src="app/transitions/scripts/exit-transition.js"></script>
   <script src="app/transitions/scripts/outing-transition.js"></script>
-  <script src="app/stage-2/scripts/stage-2.js"></script>
+  <script src="app/stage-2/scripts/stage-2.js?v=stage2-pipe-10"></script>
   <script src="app/stage-1/scripts/game.js?v=completion-208c51f32d89"></script>
 </body>
 

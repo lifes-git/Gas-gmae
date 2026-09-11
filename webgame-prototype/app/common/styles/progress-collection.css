@@ -101,6 +101,19 @@
   transform:scale(.35);
 }
 
+.progress-slot[data-progress-item="window"] img {
+  border-radius:50%;
+  background-image:url("../../../assets/common/backgrounds/bg-window-view-sunset-v1.jpg");
+  background-position:center 54%;
+  background-repeat:no-repeat;
+  background-size:52% 64%;
+}
+
+.progress-slot[data-progress-item="pipe"] img,
+.progress-fly-token[data-progress-item="pipe"] {
+  object-fit:contain;
+}
+
 .progress-slot.is-collected b { display:none; }
 .progress-slot.is-collected img { opacity:1; transform:scale(1); }
 .progress-slot.is-receiving { animation:progress-slot-pop .48s cubic-bezier(.2,1.45,.35,1) both; }

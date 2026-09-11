@@ -241,13 +241,6 @@ window.createKitchenScenes = function (options) {
       target.appendChild(can);
     }
     view.appendChild(target);
-    if (id === "valve") {
-      var turnCue = document.createElement("span");
-      turnCue.className = "rotation-cue rotation-cue-valve rotation-cue-reverse";
-      turnCue.setAttribute("aria-hidden", "true");
-      turnCue.innerHTML = '<svg viewBox="0 0 120 90"><path class="rotation-arrow-shadow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-arrow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-highlight" d="M35 48C49 25 77 22 94 36"/></svg>';
-      view.appendChild(turnCue);
-    }
     var action = button(id === "valve" ? "손잡이 90° 돌리기" : id === "towel" ? "행주 집기" : "부탄캔 집기", "detail-action", act, { variant: "primary" });
     var closeLabel = id === "butane" ? "거실로 돌아가기" : "주방으로 돌아가기";
     var close = button(closeLabel, "detail-back", function () { options.sound("tap"); modal.close(); }, { variant: "info", iconOnly: true, ariaLabel: closeLabel });

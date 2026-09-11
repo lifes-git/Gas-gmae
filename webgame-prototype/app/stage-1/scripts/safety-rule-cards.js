@@ -22,7 +22,14 @@ window.SAFETY_RULE_CARDS = {
     label: "귀가 후 환기 안전수칙",
     lead: "가스 누출이 의심되면 전기 스위치를 조작하지 말고",
     highlight: "창문을 열어 자연환기해요.",
-    icon: "assets/stage-2/ui/icon-window-open-v1.svg",
+    icon: "assets/common/props/progress-window-open-v1.png",
     progressIcon: "assets/common/props/progress-window-open-v1.png"
+  },
+  pipe: {
+    label: "가스배관 누출 점검 안전수칙",
+    lead: "연결부에 큰 거품이 생기면 가스 누출이 의심돼요.",
+    highlight: "가스 사용을 중단하고 밸브를 잠근 뒤 자연환기하고, 가스공급자나 도시가스사에 점검을 요청해요.",
+    icon: "assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png",
+    progressIcon: "assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png"
   }
 };

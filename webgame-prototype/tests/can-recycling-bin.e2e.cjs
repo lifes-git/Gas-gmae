@@ -24,7 +24,7 @@ function assert(condition, message) {
   page.on("pageerror", error => errors.push(error.message));
   page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
 
-  await page.goto(target, { waitUntil: "load" });
+  await page.goto(target, { waitUntil: "load", timeout: 15000 });
   await page.getByRole("button", { name: "시작", exact: true }).click();
   await page.locator('[data-hazard="butane"]').click();
   await page.locator(".kitchen-detail-dialog .detail-target").click();

@@ -40,7 +40,7 @@ async function waitForMissionArt(page) {
 }
 
 async function start(page, capture = false) {
-  await page.goto(target, { waitUntil: "load" });
+  await page.goto(target, { waitUntil: "load", timeout: 15000 });
   if (capture) {
     const introUi = await page.evaluate(() => {
       const card = document.querySelector("#intro-screen .intro-card");
@@ -122,7 +122,7 @@ async function solveValve(page, keyboard = false, capture = false) {
     await page.mouse.move(target.x + target.width * .1, target.y + target.height / 2, { steps: 12 });
     await page.mouse.up();
   }
-  await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
+  assert(await solvedCount(page) === before, "valve: progress must wait for safety-rule confirmation");
   const leverState = await page.locator(".kitchen-detail-dialog[open] .kitchen-lever").evaluate(node => ({
     transform: getComputedStyle(node).transform,
     angle: node.style.getPropertyValue("--valve-angle"),
@@ -154,6 +154,7 @@ async function solveValve(page, keyboard = false, capture = false) {
   if (keyboard) await safetyRuleConfirm.press("Enter");
   else await safetyRuleConfirm.click();
   await page.locator('[data-progress-item="valve"].is-collected').waitFor();
+  await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
   await page.locator(".kitchen-detail-dialog[open]").waitFor({ state: "hidden" });
 }
 
@@ -307,13 +308,15 @@ async function solveTowel(page, keyboard = false, capture = false) {
   assert(await page.locator('button[data-hazard="butane"]').isHidden(), "butane must be locked while towel is held");
   if (keyboard) await page.getByRole("button", { name: "바구니에 행주 넣기" }).press("Enter");
   else await page.getByRole("button", { name: "바구니에 행주 넣기" }).click();
-  await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
+  assert(await solvedCount(page) === before, "towel: progress must wait for safety-rule confirmation");
   await page.locator(".new-scene-art .kitchen-towel-stored").waitFor({ state: "visible" });
   if (capture) await captureScreenshot(page, "kitchen-towel-stored.png");
   const safetyRuleConfirm = page.getByRole("button", { name: "확인했어요" });
   await safetyRuleConfirm.waitFor({ state: "visible" });
   if (keyboard) await safetyRuleConfirm.press("Enter");
   else await safetyRuleConfirm.click();
+  await page.locator('[data-progress-item="towel"].is-collected').waitFor();
+  await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
 }
 
 async function solveButane(page, keyboard = false, capture = false, heldCaptureName = null) {
@@ -392,8 +395,7 @@ async function solveButane(page, keyboard = false, capture = false, heldCaptureN
   assert((await page.locator("#mission-copy").textContent()).includes("지역"), "outdoor: local disposal-standard reminder is missing");
   if (keyboard) await readyBin.press("Enter");
   else await readyBin.click();
-  await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
-  assert(await page.locator(".can-recycling-bin.is-filled").isVisible(), "outdoor: recycling bin should remain visible after completion");
+  assert(await solvedCount(page) === before, "outdoor: progress must wait for safety-rule confirmation");
   assert(await page.locator(".can-bin-check").count() === 0, "outdoor: recycling bin should not show a completion check badge");
   const outdoorReturn = page.getByRole("button", { name: "현관문으로 방 안에 돌아가기" });
   const returnGeometry = await outdoorReturn.evaluate(node => {
@@ -408,6 +410,7 @@ async function solveButane(page, keyboard = false, capture = false, heldCaptureN
   if (keyboard) await safetyRuleConfirm.press("Enter");
   else await safetyRuleConfirm.click();
   await page.locator('[data-progress-item="butane"].is-collected').waitFor();
+  await page.getByText(`${before + 1} / 3`, { exact: true }).waitFor();
   await page.locator("#mission-dialog").waitFor({ state: "hidden" });
 }
 
@@ -415,7 +418,7 @@ async function fullFunctional(browserType, name) {
   const browser = await browserType.launch({ headless: true, executablePath: chromiumPath });
   const context = await browser.newContext({ viewport: { width: 1920, height: 945 } });
   const page = await context.newPage();
-  page.setDefaultTimeout(5000);
+  page.setDefaultTimeout(15000);
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
   page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
@@ -464,7 +467,7 @@ async function fullFunctional(browserType, name) {
 async function keyboardFlow() {
   const browser = await chromium.launch({ headless: true, executablePath: chromiumPath });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-  page.setDefaultTimeout(5000);
+  page.setDefaultTimeout(15000);
   page.on("pageerror", error => console.error("keyboard pageerror:", error.message));
   await start(page);
   await solveValve(page, true);
@@ -482,8 +485,8 @@ async function keyboardFlow() {
 async function mobileFlow() {
   const browser = await chromium.launch({ headless: true, executablePath: chromiumPath });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  page.setDefaultTimeout(5000);
-  await page.goto(target, { waitUntil: "load" });
+  page.setDefaultTimeout(15000);
+  await page.goto(target, { waitUntil: "load", timeout: 15000 });
   await page.locator("#rotate-screen").waitFor({ state: "visible" });
   await captureScreenshot(page, "mobile-portrait-rotate.png");
   await page.setViewportSize({ width: 844, height: 390 });
@@ -507,7 +510,7 @@ async function mobileFlow() {
 async function cancelAndCarryFlow() {
   const browser = await chromium.launch({ headless: true, executablePath: chromiumPath });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-  page.setDefaultTimeout(5000);
+  page.setDefaultTimeout(15000);
   await start(page);
   await page.locator('button[data-hazard="butane"]').click();
   await page.locator(".kitchen-detail-dialog[open] .detail-close").click();

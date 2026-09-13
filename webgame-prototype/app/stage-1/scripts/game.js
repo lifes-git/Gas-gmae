@@ -917,6 +917,20 @@
     syncBackgroundMusic();
   }
 
+  function showFinalResult() {
+    if (!elements.result.hidden) return;
+    if (window.StageTwo) window.StageTwo.hide();
+    elements.app.hidden = true;
+    elements.intro.hidden = true;
+    elements.result.hidden = false;
+    playScreenEntrance(elements.result);
+    syncBackgroundMusic();
+    announce("안전점검 임무 완료. 출발 전 3개와 귀가 후 2개 점검을 모두 마쳤습니다.");
+    window.setTimeout(function () { document.getElementById("result-title").focus(); }, 0);
+  }
+
+  window.GameEnding = Object.freeze({ show: showFinalResult });
+
   function showSpeechBubbleTemporarily() {
     const speechBubble = document.getElementById("speech-bubble");
     if (!speechBubble) return;

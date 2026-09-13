@@ -8,7 +8,9 @@ window.SOMYEONGI_STAGE_2_DIALOGUE = {
   pipeLighterWrong: "라이터 불꽃으로 확인하면 매우 위험하다 멍! 다른 도구를 골라보자 멍!",
   pipeIntro: "비눗물이 묻은 붓을 받았다 멍! 위쪽 연결부부터 눌러 닦아보자 멍!",
   pipePoint1Success: "위쪽 연결부는 작은 거품만 보인다 멍. 가운데 연결부를 확인하자 멍!",
-  pipePoint2Success: "가운데 연결부도 괜찮다 멍. 이제 아래쪽 연결부를 확인하자 멍!",
   pipeLeakFound: "큰 거품이 생겼다 멍! 가스 누출이 의심된다 멍!",
-  allComplete: "귀가 후 가스안전 점검을 모두 완료했다 멍!"
+    allComplete: "가스 누출이 의심된다 멍! 왼쪽 거실로 돌아가 현관 밖으로 나가자 멍!",
+    callPrompt: "소멍이가 가스 전문가에게 점검을 요청할게요.",
+    callConnecting: "안전한 밖에서 소멍이가 가스 전문가에게 연결하고 있어요…",
+  callComplete: "점검 요청 완료! 전문가가 확인하기 전까지 가스를 사용하지 않아요."
 };

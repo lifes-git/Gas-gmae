@@ -26,6 +26,7 @@
   var windowClosedImage = document.getElementById("stage-two-window-closed-image");
   var windowOpenImage = document.getElementById("stage-two-window-open-image");
   var pipeHotspot = document.getElementById("stage-two-pipe-hotspot");
+  var exitDoor = document.getElementById("stage-two-exit-door");
   var pipeDialog = document.getElementById("stage-two-pipe-dialog");
   var pipeClose = document.getElementById("stage-two-pipe-close");
   var pipeBack = document.getElementById("stage-two-pipe-back");
@@ -44,6 +45,8 @@
   var safetyRuleLead = document.getElementById("safety-rule-lead");
   var safetyRuleHighlight = document.getElementById("safety-rule-highlight");
   var safetyRuleConfirm = document.getElementById("safety-rule-confirm");
+  var callScene = document.getElementById("stage-two-call-scene");
+  var callCopy = document.getElementById("stage-two-call-copy");
   var dialogue = window.SOMYEONGI_STAGE_2_DIALOGUE;
   var room = "living";
   var solved = { window: false, pipe: false };
@@ -51,6 +54,8 @@
   var windowOpenTimer = 0;
   var pipeCheckTimer = 0;
   var pipeSafetyTimer = 0;
+  var endingTimer = 0;
+  var endingReady = false;
   var pipeStep = "locked";
   var pipeTool = "none";
   var closedLivingSource = "assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.jpg";
@@ -69,6 +74,55 @@
     progressCard.setAttribute("aria-label", "안전점검 진행도 2개 중 " + count + "개 완료");
   }
 
+  function resetEndingSequence() {
+    callScene.hidden = true;
+    callScene.classList.remove("is-active", "is-dialing", "is-calling", "is-complete");
+    callCopy.textContent = dialogue.callPrompt;
+    exitDoor.hidden = true;
+    exitDoor.disabled = true;
+  }
+
+  function startEndingSequence() {
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    screen.classList.add("is-call-transition");
+    endingTimer = window.setTimeout(function () {
+      endingTimer = 0;
+      callScene.hidden = false;
+      void callScene.offsetWidth;
+      callScene.classList.add("is-active");
+      callCopy.textContent = dialogue.callPrompt;
+      status.textContent = "안전한 실외로 이동했습니다.";
+      playSound("storyStep");
+      endingTimer = window.setTimeout(beginPhoneDialing, reduceMotion ? 80 : 2800);
+    }, reduceMotion ? 80 : 520);
+  }
+
+  function beginPhoneDialing() {
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    callScene.classList.add("is-dialing");
+    status.textContent = "실외에서 가스 전문가의 번호를 누릅니다.";
+    playSound("phoneDial");
+    endingTimer = window.setTimeout(requestExpertInspection, reduceMotion ? 80 : 2200);
+  }
+
+  function requestExpertInspection() {
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    callScene.classList.add("is-calling");
+    callCopy.textContent = dialogue.callConnecting;
+    status.textContent = "안전한 실외에서 소멍이가 가스 전문가에게 점검을 요청하고 있습니다.";
+    playSound("phoneRing");
+    endingTimer = window.setTimeout(function () {
+      callScene.classList.add("is-complete");
+      callCopy.textContent = dialogue.callComplete;
+      status.textContent = "가스 전문가 점검 요청을 완료했습니다. 점검 전까지 가스를 사용하지 않습니다.";
+      playSound("stageComplete");
+      endingTimer = window.setTimeout(function () {
+        endingTimer = 0;
+        if (window.GameEnding) window.GameEnding.show();
+      }, reduceMotion ? 120 : 5000);
+    }, reduceMotion ? 120 : 4200);
+  }
+
   function showSafetyRuleCard(id) {
     var rule = window.SAFETY_RULE_CARDS[id];
     if (!rule || safetyRuleDialog.open) return;
@@ -81,7 +135,7 @@
     window.setTimeout(function () {
       if (!solved[id] || safetyRuleDialog.open) return;
       safetyRuleDialog.showModal();
-      playSound("safetyCard");
+      if (id !== "window") playSound("safetyCard");
       safetyRuleConfirm.focus();
     }, 0);
   }
@@ -109,6 +163,10 @@
     pipeHotspot.style.top = offsetY + 154 * scale + "px";
     pipeHotspot.style.width = 144 * scale + "px";
     pipeHotspot.style.height = 344 * scale + "px";
+    exitDoor.style.left = offsetX + 405 * scale + "px";
+    exitDoor.style.top = offsetY + 70 * scale + "px";
+    exitDoor.style.width = 230 * scale + "px";
+    exitDoor.style.height = 508 * scale + "px";
   }
 
   function render() {
@@ -118,12 +176,15 @@
     kitchenBackground.classList.toggle("is-active", room === "kitchen");
     navigation.dataset.direction = nextRoom === "kitchen" ? "right" : "left";
     navigation.setAttribute("aria-label", nextRoom === "kitchen" ? "주방으로 이동" : "거실로 이동");
+    navigation.hidden = endingReady && room === "living";
     windowHotspot.hidden = room !== "living" || solved.window;
     pipeHotspot.hidden = room !== "kitchen";
     pipeHotspot.disabled = solved.pipe;
     pipeHotspot.classList.toggle("is-unlocked", solved.window && !solved.pipe);
     pipeHotspot.classList.toggle("is-locked", !solved.window);
     pipeHotspot.classList.toggle("is-complete", solved.pipe);
+    exitDoor.hidden = room !== "living" || !endingReady;
+    exitDoor.disabled = room !== "living" || !endingReady;
     pipeHotspot.setAttribute("aria-label", solved.pipe ? "점검을 완료한 주방 가스배관" : solved.window ? "주방 가스배관 연결부 점검" : "환기 후 점검할 주방 가스배관");
     screen.setAttribute("aria-label", room === "living" ? "스테이지 2 노을진 거실" : "스테이지 2 노을진 주방");
     window.requestAnimationFrame(updateSceneLayout);
@@ -155,14 +216,18 @@
     pipeCheckTimer = 0;
     window.clearTimeout(pipeSafetyTimer);
     pipeSafetyTimer = 0;
+    window.clearTimeout(endingTimer);
+    endingTimer = 0;
     if (windowDialog.open) windowDialog.close();
     if (pipeDialog.open) pipeDialog.close();
     room = "living";
+    endingReady = false;
     solved.window = false;
     solved.pipe = false;
     collected.window = false;
     collected.pipe = false;
     pendingCollection = null;
+    resetEndingSequence();
     pipeStep = "locked";
     pipeTool = "none";
     livingBackground.src = closedLivingSource;
@@ -192,15 +257,31 @@
     pipeHotspot.disabled = false;
     if (window.ProgressCollection) window.ProgressCollection.reset(progressDots);
     renderProgress();
-    screen.classList.remove("is-entering");
+    screen.classList.remove("is-entering", "is-call-transition");
     screen.hidden = true;
     render();
+  }
+
+  function hide() {
+    window.clearTimeout(endingTimer);
+    endingTimer = 0;
+    screen.classList.remove("is-entering", "is-call-transition");
+    resetEndingSequence();
+    screen.hidden = true;
   }
 
   navigation.addEventListener("click", function () {
     room = room === "living" ? "kitchen" : "living";
     render();
-    navigation.focus();
+    (endingReady && room === "living" ? exitDoor : navigation).focus();
+  });
+  exitDoor.addEventListener("click", function () {
+    if (!endingReady || room !== "living") return;
+    exitDoor.disabled = true;
+    guide.textContent = dialogue.callPrompt;
+    status.textContent = "현관문을 통해 안전한 실외로 이동합니다.";
+    playSound("tap");
+    startEndingSequence();
   });
   windowHotspot.addEventListener("click", function () {
     windowCopy.textContent = solved.window ? dialogue.windowSuccess : dialogue.windowPrompt;
@@ -221,7 +302,7 @@
     }
     var expected = expectedPipePoint();
     pipeCopy.textContent = pipeTool === "soap"
-      ? expected === 2 ? dialogue.pipePoint1Success : expected === 3 ? dialogue.pipePoint2Success : dialogue.pipeIntro
+      ? expected === 2 ? dialogue.pipePoint1Success : dialogue.pipeIntro
       : dialogue.pipeToolPrompt;
     pipeDialog.showModal();
     (pipeTool === "soap" && expected ? pipePoints[expected - 1] : pipeToolButtons[0]).focus();
@@ -245,7 +326,6 @@
     windowDialog.classList.add("is-success");
     windowGuideCopy.classList.add("is-success");
     windowMascot.src = "assets/common/mascots/mascot-somyeongi-success-logo-v1.svg";
-    playSound("windowOpen");
     windowBack.focus();
     status.textContent = "창문 열어 자연환기하기를 완료했습니다.";
     renderProgress();
@@ -256,12 +336,11 @@
   function expectedPipePoint() {
     if (pipeStep === "point1") return 1;
     if (pipeStep === "point2") return 2;
-    if (pipeStep === "point3") return 3;
     return 0;
   }
 
   function pipePointName(number) {
-    return number === 1 ? "위쪽" : number === 2 ? "가운데" : "아래쪽";
+    return number === 1 ? "위쪽" : "가운데";
   }
 
   function cancelPipeCheck() {
@@ -321,12 +400,6 @@
         pipeCopy.textContent = dialogue.pipePoint1Success;
         pipePoints[1].classList.add("is-active");
         pipePoints[1].focus();
-      } else if (number === 2) {
-        playSound("bubbleNormal");
-        pipeStep = "point3";
-        pipeCopy.textContent = dialogue.pipePoint2Success;
-        pipePoints[2].classList.add("is-active");
-        pipePoints[2].focus();
       } else {
         playSound("bubbleWarning");
         pipeStep = "leakFound";
@@ -414,8 +487,8 @@
       }
       if (collection.item === "pipe") {
         pipeStep = "completed";
+        endingReady = true;
         guide.textContent = dialogue.allComplete;
-        window.setTimeout(function () { playSound("stageComplete"); }, 520);
       }
       renderProgress();
       status.textContent = collection.label + "을 진행도에 기록했습니다.";
@@ -427,6 +500,7 @@
     if (solved.window || windowDialog.classList.contains("is-opening")) return;
     windowDialog.classList.add("is-opening");
     playSound("windowLatch");
+    playSound("windowOpen");
     windowTarget.disabled = true;
     status.textContent = "창문을 열고 있습니다.";
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -454,6 +528,7 @@
   updateSceneLayout();
   window.StageTwo = {
     show: show,
+    hide: hide,
     reset: reset,
     room: function () { return room; },
     solved: function () { return Object.assign({}, solved); }

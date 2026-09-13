@@ -1,5 +1,210 @@
 .stage-two { position:fixed; z-index:70; inset:0; display:grid; place-items:center; overflow:hidden; background:#102536; }
 .stage-two[hidden] { display:none !important; }
+.stage-two.is-call-transition { pointer-events:none; }
+.stage-two.is-call-transition .stage-two__frame { animation:stage-two-call-scene-dim .55s ease both; }
+@keyframes stage-two-call-scene-dim { from { filter:none; } to { filter:blur(2px) brightness(.76); } }
+.stage-two-call-scene { position:fixed; z-index:110; inset:0; display:grid; place-items:center; padding:clamp(14px,3vw,42px); overflow:hidden; isolation:isolate; pointer-events:auto; opacity:0; }
+.stage-two-call-scene[hidden] { display:none !important; }
+.stage-two-call-scene.is-active { animation:stage-two-call-scene-in .55s ease both; }
+.stage-two-call-scene__background { position:absolute; z-index:-3; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
+.stage-two-call-scene__shade { position:absolute; z-index:-2; inset:0; background:linear-gradient(rgba(15,31,48,.28),rgba(31,34,52,.5)),radial-gradient(circle at 50% 35%,rgba(255,190,102,.16),transparent 54%); }
+.stage-two-call-story { position:relative; width:min(1000px,90vw,calc(86vh * 16 / 9)); height:auto; aspect-ratio:16 / 9; overflow:hidden; }
+.stage-two-call-beat { position:absolute; inset:2%; overflow:hidden; border:5px solid #fff; border-radius:18px; outline:4px solid #24323b; outline-offset:-1px; box-shadow:0 15px 0 rgba(36,50,59,.92),0 26px 34px rgba(10,24,36,.4); opacity:0; transform:translateX(7%) scale(.94) rotate(1deg); transition:opacity .48s ease,transform .58s cubic-bezier(.2,.85,.3,1); }
+.stage-two-call-beat__frame { position:absolute; z-index:20; inset:0; border:3px solid rgba(36,50,59,.2); border-radius:12px; pointer-events:none; }
+.stage-two-call-beat--arrival { background:linear-gradient(rgba(20,43,56,.05),rgba(17,36,49,.2)); }
+.stage-two-call-beat--dial { display:grid; place-items:center; background:#f6cd43; }
+.stage-two-call-beat--phone { background:linear-gradient(110deg,rgba(19,48,62,.06),rgba(255,245,208,.1)); }
+.stage-two-call-beat--complete { background:radial-gradient(circle at 50% 42%,rgba(255,244,184,.25),rgba(26,48,59,.12)); }
+.stage-two-call-scene.is-active:not(.is-dialing) .stage-two-call-beat--arrival,
+.stage-two-call-scene.is-dialing:not(.is-calling) .stage-two-call-beat--dial,
+.stage-two-call-scene.is-calling:not(.is-complete) .stage-two-call-beat--phone,
+.stage-two-call-scene.is-complete .stage-two-call-beat--complete { opacity:1; transform:translateX(0) scale(1) rotate(0); }
+.stage-two-call-scene.is-dialing:not(.is-calling) .stage-two-call-beat--dial,
+.stage-two-call-scene.is-calling:not(.is-complete) .stage-two-call-beat--phone,
+.stage-two-call-scene.is-complete .stage-two-call-beat--complete { transition-delay:.16s; }
+.stage-two-call-scene.is-dialing .stage-two-call-beat--arrival,
+.stage-two-call-scene.is-calling .stage-two-call-beat--dial,
+.stage-two-call-scene.is-complete .stage-two-call-beat--phone { opacity:0; transform:translateX(-7%) scale(.94) rotate(-1deg); }
+.stage-two-call-beat__caption { position:absolute; z-index:8; left:50%; bottom:7%; padding:10px 22px; border:4px solid #fff; border-radius:999px; outline:3px solid #24323b; background:#53cbea; box-shadow:0 6px 0 #24323b; color:#24323b; font:900 clamp(22px,3vw,42px)/1 "Jua",sans-serif; transform:translateX(-50%) rotate(-2deg); }
+.stage-two-call-phone-closeup { position:relative; width:min(260px,28vw); aspect-ratio:.58; border:8px solid #24323b; border-radius:36px; background:#174eac; box-shadow:inset 0 0 0 5px #5fa7ff,0 14px 0 #24323b,0 22px 28px rgba(30,40,50,.34); transform:rotate(-8deg); }
+.stage-two-call-phone-closeup__speaker { position:absolute; left:50%; top:5%; width:34%; height:4%; border-radius:999px; background:#0b274d; transform:translateX(-50%); }
+.stage-two-call-phone-closeup__screen { position:absolute; inset:15% 9% 12%; display:flex; align-items:center; justify-content:center; gap:8px; border:4px solid #24323b; border-radius:22px; background:linear-gradient(#72d9f0,#dffbff); }
+.stage-two-call-phone-closeup__screen i { width:14px; height:14px; border-radius:50%; background:#174eac; animation:stage-two-talk-dot .72s ease-in-out infinite; }
+.stage-two-call-phone-closeup__screen i:nth-child(2) { animation-delay:.12s; }
+.stage-two-call-phone-closeup__screen i:nth-child(3) { animation-delay:.24s; }
+.stage-two-call-phone-closeup__button { position:absolute; left:50%; bottom:3%; width:12%; aspect-ratio:1; border:3px solid #8ac0ff; border-radius:50%; transform:translateX(-50%); }
+.stage-two-call-beat__onomatopoeia { position:absolute; right:13%; top:17%; color:#fff; font:900 clamp(34px,6vw,82px)/1 "Jua",sans-serif; letter-spacing:.05em; -webkit-text-stroke:7px #24323b; paint-order:stroke fill; text-shadow:5px 7px 0 #e55270; transform:rotate(8deg); }
+.stage-two-call-scene.is-complete .stage-two-call-story { animation:stage-two-complete-impact .34s .18s ease-out 1; }
+.stage-two-call-story::after { content:""; position:absolute; z-index:30; inset:0; background:#fff9dd; opacity:0; pointer-events:none; }
+.stage-two-call-scene.is-dialing .stage-two-call-story::after,
+.stage-two-call-scene.is-calling .stage-two-call-story::after,
+.stage-two-call-scene.is-complete .stage-two-call-story::after { animation:stage-two-panel-flash .34s ease-out; }
+.stage-two-call-beat--complete .stage-two-call-complete { position:absolute; z-index:7; left:50%; top:34%; display:flex; align-items:center; gap:14px; width:min(500px,43vw); box-sizing:border-box; padding:20px 24px; border:4px solid #fff; border-radius:24px; outline:3px solid #24323b; outline-offset:-1px; background:#fff4d6; box-shadow:0 8px 0 #24323b,0 18px 28px rgba(18,35,44,.28); transform:translateY(22px) scale(.86); }
+.stage-two-call-beat--complete .stage-two-call-complete div { display:grid; gap:6px; }
+.stage-two-call-beat--complete .stage-two-call-complete small { color:#45545c; font:800 clamp(14px,1.6vw,20px)/1.35 "Jua",sans-serif; word-break:keep-all; }
+.stage-two-call-scene.is-complete .stage-two-call-beat--complete .stage-two-call-complete { animation:stage-two-bubble-enter .38s .24s cubic-bezier(.2,1.15,.35,1) forwards; }
+@keyframes stage-two-complete-impact { 0%,100% { transform:translate(0); } 30% { transform:translate(-4px,2px); } 60% { transform:translate(3px,-2px); } }
+@keyframes stage-two-panel-flash { 0%,100% { opacity:0; } 38% { opacity:.72; } }
+.stage-two-call-story__actor { position:absolute; z-index:3; display:block; object-fit:contain; filter:drop-shadow(0 12px 10px rgba(16,31,43,.32)); user-select:none; }
+.stage-two-call-story__actor--walk { right:7%; bottom:5%; width:min(250px,22vw); height:min(58vh,520px); opacity:0; transform-origin:center bottom; }
+.stage-two-call-scene.is-active .stage-two-call-story__actor--walk { animation:stage-two-walk-in 1.12s .14s cubic-bezier(.22,.75,.32,1) forwards; }
+.stage-two-call-story__phone-wrap { position:absolute; z-index:4; left:27%; bottom:5%; width:min(285px,24vw); opacity:0; transform:scale(.86); transform-origin:center bottom; }
+.stage-two-call-story__actor--phone { position:relative; width:100%; max-height:64vh; }
+.stage-two-call-scene.is-calling .stage-two-call-story__actor--walk { right:57%; opacity:0; animation:none; transition:opacity .18s ease; }
+.stage-two-call-scene.is-calling .stage-two-call-story__phone-wrap { animation:stage-two-phone-enter .28s cubic-bezier(.2,1.15,.35,1) forwards; }
+.stage-two-call-story__actor--success { left:27%; bottom:5%; width:min(270px,23vw); height:min(61vh,540px); opacity:0; transform:scale(.86); transform-origin:center bottom; }
+.stage-two-call-scene.is-complete .stage-two-call-story__phone-wrap { opacity:0; animation:none; transition:opacity .18s ease; }
+.stage-two-call-scene.is-complete .stage-two-call-story__actor--success { animation:stage-two-success-enter .34s .12s cubic-bezier(.2,1.18,.35,1) forwards; }
+.stage-two-call-story__ground-shadow { position:absolute; z-index:1; left:26%; bottom:4%; width:min(290px,25vw); height:34px; border-radius:50%; background:rgba(25,39,48,.3); filter:blur(5px); opacity:0; }
+.stage-two-call-scene.is-active .stage-two-call-story__ground-shadow { animation:stage-two-shadow-in .5s .72s ease forwards; }
+.stage-two-call-story__dust { position:absolute; z-index:2; left:29%; bottom:9%; opacity:0; }
+.stage-two-call-story__dust i { position:absolute; width:12px; height:12px; border-radius:50%; background:#f5d59b; box-shadow:18px -8px 0 #f5d59b,34px 2px 0 -3px #f5d59b; }
+.stage-two-call-scene.is-active .stage-two-call-story__dust { animation:stage-two-dust .55s .68s ease-out; }
+.stage-two-call-story__bubble { position:absolute; z-index:6; left:51%; top:31%; width:min(440px,39vw); box-sizing:border-box; padding:18px 22px; border:4px solid #fff; border-radius:22px; outline:3px solid #24323b; outline-offset:-1px; background:#fff8dc; box-shadow:0 7px 0 #24323b,0 14px 20px rgba(18,35,44,.24); opacity:0; transform:translateY(18px) scale(.9); }
+.stage-two-call-story__bubble::before { content:""; position:absolute; left:-18px; bottom:26px; width:27px; height:27px; border-left:3px solid #24323b; border-bottom:3px solid #24323b; background:#fff8dc; transform:rotate(45deg); }
+.stage-two-call-story__bubble p { position:relative; margin:0; color:#24323b; font:900 clamp(18px,2vw,27px)/1.4 "Jua",sans-serif; word-break:keep-all; }
+.stage-two-call-scene.is-calling .stage-two-call-story__bubble { animation:stage-two-bubble-enter .32s .16s cubic-bezier(.2,1.15,.35,1) forwards; }
+.stage-two-call-scene.is-complete .stage-two-call-story__bubble { opacity:0; transition:opacity .18s ease; }
+.stage-two-call-story__talk-dots { display:flex; gap:6px; justify-content:center; margin-top:10px; }
+.stage-two-call-story__talk-dots i { width:9px; height:9px; border-radius:50%; background:#53cbea; animation:stage-two-talk-dot .72s ease-in-out infinite; }
+.stage-two-call-story__talk-dots i:nth-child(2) { animation-delay:.12s; }
+.stage-two-call-story__talk-dots i:nth-child(3) { animation-delay:.24s; }
+.stage-two-call-story > .stage-two-call-complete { position:absolute; z-index:7; left:50%; top:34%; display:flex; align-items:center; gap:14px; width:min(500px,43vw); box-sizing:border-box; padding:20px 24px; border:4px solid #fff; border-radius:24px; outline:3px solid #24323b; outline-offset:-1px; background:#fff4d6; box-shadow:0 8px 0 #24323b,0 18px 28px rgba(18,35,44,.28); opacity:0; transform:translateY(22px) scale(.86); }
+.stage-two-call-story > .stage-two-call-complete div { display:grid; gap:6px; }
+.stage-two-call-story > .stage-two-call-complete small { color:#45545c; font:800 clamp(14px,1.6vw,20px)/1.35 "Jua",sans-serif; word-break:keep-all; }
+.stage-two-call-scene.is-complete .stage-two-call-story > .stage-two-call-complete { animation:stage-two-bubble-enter .38s .24s cubic-bezier(.2,1.15,.35,1) forwards; }
+@keyframes stage-two-walk-in { 0% { right:4%; opacity:0; transform:translateY(0) rotate(2deg); } 12% { opacity:1; } 24% { transform:translateY(-12px) rotate(-4deg); } 42% { transform:translateY(0) rotate(4deg); } 60% { transform:translateY(-12px) rotate(-4deg); } 78% { transform:translateY(0) rotate(3deg); } 100% { right:57%; opacity:1; transform:translateY(0) rotate(0); } }
+@keyframes stage-two-phone-enter { from { opacity:0; transform:scale(.86) rotate(-3deg); } to { opacity:1; transform:scale(1) rotate(0); } }
+@keyframes stage-two-success-enter { from { opacity:0; transform:scale(.86) rotate(-4deg); } to { opacity:1; transform:scale(1) rotate(0); } }
+@keyframes stage-two-shadow-in { to { opacity:1; } }
+@keyframes stage-two-dust { 0% { opacity:0; transform:translate(100px,5px) scale(.5); } 35% { opacity:.8; } 100% { opacity:0; transform:translate(-10px,-18px) scale(1.5); } }
+@keyframes stage-two-bubble-enter { from { opacity:0; transform:translateY(22px) scale(.86); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes stage-two-talk-dot { 0%,100% { transform:translateY(0); opacity:.45; } 50% { transform:translateY(-5px); opacity:1; } }
+.stage-two-call-comic { display:grid; grid-template-columns:.72fr 1.46fr .82fr; align-items:stretch; gap:clamp(9px,1.5vw,20px); width:min(1180px,94vw); height:min(610px,82vh); filter:drop-shadow(0 18px 28px rgba(10,24,36,.38)); }
+.stage-two-call-panel { position:relative; overflow:hidden; border:5px solid #fff; border-radius:18px; outline:4px solid #24323b; outline-offset:-1px; background:#fff4d6; box-shadow:inset 0 0 0 2px rgba(36,50,59,.12); opacity:0; }
+.stage-two-call-panel__number { position:absolute; z-index:5; left:12px; top:12px; display:grid; place-items:center; width:34px; height:34px; border:3px solid #24323b; border-radius:50%; background:#ffd84d; color:#24323b; font:900 20px/1 "Jua",sans-serif; }
+.stage-two-call-panel--arrival { background:linear-gradient(rgba(16,42,57,.1),rgba(16,42,57,.18)),url("../../../assets/transitions/backgrounds/bg-outdoor-sunset-return-v1.jpg") 80% center/cover; transform:rotate(-1.2deg) translateX(-24px); }
+.stage-two-call-panel--phone { display:grid; grid-template-rows:1fr auto; justify-items:center; background:linear-gradient(155deg,#7bcbe3 0 34%,#fff4d6 34% 100%); transform:translateY(22px); }
+.stage-two-call-panel--complete { display:grid; place-content:center; justify-items:center; gap:22px; padding:18px; background:radial-gradient(circle at 50% 35%,#fffbdc,#ffd777); text-align:center; transform:rotate(1.2deg) translateX(24px); }
+.stage-two-call-panel--complete p { margin:0; color:#24323b; font:900 clamp(16px,1.8vw,24px)/1.4 "Jua",sans-serif; word-break:keep-all; }
+.stage-two-call-scene.is-active .stage-two-call-panel--arrival { animation:stage-two-comic-panel-in .38s .12s cubic-bezier(.2,1.1,.35,1) forwards; }
+.stage-two-call-scene.is-calling .stage-two-call-panel--phone { animation:stage-two-comic-panel-in .42s cubic-bezier(.2,1.1,.35,1) forwards; }
+.stage-two-call-scene.is-complete .stage-two-call-panel--complete { animation:stage-two-comic-panel-in .42s cubic-bezier(.2,1.1,.35,1) forwards; }
+.stage-two-call-scene.is-calling .stage-two-call-panel--arrival { filter:saturate(.72) brightness(.78); scale:.97; transition:filter .3s ease,scale .3s ease; }
+.stage-two-call-scene.is-complete .stage-two-call-panel--phone { filter:saturate(.72) brightness(.82); scale:.98; transition:filter .3s ease,scale .3s ease; }
+.stage-two-call-panel__door { position:absolute; left:50%; top:50%; display:grid; place-items:center; width:86px; height:86px; border:4px solid #24323b; border-radius:24px; background:#53cbea; box-shadow:0 7px 0 #24323b; color:#fff; transform:translate(-50%,-50%); }
+.stage-two-call-panel__door svg { width:56px; fill:none; stroke:currentColor; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; animation:exit-cue-arrow 1.45s ease-in-out infinite; }
+.stage-two-call-scene__mascot-wrap { position:relative; align-self:end; width:min(310px,25vw); max-height:54vh; }
+.stage-two-call-scene__mascot { display:block; width:100%; max-height:54vh; object-fit:contain; object-position:bottom; filter:drop-shadow(0 8px 8px rgba(18,35,44,.22)); }
+.stage-two-call-scene__phone-wave { position:absolute; left:25%; top:27%; width:17%; aspect-ratio:1; border:5px solid #53cbea; border-left-color:transparent; border-bottom-color:transparent; border-radius:50%; opacity:0; transform:rotate(45deg) scale(.45); animation:stage-two-phone-wave 1.05s .7s ease-out infinite; }
+.stage-two-call-scene__phone-wave--two { width:25%; left:21%; top:23%; animation-delay:.95s; }
+.stage-two-call-scene.is-complete .stage-two-call-scene__phone-wave { display:none; }
+.stage-two-call-scene__panel { position:relative; z-index:4; width:calc(100% - 24px); box-sizing:border-box; margin:0 12px 14px; padding:13px 16px; border:3px solid #24323b; border-radius:18px; background:#fffdf0; box-shadow:0 5px 0 #24323b; text-align:center; }
+.stage-two-call-scene__panel::before { content:""; position:absolute; left:25%; top:-13px; width:20px; height:20px; border-left:3px solid #24323b; border-top:3px solid #24323b; background:#fffdf0; transform:rotate(45deg); }
+.stage-two-call-scene__panel p { position:relative; margin:0; color:#24323b; font:900 clamp(15px,1.7vw,22px)/1.35 "Jua",sans-serif; word-break:keep-all; }
+.stage-two-call-complete { display:flex; align-items:center; gap:9px; color:#24323b; font:900 clamp(18px,2vw,25px)/1 "Jua",sans-serif; }
+.stage-two-call-complete span { display:grid; place-items:center; width:38px; height:38px; border:3px solid #24323b; border-radius:50%; background:#70c94a; color:#fff; }
+@keyframes stage-two-call-scene-in { from { opacity:0; } to { opacity:1; } }
+@keyframes stage-two-comic-panel-in { from { opacity:0; scale:.82; } to { opacity:1; scale:1; transform:rotate(0) translate(0); } }
+@keyframes stage-two-phone-wave { 0% { opacity:0; transform:rotate(45deg) scale(.45); } 28% { opacity:.9; } 100% { opacity:0; transform:rotate(45deg) scale(1.15); } }
+@keyframes stage-two-call-complete-pop { from { opacity:0; transform:scale(.72); } to { opacity:1; transform:scale(1); } }
+
+/* Generated four-cut ending artwork: keep copy live and animate each printed panel independently. */
+.stage-two-call-beat { background:#263b48; }
+.stage-two-call-beat__art { position:absolute; z-index:1; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; user-select:none; -webkit-user-drag:none; transform:scale(1); transform-origin:center; }
+.stage-two-call-beat--arrival .stage-two-call-beat__art { object-position:center 54%; }
+.stage-two-call-beat--dial { background:#f6cd43; }
+.stage-two-call-beat--dial .stage-two-call-beat__art { object-fit:cover; }
+.stage-two-call-beat--phone .stage-two-call-beat__art { object-position:center; }
+.stage-two-call-beat--complete { background:#f0a744; }
+.stage-two-call-beat--complete .stage-two-call-beat__art { object-fit:cover; }
+.stage-two-call-scene.is-active:not(.is-dialing) .stage-two-call-beat--arrival .stage-two-call-beat__art { animation:stage-two-comic-arrival-pan 1.3s cubic-bezier(.2,.75,.28,1) both; }
+.stage-two-call-scene.is-dialing:not(.is-calling) .stage-two-call-beat--dial .stage-two-call-beat__art { animation:stage-two-comic-dial-tap .62s ease-out both; }
+.stage-two-call-scene.is-calling:not(.is-complete) .stage-two-call-beat--phone .stage-two-call-beat__art { animation:stage-two-comic-call-push 2.05s ease-out both; }
+.stage-two-call-scene.is-complete .stage-two-call-beat--complete .stage-two-call-beat__art { animation:stage-two-comic-complete-pop .48s .12s cubic-bezier(.2,1.14,.32,1) both; }
+.stage-two-call-story__dust { z-index:4; left:44%; bottom:15%; }
+.stage-two-call-beat--phone .stage-two-call-story__bubble { z-index:6; left:auto; right:5.5%; top:17%; width:39%; min-height:28%; display:grid; align-content:center; justify-items:center; box-sizing:border-box; padding:3% 3.4%; border:4px solid #fff; border-radius:34px; outline:3px solid #24323b; outline-offset:-1px; background:#fff8dc; box-shadow:0 7px 0 #24323b,0 15px 24px rgba(18,35,44,.24); }
+.stage-two-call-beat--phone .stage-two-call-story__bubble::before { display:block; content:""; position:absolute; left:-16px; bottom:25%; width:28px; height:28px; border-left:3px solid #24323b; border-bottom:3px solid #24323b; background:#fff8dc; transform:rotate(45deg); }
+.stage-two-call-beat--phone .stage-two-call-story__bubble p { color:#263b48; font-size:clamp(15px,1.75vw,24px); line-height:1.35; text-align:center; }
+.stage-two-call-beat--phone .stage-two-call-story__talk-dots { margin-top:8px; }
+.stage-two-call-beat--phone .stage-two-call-scene__phone-wave { display:none; }
+.stage-two-call-beat--complete .stage-two-call-complete { z-index:7; left:auto; right:5.5%; top:28%; width:39%; min-height:27%; display:grid; grid-template-columns:auto 1fr; box-sizing:border-box; padding:2.7% 3%; border:4px solid #fff; border-radius:26px; outline:3px solid #24323b; outline-offset:-1px; background:#fff4d6; box-shadow:0 8px 0 #24323b,0 18px 28px rgba(18,35,44,.28); }
+.stage-two-call-beat--complete .stage-two-call-complete span { width:clamp(34px,4vw,54px); height:clamp(34px,4vw,54px); }
+.stage-two-call-beat--complete .stage-two-call-complete strong { font-size:clamp(18px,2.1vw,30px); }
+.stage-two-call-beat--complete .stage-two-call-complete small { font-size:clamp(11px,1.15vw,16px); }
+.stage-two-call-scene.is-complete .stage-two-call-beat--complete .stage-two-call-complete { animation:stage-two-comic-copy-stamp .42s .32s cubic-bezier(.2,1.18,.3,1) both; }
+@keyframes stage-two-comic-arrival-pan { from { transform:scale(1.035) translateX(1.4%); } to { transform:scale(1) translateX(-.5%); } }
+@keyframes stage-two-comic-dial-tap { 0% { transform:scale(1.025); filter:brightness(1); } 45% { transform:scale(1.01); filter:brightness(1.08); } 100% { transform:scale(1); filter:brightness(1); } }
+@keyframes stage-two-comic-call-push { from { transform:scale(1); } to { transform:scale(1.025) translateX(-.35%); } }
+@keyframes stage-two-comic-complete-pop { from { opacity:.2; transform:scale(.88) rotate(-1deg); } to { opacity:1; transform:scale(.96) rotate(0); } }
+@keyframes stage-two-comic-copy-stamp { from { opacity:0; transform:scale(1.45) rotate(-8deg); } to { opacity:1; transform:scale(1) rotate(0); } }
+@media (orientation:landscape) and (max-height:520px) {
+  .stage-two-call-scene { padding:10px 20px; }
+  .stage-two-call-story__actor--walk { width:min(165px,20vw); height:78%; }
+  .stage-two-call-story__phone-wrap { left:25%; bottom:1%; width:min(174px,21vw); }
+  .stage-two-call-story__actor--phone { max-height:82vh; }
+  .stage-two-call-story__actor--success { left:25%; bottom:2%; width:min(168px,20vw); height:79%; }
+  .stage-two-call-story__ground-shadow { left:24%; bottom:2%; width:22vw; height:22px; }
+  .stage-two-call-story__bubble { left:48%; top:28%; width:46vw; padding:12px 15px; border-width:3px; border-radius:17px; box-shadow:0 5px 0 #24323b,0 10px 15px rgba(18,35,44,.22); }
+  .stage-two-call-story__bubble p { font-size:17px; }
+  .stage-two-call-story > .stage-two-call-complete { left:47%; top:28%; width:47vw; padding:14px 16px; border-width:3px; border-radius:18px; }
+  .stage-two-call-story > .stage-two-call-complete small { font-size:14px; }
+  .stage-two-call-beat { inset:1.5%; border-width:4px; border-radius:14px; outline-width:3px; }
+  .stage-two-call-beat__caption { bottom:5%; padding:7px 15px; border-width:3px; font-size:24px; }
+  .stage-two-call-phone-closeup { width:min(135px,18vw); border-width:5px; border-radius:23px; box-shadow:inset 0 0 0 3px #5fa7ff,0 8px 0 #24323b,0 14px 18px rgba(30,40,50,.3); }
+  .stage-two-call-beat__onomatopoeia { right:14%; top:16%; font-size:44px; -webkit-text-stroke-width:5px; }
+  .stage-two-call-beat--complete .stage-two-call-complete { left:47%; top:28%; width:47vw; padding:14px 16px; border-width:3px; border-radius:18px; }
+  .stage-two-call-beat--complete .stage-two-call-complete small { font-size:14px; }
+  .stage-two-call-beat--phone .stage-two-call-story__bubble { right:5%; top:15%; width:40%; min-height:31%; padding:2% 2.5%; border-width:3px; border-radius:22px; }
+  .stage-two-call-beat--phone .stage-two-call-story__bubble p { font-size:clamp(12px,1.55vw,16px); }
+  .stage-two-call-beat--complete .stage-two-call-complete { left:auto; right:5%; top:25%; width:40%; min-height:31%; padding:2%; border-width:3px; }
+  .stage-two-call-beat--complete .stage-two-call-complete strong { font-size:clamp(14px,1.9vw,19px); }
+  .stage-two-call-beat--complete .stage-two-call-complete small { font-size:clamp(9px,1.05vw,12px); }
+  .stage-two-call-comic { width:min(790px,94vw); height:min(350px,88vh); gap:9px; }
+  .stage-two-call-panel { border-width:4px; border-radius:14px; outline-width:3px; }
+  .stage-two-call-panel__number { left:7px; top:7px; width:27px; height:27px; border-width:2px; font-size:16px; }
+  .stage-two-call-panel__door { width:60px; height:60px; border-width:3px; border-radius:17px; box-shadow:0 5px 0 #24323b; }
+  .stage-two-call-panel__door svg { width:39px; }
+  .stage-two-call-scene__mascot-wrap { width:min(180px,22vw); max-height:62vh; }
+  .stage-two-call-scene__mascot { max-height:62vh; }
+  .stage-two-call-scene__panel { width:calc(100% - 16px); margin:0 8px 9px; padding:8px 9px; border-width:2px; border-radius:12px; box-shadow:0 3px 0 #24323b; }
+  .stage-two-call-scene__panel::before { top:-9px; width:14px; height:14px; border-width:2px; }
+  .stage-two-call-scene__panel p { font-size:13px; }
+  .stage-two-call-panel--complete { gap:12px; padding:8px; }
+  .stage-two-call-panel--complete p { font-size:13px; }
+  .stage-two-call-complete { font-size:15px; }
+  .stage-two-call-complete span { width:30px; height:30px; border-width:2px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .stage-two.is-call-transition .stage-two__frame,
+  .stage-two-call-scene.is-active,
+  .stage-two-call-panel,
+  .stage-two-call-panel__door svg,
+  .stage-two-call-story__actor,
+  .stage-two-call-story__phone-wrap,
+  .stage-two-call-story__ground-shadow,
+  .stage-two-call-story__dust,
+  .stage-two-call-story__bubble,
+  .stage-two-call-story__talk-dots i,
+  .stage-two-call-story > .stage-two-call-complete,
+  .stage-two-call-story::after,
+  .stage-two-call-beat,
+  .stage-two-call-beat__art,
+  .stage-two-call-phone-closeup,
+  .stage-two-call-beat--complete .stage-two-call-complete,
+  .stage-two-call-scene__phone-wave,
+  .stage-two__exit-door,
+  .stage-two-call-scene.is-complete .stage-two-call-complete { animation:none; }
+  .stage-two-call-scene { opacity:1; }
+  .stage-two-call-panel { opacity:1; transform:none; scale:1; }
+  .stage-two-call-scene.is-active:not(.is-calling) .stage-two-call-story__actor--walk { right:57%; opacity:1; transform:none; }
+  .stage-two-call-scene.is-calling:not(.is-complete) .stage-two-call-story__phone-wrap,
+  .stage-two-call-scene.is-calling:not(.is-complete) .stage-two-call-story__bubble { opacity:1; transform:none; }
+  .stage-two-call-scene.is-complete .stage-two-call-story__actor--success,
+  .stage-two-call-scene.is-complete .stage-two-call-story > .stage-two-call-complete { opacity:1; transform:none; }
+  .stage-two-call-scene.is-complete .stage-two-call-beat--complete .stage-two-call-complete { transform:none; }
+  .stage-two-call-beat__art { transform:scale(1); }
+}
 .stage-two__frame { position:relative; width:100vw; height:100dvh; overflow:hidden; background:#1a3041; isolation:isolate; }
 .stage-two__frame::before { content:""; position:absolute; z-index:0; inset:-24px; background-position:center; background-size:cover; background-repeat:no-repeat; filter:blur(18px) saturate(.78) brightness(.68); transform:scale(1.06); transition:background-image .32s ease; }
 .stage-two__frame[data-room="living"]::before { background-image:url("../../../assets/stage-2/backgrounds/bg-stage2-living-sunset-windowless-v1.jpg"); }
@@ -23,6 +228,17 @@
 .stage-two__pipe-hotspot.is-complete .stage-two__pipe-art { animation:none; filter:drop-shadow(0 4px 4px rgba(28,43,51,.3)); }
 .stage-two__pipe-hotspot.is-complete:is(:hover,:focus-visible) .stage-two__pipe-art { transform:none; filter:drop-shadow(0 4px 4px rgba(28,43,51,.3)); }
 .stage-two__pipe-hotspot:is(:hover,:focus-visible) .stage-two__pipe-art { transform:scale(1.025); filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 0 7px rgba(85,211,239,.88)); }
+.stage-two__exit-door { position:absolute; z-index:3; box-sizing:border-box; padding:0; border:3px solid rgba(255,255,255,.96); border-radius:5px; outline:0; background:rgba(85,211,239,.035); box-shadow:0 0 0 2px rgba(36,50,59,.56),0 0 18px rgba(85,211,239,.72); cursor:pointer; touch-action:manipulation; transition:background .16s ease,box-shadow .16s ease; animation:stage-two-exit-in .24s .34s ease both; }
+.stage-two__exit-door[hidden] { display:none !important; }
+.stage-two__exit-door:is(:hover,:focus-visible) { background:rgba(85,211,239,.09); box-shadow:0 0 0 3px rgba(36,50,59,.7),0 0 24px rgba(85,211,239,.9); }
+.stage-two__exit-door:focus-visible { outline:4px solid #ffd84d; outline-offset:5px; }
+.stage-two__exit-cue { position:absolute; left:50%; top:50%; display:grid; place-items:center; width:58px; height:58px; border:3px solid #24323b; border-radius:18px; background:#53cbea; box-shadow:0 4px 0 #24323b,0 8px 14px rgba(24,39,47,.25); color:#fff; transform:translate(-50%,-50%); }
+.stage-two__exit-cue svg { width:38px; height:38px; overflow:visible; fill:none; stroke:currentColor; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 2px 0 rgba(36,50,59,.25)); animation:exit-cue-arrow 1.45s .58s ease-in-out infinite; }
+@keyframes stage-two-exit-in { from { opacity:0; } to { opacity:1; } }
+@media (orientation:landscape) and (max-height:520px) {
+  .stage-two__exit-cue { width:112px; height:112px; border-radius:25px; }
+  .stage-two__exit-cue svg { width:72px; height:72px; }
+}
 @keyframes stage-two-pipe-hotspot-glow { 0%,100% { filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 0 5px rgba(85,211,239,.58)); } 50% { filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 0 12px rgba(85,211,239,.92)); } }
 @keyframes stage-two-pipe-denied { 0%,100% { transform:translateX(0); } 30% { transform:translateX(-7px); } 65% { transform:translateX(7px); } }
 .stage-two__frame:has(.stage-two__window-hotspot:not([hidden])) .stage-two__window-art {
@@ -83,11 +299,10 @@
 .stage-two-pipe-tool-card,.stage-two-pipe-tool-card img,.stage-two-pipe-kit,.stage-two-pipe-kit img,.stage-two-pipe-brush { -webkit-touch-callout:none; user-select:none; }
 .stage-two-pipe-auto-brush { position:absolute; z-index:12; width:110px; height:62px; object-fit:contain; pointer-events:none; filter:drop-shadow(0 7px 6px rgba(21,31,38,.35)); animation:stage-two-brush-scrub .66s ease-in-out both; }
 .stage-two-pipe-dialog:not(.is-tool-ready) .stage-two-pipe-point { visibility:hidden; pointer-events:none; }
-.stage-two-pipe-point { position:absolute; z-index:4; left:55.5%; width:48px; height:48px; min-width:44px; min-height:44px; padding:0; border:0; border-radius:50%; background:transparent; box-shadow:none; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transform:translate(-50%,-50%); }
-.stage-two-pipe-point b { position:absolute; left:50%; top:50%; display:grid; place-items:center; width:31px; height:31px; border:3px solid #f8c72e; border-radius:50%; background:#17242d; color:#fff8dc; box-shadow:0 0 0 2px rgba(255,255,255,.9),0 3px 0 rgba(36,50,59,.32); font:900 17px/1 "Jua",sans-serif; transform:translate(-50%,-50%); opacity:.72; transition:opacity .18s ease; }
+.stage-two-pipe-point { position:absolute; z-index:4; left:55.5%; width:60px; height:60px; min-width:52px; min-height:52px; padding:0; border:0; border-radius:50%; background:transparent; box-shadow:none; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transform:translate(-50%,-50%); }
+.stage-two-pipe-point b { position:absolute; left:50%; top:50%; display:grid; place-items:center; width:40px; height:40px; border:3px solid #f8c72e; border-radius:50%; background:#17242d; color:#fff8dc; box-shadow:0 0 0 2px rgba(255,255,255,.9),0 3px 0 rgba(36,50,59,.32); font:900 20px/1 "Jua",sans-serif; transform:translate(-50%,-50%); opacity:.78; transition:opacity .18s ease; }
 .stage-two-pipe-point[data-pipe-point="1"] { top:16%; }
 .stage-two-pipe-point[data-pipe-point="2"] { top:43%; }
-.stage-two-pipe-point[data-pipe-point="3"] { top:76%; }
 .stage-two-pipe-point.is-active b { opacity:1; box-shadow:0 0 0 3px #fff,0 0 0 6px #24323b,0 0 0 10px rgba(248,199,46,.45),0 0 20px 8px rgba(248,199,46,.72); animation:stage-two-pipe-point-glow 1.65s ease-in-out infinite; }
 .stage-two-pipe-point:focus-visible { outline:3px solid #fff; outline-offset:2px; box-shadow:0 0 0 6px #24323b; }
 .stage-two-pipe-soap-film { position:absolute; z-index:5; left:50%; top:50%; width:78px; height:30px; background:url("../../../assets/stage-2/effects/effect-soap-normal-v1.png") center/contain no-repeat; transform:translate(-50%,-50%) scale(.15) rotate(-4deg); opacity:0; pointer-events:none; transform-origin:center; }
@@ -175,8 +390,8 @@
   .stage-two-pipe-kit.scene-held-item::after { right:-8px; top:-8px; width:24px; height:24px; border-width:2px; border-radius:8px; font-size:13px; }
   .stage-two-pipe-brush { width:46px; height:46px; border-radius:9px; }
   .stage-two-pipe-auto-brush { width:76px; height:42px; }
-  .stage-two-pipe-point { left:55.5%; width:44px; height:44px; }
-  .stage-two-pipe-point b { width:27px; height:27px; border-width:2px; font-size:15px; }
+  .stage-two-pipe-point { left:55.5%; width:52px; height:52px; }
+  .stage-two-pipe-point b { width:35px; height:35px; border-width:2px; font-size:18px; }
   .stage-two-pipe-result { left:calc(100% + 4px); }
   .stage-two-pipe-result em { padding:4px 6px; border-width:2px; font-size:10px; }
 }

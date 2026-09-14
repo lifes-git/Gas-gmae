@@ -254,7 +254,14 @@
   box-sizing:border-box;
   color:var(--ui-ink);
   border-color:var(--ui-ink);
-  font-family:"Arial Rounded MT Bold","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+}
+
+.ui-button,.ui-icon-button,.ui-progress {
+  font-family:var(--font-display);
+}
+
+.ui-speech,.ui-panel,.ui-modal {
+  font-family:var(--font-body);
 }
 
 .ui-button,.ui-icon-button {
@@ -389,7 +396,7 @@
 #result-screen #result-title {
   margin:0 !important;
   color:#fff1c6 !important;
-  font-family:"Arial Rounded MT Bold","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif !important;
+  font-family:var(--font-body) !important;
   font-weight:900 !important;
   line-height:1.03 !important;
   letter-spacing:-.035em !important;
@@ -765,14 +772,6 @@
   }
 }
 
-@font-face {
-  font-family:"Jua Local";
-  src:url("../../../assets/common/fonts/jua/Jua-Regular.ttf") format("truetype");
-  font-style:normal;
-  font-weight:400;
-  font-display:swap;
-}
-
 /* Result showcase v4: reference-inspired stage panels without a shield badge. */
 #result-screen .result-card {
   width:min(1120px,94vw) !important;
@@ -787,7 +786,7 @@
   flex-direction:column;
   align-items:stretch;
   min-width:0;
-  font-family:"Jua Local","Malgun Gothic",sans-serif !important;
+  font-family:var(--font-body) !important;
 }
 
 #result-screen #result-title.image-title {
@@ -907,9 +906,17 @@
   width:min(100%,278px) !important;
 }
 
-#result-screen .result-actions .retro-button,
+#result-screen .result-actions .retro-button {
+  font-weight:1000 !important;
+  letter-spacing:0 !important;
+}
+
+#result-screen .result-actions .retro-button {
+  font-family:var(--font-display) !important;
+}
+
 #result-screen .result-message {
-  font-family:"Jua Local","Malgun Gothic",sans-serif !important;
+  font-family:var(--font-body) !important;
   font-weight:400 !important;
   letter-spacing:0 !important;
 }
@@ -1043,7 +1050,7 @@
   width:24%;
   margin:0;
   color:#173f73;
-  font-family:"Jua Local","Malgun Gothic",sans-serif;
+  font-family:var(--font-body);
   font-size:clamp(17px,2.25cqw,30px);
   font-weight:400;
   line-height:1;
@@ -1168,18 +1175,13 @@
   border-radius:0;
   background:linear-gradient(transparent 61%,rgba(255,210,65,.72) 61%);
   box-shadow:none;
-  font-family:"Jua Local","Malgun Gothic",sans-serif;
+  font-family:var(--font-body);
   font-size:clamp(14px,1.72cqw,23px);
-  font-weight:400;
+  font-weight:800;
   line-height:1.12;
   text-align:left;
   white-space:nowrap;
-  text-shadow:
-    -1px -1px 0 rgba(255,255,255,.94),
-    1px -1px 0 rgba(255,255,255,.94),
-    -1px 1px 0 rgba(255,255,255,.94),
-    1px 1px 0 rgba(255,255,255,.94),
-    0 2px 2px rgba(94,64,27,.18);
+  text-shadow:0 1px 1px rgba(94,64,27,.16);
 }
 
 #rules-dialog .rules-guidebook-item span {
@@ -1242,7 +1244,8 @@
   animation:shared-dialog-backdrop-in .24s ease-out both;
 }
 
-#settings-dialog[open] .settings-card {
+#settings-dialog[open] {
+  overflow:visible;
   transform-origin:50% 38%;
   animation:settings-dialog-open .38s cubic-bezier(.18,.9,.25,1.16) both;
 }
@@ -1251,7 +1254,7 @@
   animation:shared-dialog-backdrop-out .26s ease-in both;
 }
 
-#settings-dialog.is-closing .settings-card {
+#settings-dialog.is-closing {
   animation:settings-dialog-close .26s cubic-bezier(.55,0,.85,.25) both;
   pointer-events:none;
 }
@@ -1331,8 +1334,29 @@
   #rules-dialog.is-closing::backdrop,
   #rules-dialog.is-closing .rules-guidebook-frame,
   #settings-dialog[open]::backdrop,
-  #settings-dialog[open] .settings-card,
+  #settings-dialog[open],
   #settings-dialog.is-closing::backdrop,
-  #settings-dialog.is-closing .settings-card { animation:none !important; }
+  #settings-dialog.is-closing { animation:none !important; }
   #rules-dialog .rules-guidebook-close { transition:none !important; }
+}
+
+/* One bundled Korean typeface keeps every game screen visually consistent. */
+#app #guide-message,
+#app .mission-copy,
+#app .mission-explanation,
+#app .detail-instruction,
+#app .detail-guide-copy,
+#app .result-message,
+#rules-dialog .rules-guidebook-item span,
+#rules-dialog .rules-guidebook-note,
+#rules-dialog .rules-guidebook-caption {
+  font-family:var(--font-body) !important;
+}
+
+#app button,
+#app .progress-card,
+#app .ui-progress,
+#app .result-actions,
+#rules-dialog .rules-guidebook-section-title {
+  font-family:var(--font-display) !important;
 }

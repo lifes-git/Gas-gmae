@@ -9,9 +9,13 @@
   --toon-shadow:0 4px 0 var(--toon-ink),0 7px 12px rgba(24,39,47,.24);
 }
 
-button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
-.settings-card,#result-screen .result-copy,#rules-dialog .dialog-frame {
-  font-family:"Arial Rounded MT Bold","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif !important;
+button,.progress-card,.settings-card {
+  font-family:var(--font-display) !important;
+}
+
+.speech-bubble,.mission-speech,.detail-guide-copy,
+#result-screen .result-copy,#rules-dialog .dialog-frame {
+  font-family:var(--font-body) !important;
 }
 
 .progress-card {

@@ -87,7 +87,7 @@
 }
 
 .progress-slot b {
-  font:900 32px/1 "Jua",sans-serif;
+  font:900 32px/1 var(--font-body);
   transform:translateY(1px);
 }
 

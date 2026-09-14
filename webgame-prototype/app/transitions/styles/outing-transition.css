@@ -8,11 +8,11 @@
 .outing-cinematic__sunset { opacity:0; background-image:url("../../../assets/transitions/backgrounds/bg-outdoor-sunset-return-v1.jpg"); }
 .outing-cinematic__shade { z-index:2; background:#000; opacity:0; pointer-events:none; will-change:opacity; }
 
-.outing-transition h2 { position:absolute; z-index:4; margin:0; color:#fff9df; font-family:"Jua",sans-serif; line-height:1.05; letter-spacing:.04em; text-align:center; text-shadow:0 4px 0 rgba(15,27,38,.9),0 10px 30px rgba(0,0,0,.72); opacity:0; }
+.outing-transition h2 { position:absolute; z-index:4; margin:0; color:#fff9df; font-family:var(--font-body); line-height:1.05; letter-spacing:.04em; text-align:center; text-shadow:0 4px 0 rgba(15,27,38,.9),0 10px 30px rgba(0,0,0,.72); opacity:0; }
 .outing-transition h2 { font-size:clamp(2.2rem,6vw,5.2rem); transform:translateY(10px) scale(.96); }
 .outing-transition h2:focus { outline:none; }
 
-.outing-transition__skip { position:absolute; z-index:6; right:max(18px,env(safe-area-inset-right)); bottom:max(18px,env(safe-area-inset-bottom)); min-width:92px; min-height:48px; padding:.65rem 1rem; border:3px solid #17334d; border-radius:14px; color:#17334d; background:#55c9e7; box-shadow:0 5px 0 #17334d; font:700 1rem/1 "Jua",sans-serif; cursor:pointer; }
+.outing-transition__skip { position:absolute; z-index:6; right:max(18px,env(safe-area-inset-right)); bottom:max(18px,env(safe-area-inset-bottom)); min-width:92px; min-height:48px; padding:.65rem 1rem; border:3px solid #17334d; border-radius:14px; color:#17334d; background:#55c9e7; box-shadow:0 5px 0 #17334d; font:700 1rem/1 var(--font-body); cursor:pointer; }
 .outing-transition__skip:focus-visible { outline:4px solid #fff; outline-offset:4px; }
 
 .outing-transition.is-playing .outing-cinematic__day { animation:outing-day-hold 5.5s ease-in-out both; }

@@ -483,7 +483,8 @@
       item:collection.item,
       icon:collection.icon,
       label:collection.label,
-      sourceRect:collection.sourceRect
+      sourceRect:collection.sourceRect,
+      duration:360
     }).then(function () {
       collected[collection.item] = true;
       playSound("collect");

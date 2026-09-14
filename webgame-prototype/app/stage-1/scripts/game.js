@@ -221,6 +221,8 @@
 
   var backgroundMusicPhase = "stage1";
   var backgroundMusicFade = 0;
+  var stageTwoMusicTrack = "assets/common/audio/bgm-stage2-v1.mp3?v=30cb3ac463a4";
+  var stageTwoMusicVolume = .22;
 
   function fadeBackgroundMusic(target, duration) {
     if (!elements.music) return;
@@ -245,7 +247,7 @@
     backgroundMusicPhase = "transition";
     if (backgroundMusicFade) window.cancelAnimationFrame(backgroundMusicFade);
     backgroundMusicFade = 0;
-    var track = "assets/common/audio/bgm-stage2-v1.mp3";
+    var track = stageTwoMusicTrack;
     if (elements.music.getAttribute("src") !== track) {
       elements.music.pause();
       elements.music.setAttribute("src", track);
@@ -268,11 +270,18 @@
       return;
     }
     elements.music.volume = 0;
-    if (elements.music.paused) {
+    function beginStageTwoPlayback() {
+      if (backgroundMusicPhase !== "stage2" || !elements.soundSetting.checked || document.hidden) return;
       var playback = elements.music.play();
-      if (playback && playback.catch) playback.catch(function () { /* priming handles supported browsers */ });
+      if (playback && playback.then) {
+        playback.then(function () { fadeBackgroundMusic(stageTwoMusicVolume, 1200); }).catch(function () {});
+      } else {
+        fadeBackgroundMusic(stageTwoMusicVolume, 1200);
+      }
     }
-    fadeBackgroundMusic(.16, 1900);
+    if (elements.music.paused) beginStageTwoPlayback();
+    else fadeBackgroundMusic(stageTwoMusicVolume, 1200);
+    elements.music.addEventListener("canplay", beginStageTwoPlayback, { once:true });
   }
 
   function syncBackgroundMusic() {
@@ -281,7 +290,7 @@
     var completion = !elements.result.hidden;
     var tracks = {
       stage1: "assets/common/audio/Suitcase_and_Sunlight.mp3",
-      stage2: "assets/common/audio/bgm-stage2-v1.mp3"
+      stage2: stageTwoMusicTrack
     };
     if (backgroundMusicPhase === "transition" && !completion) {
       if (!elements.soundSetting.checked || document.hidden) {
@@ -311,7 +320,7 @@
     }
     if (!elements.music.paused || (completion && elements.music.ended)) return;
     var playback = elements.music.play();
-    if (trackChanged && backgroundMusicPhase === "stage2" && !completion) fadeBackgroundMusic(.16, 1900);
+    if (trackChanged && backgroundMusicPhase === "stage2" && !completion) fadeBackgroundMusic(stageTwoMusicVolume, 1200);
     if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
   }
 

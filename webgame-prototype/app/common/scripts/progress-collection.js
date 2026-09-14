@@ -41,7 +41,7 @@
 
     var dx = target.left + target.width / 2 - (source.left + source.width / 2);
     var dy = target.top + target.height / 2 - (source.top + source.height / 2);
-    var duration = window.matchMedia("(orientation: landscape) and (pointer: coarse)").matches ? 520 : 680;
+    var duration = options.duration || (window.matchMedia("(orientation: landscape) and (pointer: coarse)").matches ? 520 : 680);
     var animation = token.animate([
       { transform:"translate(0,0) scale(1)", opacity:1, offset:0 },
       { transform:"translate(" + dx * .56 + "px," + (dy * .46 - 42) + "px) scale(.72) rotate(-8deg)", opacity:1, offset:.58 },

@@ -9,7 +9,6 @@
     activeHazard: null,
     activeContentKey: null,
     nextPromptTimer: null,
-    interactionFailures: 0,
     butaneCarried: false,
     exiting: false,
     started: false
@@ -25,7 +24,6 @@
     step: document.getElementById("mission-step"),
     copy: document.getElementById("mission-copy"),
     visual: document.getElementById("mission-visual"),
-    actions: document.getElementById("mission-actions"),
     feedback: document.getElementById("mission-feedback"),
     guide: document.getElementById("guide-message"),
     live: document.getElementById("live-region"),
@@ -221,25 +219,99 @@
     } catch (error) { /* visual feedback remains available */ }
   }
 
-  function syncBackgroundMusic() {
+  var backgroundMusicPhase = "stage1";
+  var backgroundMusicFade = 0;
+
+  function fadeBackgroundMusic(target, duration) {
     if (!elements.music) return;
-    // A single audio element owns both tracks: two songs can never overlap.
-    var completion = !elements.result.hidden;
-    // Content version prevents a same-name audio replacement reusing old cache.
-    var track = completion ? "assets/common/audio/Walking_Toward_The_Sun.mp3?v=208c51f32d89" : "assets/common/audio/Suitcase_and_Sunlight.mp3";
+    if (backgroundMusicFade) window.cancelAnimationFrame(backgroundMusicFade);
+    var startedAt = performance.now();
+    var initial = elements.music.volume;
+    function step(now) {
+      var progress = Math.min(1, (now - startedAt) / duration);
+      elements.music.volume = initial + (target - initial) * progress;
+      backgroundMusicFade = progress < 1 ? window.requestAnimationFrame(step) : 0;
+    }
+    backgroundMusicFade = window.requestAnimationFrame(step);
+  }
+
+  function setBackgroundMusicPhase(phase) {
+    backgroundMusicPhase = phase;
+    syncBackgroundMusic();
+  }
+
+  function primeStageTwoBackgroundMusic() {
+    if (!elements.music) return;
+    backgroundMusicPhase = "transition";
+    if (backgroundMusicFade) window.cancelAnimationFrame(backgroundMusicFade);
+    backgroundMusicFade = 0;
+    var track = "assets/common/audio/bgm-stage2-v1.mp3";
     if (elements.music.getAttribute("src") !== track) {
       elements.music.pause();
       elements.music.setAttribute("src", track);
       elements.music.load();
     }
+    elements.music.loop = true;
+    elements.music.volume = 0;
+    if (!elements.soundSetting.checked || document.hidden) return;
+    var playback = elements.music.play();
+    if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
+  }
+
+  function revealStageTwoBackgroundMusic() {
+    if (!elements.music) return;
+    backgroundMusicPhase = "stage2";
+    try { elements.music.currentTime = 0; } catch (error) { /* metadata may still be loading */ }
+    if (!elements.soundSetting.checked || document.hidden) {
+      elements.music.pause();
+      elements.music.volume = .16;
+      return;
+    }
+    elements.music.volume = 0;
+    if (elements.music.paused) {
+      var playback = elements.music.play();
+      if (playback && playback.catch) playback.catch(function () { /* priming handles supported browsers */ });
+    }
+    fadeBackgroundMusic(.16, 1900);
+  }
+
+  function syncBackgroundMusic() {
+    if (!elements.music) return;
+    // A single audio element owns every BGM phase so tracks never overlap.
+    var completion = !elements.result.hidden;
+    var tracks = {
+      stage1: "assets/common/audio/Suitcase_and_Sunlight.mp3",
+      stage2: "assets/common/audio/bgm-stage2-v1.mp3"
+    };
+    if (backgroundMusicPhase === "transition" && !completion) {
+      if (!elements.soundSetting.checked || document.hidden) {
+        elements.music.pause();
+      } else if (elements.music.paused) {
+        var primedPlayback = elements.music.play();
+        if (primedPlayback && primedPlayback.catch) primedPlayback.catch(function () {});
+      }
+      return;
+    }
+    // Content version prevents a same-name completion track replacement reusing old cache.
+    var track = completion
+      ? "assets/common/audio/Walking_Toward_The_Sun.mp3?v=208c51f32d89"
+      : tracks[backgroundMusicPhase] || tracks.stage1;
+    var trackChanged = elements.music.getAttribute("src") !== track;
+    if (trackChanged) {
+      elements.music.pause();
+      elements.music.setAttribute("src", track);
+      elements.music.load();
+    }
     elements.music.loop = !completion;
-    elements.music.volume = .16;
+    if (trackChanged) elements.music.volume = backgroundMusicPhase === "stage2" && !completion ? 0 : .16;
+    else if (completion) elements.music.volume = .16;
     if (!elements.soundSetting.checked || document.hidden) {
       elements.music.pause();
       return;
     }
     if (!elements.music.paused || (completion && elements.music.ended)) return;
     var playback = elements.music.play();
+    if (trackChanged && backgroundMusicPhase === "stage2" && !completion) fadeBackgroundMusic(.16, 1900);
     if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
   }
 
@@ -267,17 +339,9 @@
     elements.world.style.setProperty("--scene-scale", String(scale));
   }
 
-  function showFallback(reason) {
-    if (elements.console.classList.contains("is-success")) return;
-    elements.actions.hidden = false;
-    if (reason) announce(reason + " 버튼 조작도 사용할 수 있습니다.");
-  }
-
   function registerInteractionFailure(message) {
-    state.interactionFailures += 1;
     setMissionStatus("error", message);
     announce(message);
-    if (state.interactionFailures >= 2) showFallback("두 번 조작이 어려웠어요.");
   }
 
   function correctAction() {
@@ -329,20 +393,6 @@
       announce("3가지 위험요소를 모두 해결했습니다. 외출하기 버튼이 활성화되었습니다.");
     }
     if (kitchenScenes) kitchenScenes.render();
-  }
-
-  function makeActionButton(action) {
-    var button = window.GameUI
-      ? window.GameUI.createButton({ label: action.label, className: "choice-button", variant: "primary" })
-      : document.createElement("button");
-    if (!window.GameUI) {
-      button.type = "button";
-      button.className = "choice-button";
-      button.textContent = action.label;
-    }
-    button.dataset.actionId = action.id;
-    button.addEventListener("click", function () { handleChoice(action); });
-    return button;
   }
 
   function addInstruction(text) {
@@ -697,7 +747,7 @@
   function renderMissionVisual(visualName) {
     var propPaths = {
       valve: "assets/masters/stage-1/props/prop-valve-handle-alpha-v2.png",
-      towel: "assets/stage-1/props/prop-towel-scene-v3.png",
+      towel: "assets/masters/stage-1/props/prop-towel-draped-alpha-v1.png",
       butane: "assets/stage-1/props/prop-butane-red-v4.png",
       "butane-outdoor": "assets/stage-1/props/prop-butane-red-v4.png"
     };
@@ -806,19 +856,11 @@
     window.clearTimeout(state.nextPromptTimer);
     state.activeHazard = hazard;
     state.activeContentKey = contentKey || hazard;
-    state.interactionFailures = 0;
     var content = window.GAME_CONTENT[state.activeContentKey];
     elements.title.textContent = content.title;
     elements.step.textContent = content.hud || "가스안전 미션";
     elements.copy.textContent = content.copy;
     renderMissionVisual(content.visual);
-    elements.actions.replaceChildren();
-    var fallbackLabel = document.createElement("p");
-    fallbackLabel.className = "fallback-label";
-    fallbackLabel.textContent = "조작이 어려운가요? 버튼으로 안전 행동을 실행할 수 있어요.";
-    elements.actions.appendChild(fallbackLabel);
-    content.actions.filter(function (action) { return action.correct; }).forEach(function (action) { elements.actions.appendChild(makeActionButton(action)); });
-    elements.actions.hidden = true;
     setMissionStatus(null, "");
     elements.console.classList.remove("is-success");
     elements.returnRoom.hidden = true;
@@ -895,6 +937,9 @@
     state.activeContentKey = null;
     state.butaneCarried = false;
     state.exiting = false;
+    if (backgroundMusicFade) window.cancelAnimationFrame(backgroundMusicFade);
+    backgroundMusicFade = 0;
+    backgroundMusicPhase = "stage1";
     if (window.ExitTransition) window.ExitTransition.reset();
     if (window.OutingTransition) window.OutingTransition.reset();
     if (window.StageTwo) window.StageTwo.reset();
@@ -945,7 +990,8 @@
     button.addEventListener("click", function () { openMission(button.dataset.openHazard); });
   });
 
-  document.getElementById("start-button").addEventListener("click", function () {
+  var startButton = document.getElementById("start-button");
+  startButton.addEventListener("click", function () {
     elements.intro.hidden = true;
     elements.app.hidden = false;
     state.started = true;
@@ -956,10 +1002,7 @@
     document.querySelector('.scene-navigation').focus();
     announce("게임이 시작되었습니다. 위험요소 3개를 찾아보세요.");
     showSpeechBubbleTemporarily();
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Tab" && elements.dialog.open) showFallback("키보드 입력을 감지했어요.");
+    if (window.AssetLoader) window.AssetLoader.prepare(["transition", "stage2Living", "stage2Kitchen"]);
   });
 
   elements.fullscreen.addEventListener("click", async function () {
@@ -1045,14 +1088,7 @@
     state.activeHazard = null;
   });
 
-  var introSettings = document.getElementById("settings-button").cloneNode(true);
-  introSettings.id = "intro-settings-button";
-  introSettings.className = "retro-button ui-button ui-button--neutral";
-  introSettings.removeAttribute("data-ui-icon");
-  var settingsLabel = document.createElement("span");
-  settingsLabel.textContent = "설정";
-  introSettings.appendChild(settingsLabel);
-  elements.intro.querySelector(".retro-actions").appendChild(introSettings);
+  var introSettings = document.getElementById("intro-settings-button");
   function openSettings() {
     playFeedback("tap");
     document.getElementById("restart-game-button").hidden = !elements.intro.hidden;
@@ -1065,6 +1101,44 @@
   document.querySelectorAll('dialog button[value="cancel"]').forEach(function (button) {
     button.addEventListener("click", function () { playFeedback("tap"); });
   });
+
+  function enableAnimatedClose(dialog, duration) {
+    var closing = false;
+    var closeTimer = null;
+
+    function closeAfterAnimation(returnValue) {
+      if (!dialog.open || closing) return;
+      closing = true;
+      dialog.classList.add("is-closing");
+      var closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : duration;
+      closeTimer = window.setTimeout(function () {
+        dialog.close(returnValue || "cancel");
+      }, closeDelay);
+    }
+
+    dialog.querySelectorAll('button[value="cancel"]').forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        closeAfterAnimation(button.value);
+      });
+    });
+
+    dialog.addEventListener("cancel", function (event) {
+      event.preventDefault();
+      playFeedback("tap");
+      closeAfterAnimation("cancel");
+    });
+
+    dialog.addEventListener("close", function () {
+      window.clearTimeout(closeTimer);
+      closeTimer = null;
+      closing = false;
+      dialog.classList.remove("is-closing");
+    });
+  }
+
+  enableAnimatedClose(elements.settings, 260);
+  enableAnimatedClose(elements.rulesDialog, 280);
 
   document.getElementById("restart-game-button").addEventListener("click", function () {
     playFeedback("tap");
@@ -1130,20 +1204,28 @@
     state.exiting = true;
     elements.exitDoor.disabled = true;
     playFeedback("door");
+    primeStageTwoBackgroundMusic();
 
-    window.ExitTransition.play({
-      room: elements.room,
-      target: elements.exitDoor,
-      onComplete: function () {
-        elements.app.hidden = true;
-        window.OutingTransition.play({
-          onComplete: function () {
-            window.StageTwo.show();
-            syncBackgroundMusic();
-          }
-        });
-      }
-    });
+    var beginExit = function () {
+      window.ExitTransition.play({
+        room: elements.room,
+        target: elements.exitDoor,
+        onComplete: function () {
+          elements.app.hidden = true;
+          window.OutingTransition.play({
+            onReturnReveal: function () {
+              revealStageTwoBackgroundMusic();
+            },
+            onComplete: function () {
+              window.StageTwo.show();
+              setBackgroundMusicPhase("stage2");
+            }
+          });
+        }
+      });
+    };
+    if (window.AssetLoader) window.AssetLoader.run(["transition", "stage2Living", "stage2Kitchen"], beginExit);
+    else beginExit();
   });
 
   const mascotArt = document.getElementById("mascot-art");
@@ -1154,4 +1236,9 @@
   }
 
   renderProgress();
+  if (window.AssetLoader) {
+    window.AssetLoader.run(["stage1Living", "stage1Kitchen"], function () { startButton.disabled = false; });
+  } else {
+    startButton.disabled = false;
+  }
 }());

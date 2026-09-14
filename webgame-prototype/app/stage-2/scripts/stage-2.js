@@ -135,7 +135,6 @@
     window.setTimeout(function () {
       if (!solved[id] || safetyRuleDialog.open) return;
       safetyRuleDialog.showModal();
-      if (id !== "window") playSound("safetyCard");
       safetyRuleConfirm.focus();
     }, 0);
   }
@@ -271,9 +270,16 @@
   }
 
   navigation.addEventListener("click", function () {
-    room = room === "living" ? "kitchen" : "living";
-    render();
-    (endingReady && room === "living" ? exitDoor : navigation).focus();
+    var nextRoom = room === "living" ? "kitchen" : "living";
+    navigation.disabled = true;
+    var move = function () {
+      room = nextRoom;
+      render();
+      navigation.disabled = false;
+      (endingReady && room === "living" ? exitDoor : navigation).focus();
+    };
+    if (window.AssetLoader) window.AssetLoader.run(nextRoom === "kitchen" ? "stage2Kitchen" : "stage2Living", move);
+    else move();
   });
   exitDoor.addEventListener("click", function () {
     if (!endingReady || room !== "living") return;

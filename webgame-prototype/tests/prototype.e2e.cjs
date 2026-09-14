@@ -58,6 +58,7 @@ async function start(page, capture = false) {
     await page.locator("#intro-rules-button").click();
     await captureScreenshot(page, "rules.png");
     await page.locator("#rules-dialog .retro-close").click();
+    await page.locator("#rules-dialog").waitFor({ state: "hidden" });
   }
   await page.getByRole("button", { name: "시작", exact: true }).click();
   await page.getByText("0 / 3", { exact: true }).waitFor();

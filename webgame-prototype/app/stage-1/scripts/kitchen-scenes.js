@@ -67,9 +67,15 @@ window.createKitchenScenes = function (options) {
       options.announce(heldItem === "towel" ? "행주를 먼저 바구니에 넣어주세요." : "부탄캔을 먼저 문밖으로 옮겨주세요.");
       return;
     }
-    room = room === "living" ? "kitchen" : "living";
-    options.sound("door");
-    render(); navigation.focus();
+    var nextRoom = room === "living" ? "kitchen" : "living";
+    navigation.disabled = true;
+    var move = function () {
+      room = nextRoom;
+      options.sound("door");
+      render(); navigation.focus();
+    };
+    if (window.AssetLoader) window.AssetLoader.run(nextRoom === "kitchen" ? "stage1Kitchen" : "stage1Living", move);
+    else move();
   });
   document.getElementById("room").appendChild(navigation);
   var inventory = document.createElement("div");
@@ -97,13 +103,9 @@ window.createKitchenScenes = function (options) {
   var origin = null;
   modal.addEventListener("close", function () {
     if (modal.open) return;
-    modal.classList.remove("show-fallback");
     if (origin && !origin.hidden) origin.focus();
   }, { variant: "info", iconOnly: true, ariaLabel: "주방으로 이동" });
   navigation.innerHTML = '<svg viewBox="0 0 72 54" aria-hidden="true" focusable="false"><path class="nav-arrow-shadow" d="M7 35C19 15 42 12 56 22L52 10L68 28L48 43L54 31C42 23 25 26 16 42Z"/><path class="nav-arrow" d="M7 35C19 15 42 12 56 22L52 10L68 28L48 43L54 31C42 23 25 26 16 42Z"/><path class="nav-arrow-highlight" d="M17 30C27 18 42 18 51 23"/></svg>';
-  modal.addEventListener("keydown", function (event) {
-    if (event.key === "Tab") modal.classList.add("show-fallback");
-  });
   function render() {
     world.classList.add("approved-scenes");
     world.dataset.map = room;
@@ -192,6 +194,13 @@ window.createKitchenScenes = function (options) {
       view.appendChild(svg);
     }
     svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+    if (id === "valve") {
+      var valveTurnCue = document.createElement("span");
+      valveTurnCue.className = "rotation-cue rotation-cue-valve rotation-cue-reverse";
+      valveTurnCue.setAttribute("aria-hidden", "true");
+      valveTurnCue.innerHTML = '<svg viewBox="0 0 120 90"><path class="rotation-arrow-shadow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-arrow" d="M22 62C35 20 84 12 104 42L108 26L116 54L88 59L100 49C84 25 48 30 38 64Z"/><path class="rotation-highlight" d="M35 48C49 25 77 22 94 36"/></svg>';
+      view.appendChild(valveTurnCue);
+    }
     var guide = document.createElement("div"); guide.className = "detail-guide";
     var guideMascot = document.createElement("img");
     guideMascot.src = id === "towel"
@@ -229,7 +238,7 @@ window.createKitchenScenes = function (options) {
         guideCopy.classList.add("is-success");
         guideMascot.src = "assets/common/mascots/mascot-somyeongi-success-logo-v1.svg";
         modal.classList.add("is-success");
-        action.disabled = true; target.disabled = true; close.focus();
+        target.disabled = true; close.focus();
       }
     }
     var target = button(id === "valve" ? "손잡이 돌리기" : id === "towel" ? "행주 집기" : "다 쓴 부탄캔 집기", "detail-target target-" + id, id === "valve" ? function () { } : act);
@@ -241,11 +250,10 @@ window.createKitchenScenes = function (options) {
       target.appendChild(can);
     }
     view.appendChild(target);
-    var action = button(id === "valve" ? "손잡이 90° 돌리기" : id === "towel" ? "행주 집기" : "부탄캔 집기", "detail-action", act, { variant: "primary" });
     var closeLabel = id === "butane" ? "거실로 돌아가기" : "주방으로 돌아가기";
     var close = button(closeLabel, "detail-back", function () { options.sound("tap"); modal.close(); }, { variant: "info", iconOnly: true, ariaLabel: closeLabel });
     close.setAttribute("aria-label", closeLabel);
-    var controls = document.createElement("footer"); controls.append(action, close);
+    var controls = document.createElement("footer"); controls.append(close);
     modal.append(header, view, guide, controls);
     if (id === "valve") {
       var start = null;
@@ -277,16 +285,13 @@ window.createKitchenScenes = function (options) {
         if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId);
         target.classList.remove("is-dragging");
         if (start !== null && !done) {
-          modal.dataset.failures = String(Number(modal.dataset.failures || 0) + 1);
-          if (Number(modal.dataset.failures) >= 2) modal.classList.add("show-fallback");
           angle = 0;
           lever.style.setProperty("--valve-angle", "0deg");
         }
         start = null;
       });
     }
-    modal.dataset.failures = "0";
-    modal.classList.remove("show-fallback", "is-success");
+    modal.classList.remove("is-success");
     modal.showModal(); target.focus();
     return true;
   }

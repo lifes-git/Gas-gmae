@@ -60,7 +60,7 @@ async function drag(page, selector, fromX, toX) {
   await drag(page, ".kitchen-detail-dialog[open] .detail-target", .72, .08);
   await page.getByRole("button", { name:"확인했어요" }).click();
   await page.locator('[data-progress-item="valve"].is-collected').waitFor();
-  assert((await page.locator('[data-progress-item="valve"] img').getAttribute("src")).includes("progress-valve-closed-v1.png"), "stage 1 valve slot must use the dedicated composite progress asset");
+  assert((await page.locator('[data-progress-item="valve"] img').getAttribute("src")).includes("result-valve-integrated-v1.png"), "stage 1 valve slot and result recap must use the same integrated valve asset");
   assert(await page.locator(".kitchen-detail-dialog[open]").count() === 0, "stage 1 interaction modal should close before collection");
 
   await page.evaluate(() => {

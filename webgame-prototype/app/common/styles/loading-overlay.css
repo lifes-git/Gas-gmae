@@ -1,0 +1,33 @@
+.loading-overlay {
+  position:fixed;
+  z-index:250;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:rgba(20,34,42,.42);
+  backdrop-filter:blur(3px);
+  cursor:progress;
+}
+.loading-overlay[hidden] { display:none !important; }
+.loading-ring {
+  display:block;
+  width:62px;
+  height:62px;
+  border:8px solid rgba(255,255,255,.28);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:loading-ring-spin .9s linear infinite;
+}
+@keyframes loading-ring-spin {
+  to { transform:rotate(360deg); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .loading-ring { animation:none; }
+}
+@media (max-width:600px) {
+  .loading-ring {
+    width:52px;
+    height:52px;
+    border-width:7px;
+  }
+}

@@ -15,11 +15,9 @@ function assert(condition, message) {
   await page.goto(target, { waitUntil:"load" });
   await page.evaluate(() => window.GameEnding.show());
   await page.waitForTimeout(1700);
-  assert(await page.locator(".result-item-icon").count() === 5, "ending stage groups must recap all five completed items with PNG artwork");
-  assert((await page.locator(".result-item-icon--valve").getAttribute("src")).includes("result-valve-integrated-v1.png"), "ending valve and expert-inspection pipe must share the integrated pipe art family");
-  assert(await page.locator(".result-checklist li.is-caution").count() === 0, "all five ending items, including the expert inspection request, must be marked complete");
+  assert(await page.locator(".result-stage-group").count() === 0, "ending must omit the duplicated stage summary cards");
   assert(await page.locator(".result-kicker").count() === 0, "ending must not render a redundant five-of-five kicker");
-  assert((await page.locator(".result-stage-group h3").first().evaluate(node => getComputedStyle(node).fontFamily)).includes("Jua Local"), "ending copy must use the bundled Korean display font");
+  assert((await page.locator(".result-message").textContent()).includes("귀가 후 안전 대응"), "ending must retain the concise completion message");
   const resultBackground = await page.locator("#result-screen").evaluate(node => getComputedStyle(node).backgroundImage);
   assert(resultBackground.includes("bg-outdoor-sunset-return-v1.jpg"), `ending must retain the sunset epilogue background: ${resultBackground}`);
 
@@ -39,9 +37,15 @@ function assert(condition, message) {
     if (process.env.QA_ENDING_DIR) await page.screenshot({ path:path.join(process.env.QA_ENDING_DIR, `ending-${viewport.name}.png`) });
   }
 
-  await page.getByRole("button", { name:"수칙 보기" }).click();
+  await page.getByRole("button", { name:"안전수칙", exact:true }).click();
   assert(await page.locator("#rules-dialog").evaluate(dialog => dialog.open), "ending rules button must open the shared rules dialog");
+  assert((await page.locator("#rules-dialog .rules-guidebook-art").getAttribute("src")).includes("rules-guidebook-summary-v1.png"), "shared rules dialog must use the transparent summary-guidebook artwork");
+  assert(await page.locator("#rules-dialog .rules-guidebook-item").count() === 5, "shared rules dialog must present all five safety rules");
+  const rulesFrame = await page.locator("#rules-dialog .rules-guidebook-frame").boundingBox();
+  const rulesViewport = page.viewportSize();
+  assert(rulesFrame && rulesFrame.x >= -.5 && rulesFrame.y >= -.5 && rulesFrame.x + rulesFrame.width <= rulesViewport.width + .5 && rulesFrame.y + rulesFrame.height <= rulesViewport.height + .5, `shared rules dialog must fit the viewport: ${JSON.stringify(rulesFrame)}`);
   await page.locator("#rules-dialog button[value=cancel]").click();
+  await page.locator("#rules-dialog").waitFor({ state:"hidden" });
   await page.getByRole("button", { name:"다시하기" }).click();
   assert(await page.locator("#intro-screen").isVisible(), "ending restart must return to the intro");
 

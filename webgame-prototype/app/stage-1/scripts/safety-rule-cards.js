@@ -4,7 +4,7 @@ window.SAFETY_RULE_CARDS = {
     lead: "장기간 외출 전에는",
     highlight: "가스밸브를 잠가요.",
     icon: "assets/masters/stage-1/props/prop-valve-handle-alpha-v2.png",
-    progressIcon: "assets/common/props/progress-valve-closed-v1.png"
+    progressIcon: "assets/common/props/result-valve-integrated-v1.png"
   },
   towel: {
     label: "화기 주변 안전수칙",

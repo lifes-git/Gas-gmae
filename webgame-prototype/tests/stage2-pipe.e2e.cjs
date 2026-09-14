@@ -141,21 +141,20 @@ function assert(condition, message) {
   ["windowLatch", "windowOpen", "toolWrong", "toolSelect", "brushScrub", "bubbleNormal", "bubbleWarning", "safetyCard", "collect", "storyStep", "phoneDial", "phoneRing", "stageComplete"].forEach(sound => {
     assert(playedSounds.includes(sound), `Stage 2 interaction must trigger ${sound}`);
   });
-  const endingSamples = await page.evaluate(() => ["storyStep", "phoneRing"].map(id => window.GAME_SOUND_DATA[id]));
+  const endingSamples = await page.evaluate(() => ["storyStep", "phoneDial", "phoneRing"].map(id => window.GAME_SOUND_DATA[id]));
   endingSamples.forEach(config => {
-    assert(config.type === "sample" && config.src.endsWith(".mp3"), `Ending comic cue must use a real MP3 sample: ${JSON.stringify(config)}`);
+    assert(config.type === "sample" && /\.(mp3|wav)$/.test(config.src), `Ending comic cue must use a real audio sample: ${JSON.stringify(config)}`);
   });
   assert(endingSamples[0].src.endsWith("sfx-ending-footsteps-v1.mp3"), "the first ending cut must use the approved three-step sample instead of the door-close sound");
-  assert((await page.evaluate(() => window.GAME_SOUND_DATA.phoneDial.type)) === "phoneDial", "the dialing cut must use the short keypad-tone pattern instead of a vibration sample");
+  assert(endingSamples[1].src.endsWith("sfx-ending-phone-dial-v1.wav"), "the dialing cut must use the selected real DTMF keypad sample");
   await page.locator("#result-screen").waitFor({ state:"visible" });
   await page.waitForTimeout(900);
   assert(await page.locator("#stage-two").isHidden(), "Stage 2 must hide when the ending appears");
   assert((await page.locator("#result-title img").getAttribute("src")).includes("title-ending-mission-alpha-v1.png"), "ending must use the mission-complete PNG title");
   assert((await page.locator(".result-mascot-art").getAttribute("src")).includes("mascot-somyeongi-ending-logo-v1.png"), "ending must use the logo-bearing mascot PNG");
   assert(await page.locator(".result-kicker").count() === 0, "ending must not restore the removed five-of-five kicker");
-  assert(await page.locator(".result-stage-group").count() === 2, "ending must separate departure and return missions");
-  assert(await page.locator(".result-checklist li.is-caution").count() === 0, "all five ending items, including the expert inspection request, must be marked complete");
-  assert((await page.locator(".result-checklist--return li:last-child strong").textContent()).includes("전문가 점검 요청"), "ending must preserve expert inspection as the final completed action");
+  assert(await page.locator(".result-stage-group").count() === 0, "ending must omit the duplicated stage summary cards");
+  assert((await page.locator(".result-message").textContent()).includes("귀가 후 안전 대응"), "ending must summarize completion without another item list");
   assert((await page.locator("#background-music").getAttribute("src")).includes("Walking_Toward_The_Sun.mp3"), "ending must switch to its dedicated music");
   if (process.env.QA_ENDING_SCREENSHOT) await page.screenshot({ path:process.env.QA_ENDING_SCREENSHOT });
   const endingBox = await page.locator("#result-screen .result-card").boundingBox();

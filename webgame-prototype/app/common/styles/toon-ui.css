@@ -96,7 +96,7 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
   font-weight:900 !important;
 }
 
-.choice-button,#return-room-button,.detail-action,.detail-back,.paper-button,
+.choice-button,#return-room-button,.detail-back,.paper-button,
 #intro-screen .retro-button,#result-screen .result-actions .retro-button {
   display:inline-flex !important;
   align-items:center;
@@ -116,16 +116,14 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
 }
 .choice-button::before { content:"✓"; display:grid; place-items:center; width:24px; height:24px; color:#fff; border:2px solid var(--toon-ink); border-radius:8px; background:var(--toon-green); font-size:14px; }
 #return-room-button::before,.detail-back::before { content:"↩"; font-size:1.2em; }
-.detail-action::before { content:"✓"; }
 .paper-button.secondary::before { content:"⛶"; font-size:1.15em; }
 .paper-button.danger::before,#result-screen #restart-button::before { content:"↻"; font-size:1.15em; }
-#result-screen #result-rules-button::before { content:"✓"; }
 #intro-screen .btn-orange,#result-screen .result-actions .btn-orange { background:var(--toon-coral) !important; }
 #intro-screen .btn-blue,#result-screen .result-actions .btn-blue { background:var(--toon-sky) !important; }
 .paper-button.danger { background:#ffc6cc !important; }
 
 .settings-button:active,.choice-button:active,#return-room-button:active,
-.detail-action:active,.detail-back:active,.paper-button:active,
+.detail-back:active,.paper-button:active,
 #intro-screen .retro-button:active,#result-screen .result-actions .retro-button:active,
 .mission-stage>.mission-close:active,.kitchen-detail-dialog .detail-close:active {
   transform:translateY(3px) !important;
@@ -182,7 +180,6 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
 #result-screen .result-checklist li::before { display:grid; place-items:center; width:22px; height:22px; color:#fff !important; border:2px solid var(--toon-ink); border-radius:7px; background:var(--toon-green); font-size:13px; }
 #rules-dialog .retro-list li::before { color:#fff !important; border:2px solid var(--toon-ink) !important; background:var(--toon-sky) !important; box-shadow:0 2px 0 var(--toon-ink); }
 
-.kitchen-detail-dialog:not(.show-fallback) .detail-action { display:none !important; }
 .kitchen-detail-dialog:not(.is-success) .detail-back { display:none !important; }
 [hidden] { display:none !important; }
 #return-room-button[hidden] { display:none !important; }
@@ -199,7 +196,7 @@ button,.progress-card,.speech-bubble,.mission-speech,.detail-guide-copy,
   .progress-label { font-size:8px; }
   #progress-text { font-size:11px !important; }
   .speech-bubble,.mission-speech,.detail-guide-copy { border-radius:11px !important; }
-  .choice-button,#return-room-button,.detail-action,.detail-back,.paper-button,
+  .choice-button,#return-room-button,.detail-back,.paper-button,
   #result-screen .result-actions .retro-button { border-radius:10px !important; }
   #result-screen .result-checklist li { grid-template-columns:26px 72px minmax(0,1fr) !important; column-gap:6px !important; }
 }

@@ -4594,7 +4594,6 @@ body {
 
   .choice-button,
   #return-room-button,
-  .detail-action,
   .detail-back,
   .paper-button,
   #intro-screen .retro-button,
@@ -4635,10 +4634,6 @@ body {
     font-size: 1.2em;
   }
 
-  .detail-action::before {
-    content: "✓";
-  }
-
   .paper-button.secondary::before {
     content: "⛶";
     font-size: 1.15em;
@@ -4654,14 +4649,8 @@ body {
     font-size: 1.1em;
   }
 
-  #result-screen #result-rules-button::before {
-    content: "✓";
-    font-size: 1.05em;
-  }
-
   .choice-button:active,
   #return-room-button:active,
-  .detail-action:active,
   .detail-back:active,
   .paper-button:active,
   #intro-screen .retro-button:active,
@@ -4865,7 +4854,6 @@ body {
 
     .choice-button,
     #return-room-button,
-    .detail-action,
     .detail-back,
     .paper-button,
     #result-screen .result-actions .retro-button {

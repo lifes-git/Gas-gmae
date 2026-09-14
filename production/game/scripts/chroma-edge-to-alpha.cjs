@@ -1,8 +1,8 @@
 const sharp = require("sharp");
 
-const [, , input, output] = process.argv;
+const [, , input, output, mode] = process.argv;
 if (!input || !output) {
-  throw new Error("Usage: node chroma-edge-to-alpha.cjs <input> <output>");
+  throw new Error("Usage: node chroma-edge-to-alpha.cjs <input> <output> [--preserve-canvas]");
 }
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -64,8 +64,9 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
     data[offset + 3] = alpha;
   }
 
-  await sharp(data, { raw:info })
-    .trim({ background:{ r:0, g:0, b:0, alpha:0 } })
-    .png()
-    .toFile(output);
+  let outputImage = sharp(data, { raw:info });
+  if (mode !== "--preserve-canvas") {
+    outputImage = outputImage.trim({ background:{ r:0, g:0, b:0, alpha:0 } });
+  }
+  await outputImage.png().toFile(output);
 })();

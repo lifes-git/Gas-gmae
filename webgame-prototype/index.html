@@ -6,11 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="장기간 외출 전 가스안전 위험요소 3개를 찾는 교육용 웹게임 프로토타입">
   <title>소멍이의 외출 전 가스안전 점검</title>
-  <link rel="stylesheet" href="app/common/styles/styles.css">
-  <link rel="stylesheet" href="app/stage-1/styles/kitchen-scenes.css?v=valve-handle-focus-1">
-  <link rel="stylesheet" href="app/common/styles/toon-ui.css">
-  <link rel="stylesheet" href="app/common/styles/ui-components.css">
+  <link rel="stylesheet" href="app/common/styles/styles.css?v=no-detail-action-1">
+  <link rel="stylesheet" href="app/stage-1/styles/kitchen-scenes.css?v=no-detail-action-1">
+  <link rel="stylesheet" href="app/common/styles/toon-ui.css?v=no-detail-action-1">
+  <link rel="stylesheet" href="app/common/styles/ui-components.css?v=result-mascot-mobile-2">
   <link rel="stylesheet" href="app/common/styles/entrance-motion.css">
+  <link rel="stylesheet" href="app/common/styles/loading-overlay.css?v=asset-loader-1">
   <link rel="stylesheet" href="app/transitions/styles/exit-transition.css">
   <link rel="stylesheet" href="app/transitions/styles/outing-transition.css">
   <link rel="stylesheet" href="app/stage-2/styles/stage-2.css?v=stage2-pipe-13">
@@ -158,9 +159,6 @@
             <p class="mission-explanation" id="mission-explanation" hidden></p>
           </div>
         </div>
-        <div class="mission-actions" id="mission-actions" hidden>
-          <p class="fallback-label">조작이 어려운가요? 버튼으로 안전 행동을 실행할 수 있어요.</p>
-        </div>
         <p class="mission-feedback" id="mission-feedback" role="status" aria-live="polite"></p>
         <button class="retro-button btn-blue" id="return-room-button" type="button" hidden data-ui-component="button"
           data-ui-variant="info" style="width: 100%; margin-top: 1rem; padding: 1rem;"><span class="visually-hidden">방으로
@@ -185,17 +183,48 @@
   </dialog>
 
   <dialog class="rules-dialog retro-modal ui-modal" id="rules-dialog" aria-labelledby="rules-title">
-    <form method="dialog" class="dialog-frame rules-frame">
-      <header class="rules-memo-header">
-        <h2 id="rules-title" class="retro-title">가스안전 수칙</h2>
-        <button class="icon-button retro-close" value="cancel" aria-label="안전수칙 닫기" data-ui-component="button"
-          data-ui-variant="danger" data-ui-icon="true">✖</button>
-      </header>
-      <ol class="retro-list">
-        <li><strong class="retro-label">가스밸브</strong><span>장기간 외출 전 가스밸브를 잠가요.</span></li>
-        <li><strong class="retro-label">화기 주변</strong><span>종이와 행주는 화기 주변에 두지 않아요.</span></li>
-        <li><strong class="retro-label">다 쓴 부탄캔</strong><span>통풍이 잘되는 곳에서 잔여가스를 제거하고 지역 배출 기준을 확인해요. 제거 전에 구멍을 뚫지
-            않아요.</span></li>
+    <form method="dialog" class="dialog-frame rules-frame rules-guidebook-frame">
+      <img class="rules-guidebook-art" src="assets/common/ui/rules-guidebook-summary-v1.png" alt="" aria-hidden="true">
+      <h2 id="rules-title" class="visually-hidden">가스안전 수칙</h2>
+      <h3 class="rules-guidebook-section-title rules-guidebook-section-title--before">외출 전</h3>
+      <h3 class="rules-guidebook-section-title rules-guidebook-section-title--after">귀가 후</h3>
+      <button class="retro-close rules-guidebook-close" value="cancel" aria-label="안전수칙 닫기">✖</button>
+      <ol class="rules-guidebook-list">
+        <li class="rules-guidebook-item rules-guidebook-item--valve">
+          <div class="rules-guidebook-sticker" aria-hidden="true">
+            <img src="assets/common/props/result-valve-integrated-v1.png" alt="">
+          </div>
+          <strong>밸브 잠금</strong>
+          <span>장기간 외출 전 가스밸브를 잠가요.</span>
+        </li>
+        <li class="rules-guidebook-item rules-guidebook-item--towel">
+          <div class="rules-guidebook-sticker" aria-hidden="true">
+            <img src="assets/masters/stage-1/props/prop-towel-draped-alpha-v1.png" alt="">
+          </div>
+          <strong>화기 주변 정리</strong>
+          <span>종이와 행주는 화기 주변에 두지 않아요.</span>
+        </li>
+        <li class="rules-guidebook-item rules-guidebook-item--butane">
+          <div class="rules-guidebook-sticker" aria-hidden="true">
+            <img src="assets/stage-1/props/prop-butane-red-v4.png" alt="">
+          </div>
+          <strong>부탄캔 배출</strong>
+          <span>잔여가스를 제거하고 지역 배출 기준을 확인해요.</span>
+        </li>
+        <li class="rules-guidebook-item rules-guidebook-item--window">
+          <div class="rules-guidebook-sticker rules-guidebook-window-art" aria-hidden="true">
+            <img src="assets/common/props/progress-window-open-v1.png" alt="">
+          </div>
+          <strong>창문 환기</strong>
+          <span>전기 스위치를 조작하지 말고 자연환기해요.</span>
+        </li>
+        <li class="rules-guidebook-item rules-guidebook-item--pipe">
+          <div class="rules-guidebook-sticker" aria-hidden="true">
+            <img src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="">
+          </div>
+          <strong>점검 요청</strong>
+          <span>이상이 의심되면 사용을 멈추고<br>공급자에게 점검을 요청해요.</span>
+        </li>
       </ol>
     </form>
   </dialog>
@@ -442,34 +471,28 @@
         <h2 id="result-title" class="image-title" tabindex="-1"><img src="assets/masters/common/ui/title-ending-mission-alpha-v1.png"
             alt="안전점검 임무 완료!" width="2116" height="407"></h2>
         <p class="result-message">출발 전 점검과 귀가 후 안전 대응을 모두 마쳤어요!</p>
-        <div class="result-stage-groups">
-          <section class="result-stage-group" aria-labelledby="result-stage-one-title">
-            <h3 id="result-stage-one-title">출발 전 <strong>3 / 3</strong></h3>
-            <ul class="result-checklist">
-              <li><img class="result-item-icon result-item-icon--valve" src="assets/common/props/result-valve-integrated-v1.png" alt="" aria-hidden="true"><strong>밸브 잠금</strong><span class="visually-hidden">장기간 외출 전 가스밸브 잠그기</span></li>
-              <li><img class="result-item-icon result-item-icon--towel" src="assets/masters/stage-1/props/prop-towel-draped-alpha-v1.png" alt="" aria-hidden="true"><strong>행주 이동</strong><span class="visually-hidden">행주를 화기에서 떨어진 곳에 보관하기</span></li>
-              <li><img class="result-item-icon" src="assets/stage-1/props/prop-butane-red-v4.png" alt="" aria-hidden="true"><strong>부탄캔 배출</strong><span class="visually-hidden">통풍이 잘되는 곳에서 잔여가스를 제거하고 지역 기준에 맞게 분리배출하기</span></li>
-            </ul>
-          </section>
-          <section class="result-stage-group" aria-labelledby="result-stage-two-title">
-            <h3 id="result-stage-two-title">귀가 후 <strong>2 / 2</strong></h3>
-            <ul class="result-checklist result-checklist--return">
-              <li><img class="result-item-icon" src="assets/common/props/progress-window-open-v1.png" alt="" aria-hidden="true"><strong>창문 환기</strong><span class="visually-hidden">창문을 열어 자연환기하기</span></li>
-              <li><img class="result-item-icon result-item-icon--pipe" src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="" aria-hidden="true"><strong>전문가 점검 요청</strong><span class="visually-hidden">비눗물 점검으로 이상 신호를 확인하고 안전한 장소에서 가스 전문가에게 점검 요청하기 완료</span></li>
-            </ul>
-          </section>
-        </div>
       </div>
       <div class="retro-actions result-actions">
         <button class="retro-button btn-blue" id="restart-button" type="button" data-ui-component="button"
           data-ui-variant="success">다시하기</button>
-        <button class="retro-button btn-orange" id="result-rules-button" type="button" data-ui-component="button"
-          data-ui-variant="info">수칙 보기</button>
+        <button class="retro-button btn-blue ui-button ui-button--info" id="result-rules-button" type="button"
+          data-ui-component="button" data-ui-variant="info">
+          <svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none"
+            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="3" width="16" height="18" rx="3" />
+            <path d="m7 9 1.5 1.5L11 8M14 9h3m-10 6 1.5 1.5L11 14m3 1h3" />
+          </svg>
+          <span>안전수칙</span>
+        </button>
       </div>
     </div>
   </section>
 
   <audio id="background-music" src="assets/common/audio/Suitcase_and_Sunlight.mp3" preload="auto" autoplay loop></audio>
+
+  <div class="loading-overlay" id="loading-overlay" role="status" aria-label="화면 준비 중" aria-live="polite" hidden>
+    <span class="loading-ring" aria-hidden="true"></span>
+  </div>
 
   <section class="rotate-screen" id="rotate-screen" aria-labelledby="rotate-title" hidden>
     <div class="rotate-card">
@@ -498,18 +521,27 @@
         <h2 id="intro-title" class="retro-title image-title"><img src="assets/masters/common/ui/title-start-alpha-v1.png"
             alt="장기 외출 전 가스안전 점검!" width="1676" height="683"></h2>
         <div class="retro-actions">
-          <button class="retro-button btn-orange" id="start-button" type="button" data-ui-component="button"
+          <button class="retro-button btn-orange ui-button ui-button--primary" id="start-button" type="button" data-ui-component="button" disabled
             data-ui-variant="primary"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true"
               focusable="false">
               <path d="M8 5 19 12 8 19Z" fill="currentColor" stroke="currentColor" stroke-linejoin="round"
                 stroke-width="2" />
             </svg><span>시작</span></button>
-          <button class="retro-button btn-blue" id="intro-rules-button" type="button" data-ui-component="button"
+          <button class="retro-button btn-blue ui-button ui-button--info" id="intro-rules-button" type="button" data-ui-component="button"
             data-ui-variant="info"><svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
               fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="4" y="3" width="16" height="18" rx="3" />
               <path d="m7 9 1.5 1.5L11 8M14 9h3m-10 6 1.5 1.5L11 14m3 1h3" />
             </svg><span>안전수칙</span></button>
+          <button class="retro-button ui-button ui-button--neutral" id="intro-settings-button" type="button"
+            data-ui-component="button" data-ui-variant="neutral">
+            <svg class="sticker-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z" />
+              <path d="m19.4 13.5 1.1 1.9-2 3.45-2.2-.45a8.3 8.3 0 0 1-1.8 1.05L13.8 21h-4l-.7-1.55a8.3 8.3 0 0 1-1.8-1.05l-2.2.45-2-3.45 1.1-1.9a8.9 8.9 0 0 1 0-2.1L3.1 9.5l2-3.45 2.2.45A8.3 8.3 0 0 1 9.1 5.45L9.8 3h4l.7 2.45A8.3 8.3 0 0 1 16.3 6.5l2.2-.45 2 3.45-1.1 1.9a8.9 8.9 0 0 1 0 2.1Z" />
+            </svg>
+            <span>설정</span>
+          </button>
         </div>
       </div>
     </div>
@@ -519,15 +551,16 @@
   <script src="app/stage-2/dialogue/somyeongi-dialogue.js"></script>
   <script src="app/stage-1/scripts/safety-rule-cards.js"></script>
   <script src="app/stage-1/scripts/game-data.js"></script>
-  <script src="app/common/audio/sound-data.js"></script>
-  <script src="app/common/audio/audio-manager.js"></script>
+  <script src="app/common/audio/sound-data.js?v=outing-foley-1"></script>
+  <script src="app/common/audio/audio-manager.js?v=outing-foley-1"></script>
   <script src="app/common/scripts/ui-components.js"></script>
+  <script src="app/common/scripts/asset-loader.js?v=asset-loader-1"></script>
   <script src="app/common/scripts/progress-collection.js"></script>
-  <script src="app/stage-1/scripts/kitchen-scenes.js?v=valve-handle-focus-1"></script>
+  <script src="app/stage-1/scripts/kitchen-scenes.js?v=asset-loader-1"></script>
   <script src="app/transitions/scripts/exit-transition.js"></script>
-  <script src="app/transitions/scripts/outing-transition.js"></script>
-  <script src="app/stage-2/scripts/stage-2.js?v=stage2-pipe-10"></script>
-  <script src="app/stage-1/scripts/game.js?v=completion-208c51f32d89"></script>
+  <script src="app/transitions/scripts/outing-transition.js?v=return-bgm-1"></script>
+  <script src="app/stage-2/scripts/stage-2.js?v=asset-loader-1"></script>
+  <script src="app/stage-1/scripts/game.js?v=asset-loader-1"></script>
 </body>
 
 </html>

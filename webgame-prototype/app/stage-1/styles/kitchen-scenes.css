@@ -45,9 +45,7 @@
 .butane-pickup-target img { width:92%; height:92%; object-fit:contain; transform:rotate(-7deg); filter:drop-shadow(0 8px 8px rgba(19,41,67,.25)); pointer-events:none; }
 .detail-instruction { margin:12px 0; font-size:clamp(14px,1.5vw,18px); }
 .kitchen-detail-dialog footer { display:flex; gap:12px; justify-content:center; }
-.detail-action { padding:10px 20px; border:1px solid #d27660; border-radius:10px; background:#ff947b; color:#43271f; }
 .detail-target:disabled { visibility:hidden; }
-.detail-action:disabled { opacity:.6; cursor:default; }
 .kitchen-detail-dialog button:focus-visible, .scene-navigation:focus-visible, .kitchen-basket-target:focus-visible { outline:3px solid #246a9b; outline-offset:4px; }
 [hidden] { display:none !important; }
 @media (max-height:500px) {
@@ -67,7 +65,7 @@
 }
 .scene-held-item::before { content:""; width:26px; height:26px; margin-right:9px; border:1px solid #c9b98f; border-radius:6px; background:#fffdf4; }
 .scene-held-item[data-item="empty"] { display: none; }
-.scene-held-item[data-item="towel"]::before { background:#fffdf4 url("../../../assets/stage-1/props/prop-towel-scene-v3.png") center/contain no-repeat; }
+.scene-held-item[data-item="towel"]::before { background:#fffdf4 url("../../../assets/masters/stage-1/props/prop-towel-draped-alpha-v1.png") center/contain no-repeat; }
 .scene-held-item[data-item="butane"]::before { background:#fffdf4 url("../../../assets/stage-1/props/prop-butane-red-v4.png") center/contain no-repeat; }
 .scene-navigation { color:#263c48; border:1px solid rgba(38,60,72,.3); border-radius:9px; background:rgba(255,251,233,.94); box-shadow:0 3px 10px rgba(27,46,57,.18); font-weight:650; }
 
@@ -99,10 +97,7 @@
 .detail-guide-copy.is-success { border-color:#3d956e; }
 .detail-guide-copy.is-success .detail-instruction::before { content:"✓ "; color:#287557; }
 .kitchen-detail-dialog footer { position:absolute; left:calc(60.2% + 12px); right:2.2%; bottom:2.5%; z-index:19; display:grid; gap:7px; }
-.detail-action, .detail-back { min-height:44px; padding:9px 12px; color:#263c48; border:1px solid rgba(38,60,72,.35); border-radius:9px; background:#ff947b; box-shadow:0 3px 0 #d97660; font-weight:650; }
-.detail-action { display:none; }
-.kitchen-detail-dialog.show-fallback .detail-action { display:block; }
-.detail-back { display:none; background:#ade0f4; box-shadow:0 3px 0 #70aec9; }
+.detail-back { min-height:44px; padding:9px 12px; color:#263c48; border:1px solid rgba(38,60,72,.35); border-radius:9px; display:none; background:#ade0f4; box-shadow:0 3px 0 #70aec9; font-weight:650; }
 .kitchen-detail-dialog.is-success .detail-back { display:block; }
 .kitchen-basket-target { left:350px; top:440px; width:260px; height:110px; border:2px dashed #ffe785; background:rgba(255,246,186,.08); }
 
@@ -113,7 +108,7 @@
   .detail-guide-copy { padding:7px 9px; }
   .detail-instruction { font-size:11px; }
   .kitchen-detail-dialog footer { left:calc(61.5% + 8px); right:1.5%; bottom:1.5%; }
-  .detail-action,.detail-back { min-height:36px; padding:6px 8px; font-size:11px; }
+  .detail-back { min-height:36px; padding:6px 8px; font-size:11px; }
 }
 
 @media (prefers-reduced-motion:reduce) {

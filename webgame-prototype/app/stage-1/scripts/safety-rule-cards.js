@@ -20,7 +20,7 @@ window.SAFETY_RULE_CARDS = {
   },
   window: {
     label: "귀가 후 환기 안전수칙",
-    lead: "가스 누출이 의심되면 전기 스위치를 조작하지 말고",
+    lead: "가스 누출이 의심되면",
     highlight: "창문을 열어 자연환기해요.",
     icon: "assets/common/props/progress-window-open-v1.png",
     progressIcon: "assets/common/props/progress-window-open-v1.png"

@@ -10,6 +10,7 @@
     brushScrub:{ type:"scrub", volume:.16, cooldown:520 },
     bubbleNormal:{ type:"bubble", volume:.16, cooldown:420 },
     bubbleWarning:{ type:"warningBubble", volume:.2, cooldown:850 },
+    leakWarning:{ type:"sample", src:"assets/common/audio/sfx-stage2-leak-warning-v1.wav", volume:.34, cooldown:2200 },
     collect:{ type:"collect", volume:.18, cooldown:520 },
     storyStep:{ type:"sample", src:"assets/common/audio/sfx-ending-footsteps-v1.mp3", volume:.72, cooldown:900 },
     phoneDial:{ type:"sample", src:"assets/common/audio/sfx-ending-phone-dial-v1.wav", volume:.78, cooldown:1400 },

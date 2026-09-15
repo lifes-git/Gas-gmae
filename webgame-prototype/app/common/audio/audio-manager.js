@@ -87,7 +87,9 @@
       if (!ctx) return false;
       synth(ctx, config.type, config.volume);
     }
-    document.dispatchEvent(new CustomEvent("game-sound-played", { detail:{ id:id } }));
+    document.dispatchEvent(new CustomEvent("game-sound-played", {
+      detail:{ id:id, duckDuration:config.duckDuration || (config.type === "sample" ? 1000 : 550) }
+    }));
     return true;
   }
   window.AudioManager = Object.freeze({ play:play });

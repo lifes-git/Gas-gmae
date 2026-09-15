@@ -139,20 +139,44 @@
   #app .speech-bubble {
     min-width:0;
     padding:8px 10px !important;
-    flex-wrap:wrap;
-    gap:2px !important;
+    flex:0 1 auto;
+    width:fit-content;
+    max-width:100%;
+    flex-wrap:nowrap;
+    align-items:center;
+    gap:8px !important;
   }
   #app #guide-message {
-    flex-basis:100%;
+    flex:1 1 auto;
+    flex-basis:auto;
     font-size:clamp(14px,1.7vw,18px) !important;
     line-height:1.35 !important;
     margin:0;
   }
   #app .speech-bubble .bubble-link {
-    margin-left:auto;
+    margin-left:0;
     padding:6px 0 !important;
     min-height:32px;
     font-size:12px !important;
+  }
+}
+
+/* On 4:3 tablets the 16:9 scene is vertically letterboxed. Keep the HUD and
+   guide inside the visible scene instead of pinning them to the viewport edge. */
+@media (orientation:landscape) and (pointer:coarse) and (min-height:501px),
+       (orientation:landscape) and (max-aspect-ratio:3/2) and (min-height:501px) {
+  #app .game-header {
+    top:max(
+      calc(12px + env(safe-area-inset-top, 0px)),
+      calc((100dvh - 56.25vw) / 2 + 12px)
+    ) !important;
+  }
+
+  #app .guide-panel {
+    bottom:max(
+      calc(10px + env(safe-area-inset-bottom, 0px)),
+      calc((100dvh - 56.25vw) / 2 + 10px)
+    ) !important;
   }
 }
 /* Game artwork is manipulated in-game, not by the browser image menu. */
@@ -1351,6 +1375,40 @@
 #rules-dialog .rules-guidebook-note,
 #rules-dialog .rules-guidebook-caption {
   font-family:var(--font-body) !important;
+}
+
+#result-screen .result-message.result-message--image {
+  display:block !important;
+  align-self:center;
+  width:min(520px,62vw) !important;
+  max-width:none !important;
+  margin:5px 0 9px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  outline:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  line-height:0;
+}
+
+#result-screen .result-message--image img {
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:18vh;
+  object-fit:contain;
+}
+
+@media (max-width:700px) {
+  #result-screen .result-message.result-message--image {
+    width:min(430px,66vw) !important;
+    margin:2px 0 6px !important;
+  }
+
+  #result-screen .result-message--image img {
+    max-height:16vh;
+  }
 }
 
 #app button,

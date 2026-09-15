@@ -1542,7 +1542,7 @@ body {
   .mission-stage {
     min-height: 100%;
     height: auto;
-    padding-top: 70px;
+    padding-top: 0;
   }
 
   .mission-stage>header {
@@ -5396,6 +5396,7 @@ body {
   position: static !important;
   width: 0 !important;
   height: 0 !important;
+  margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   background: none !important;

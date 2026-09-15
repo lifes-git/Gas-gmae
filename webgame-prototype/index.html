@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="app/common/styles/loading-overlay.css?v=asset-loader-1">
   <link rel="stylesheet" href="app/transitions/styles/exit-transition.css">
   <link rel="stylesheet" href="app/transitions/styles/outing-transition.css?v=font-system-3">
-  <link rel="stylesheet" href="app/stage-2/styles/stage-2.css?v=font-system-3">
+  <link rel="stylesheet" href="app/stage-2/styles/stage-2.css?v=leak-warning-badge-1">
   <link rel="stylesheet" href="app/stage-1/styles/safety-rule-card.css?v=pipe-steps-1">
   <link rel="stylesheet" href="app/common/styles/progress-collection.css?v=font-system-3">
   <link rel="preload" as="image" href="assets/stage-1/backgrounds/bg-valve-wall-handleless-v3.jpg">
@@ -309,6 +309,17 @@
       </div>
       <img class="stage-two__background stage-two__background--kitchen"
         src="assets/stage-2/backgrounds/bg-stage2-kitchen-sunset-clean-v2.jpg" alt="">
+      <svg class="stage-two__stored-towel" viewBox="0 0 1672 940" preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true">
+        <defs>
+          <clipPath id="stage-two-stored-towel-clip">
+            <rect x="430" y="456" width="162" height="79" rx="12"></rect>
+          </clipPath>
+        </defs>
+        <image href="assets/masters/stage-1/props/prop-towel-draped-alpha-v1.png"
+          x="420" y="431" width="176" height="117" preserveAspectRatio="xMidYMid meet"
+          clip-path="url(#stage-two-stored-towel-clip)"></image>
+      </svg>
       <header class="game-header stage-two__header">
         <div class="header-actions" aria-label="스테이지 2 진행 상황과 메뉴">
           <div class="progress-card ui-progress" role="status" aria-label="안전점검 진행도 0개 중 2개">
@@ -365,7 +376,7 @@
           <div class="stage-two-call-story__dust"><i></i><i></i><i></i></div>
         </section>
         <section class="stage-two-call-beat stage-two-call-beat--dial">
-          <img class="stage-two-call-beat__art" src="assets/stage-2/ending/ending-scene-dial-v5.webp" alt="">
+          <img class="stage-two-call-beat__art" src="assets/stage-2/ending/ending-scene-dial-v6.webp" alt="">
           <span class="stage-two-call-beat__frame" aria-hidden="true"></span>
         </section>
         <section class="stage-two-call-beat stage-two-call-beat--phone">
@@ -374,7 +385,7 @@
           <span class="stage-two-call-scene__phone-wave stage-two-call-scene__phone-wave--one"></span>
           <span class="stage-two-call-scene__phone-wave stage-two-call-scene__phone-wave--two"></span>
           <div class="stage-two-call-story__bubble">
-            <p id="stage-two-call-copy">가스 전문가에게 연결하고 있어요.</p>
+            <p id="stage-two-call-copy">안전한 밖에서 소멍이가 가스 전문가에게 연결하고 있어요…</p>
             <span class="stage-two-call-story__talk-dots"><i></i><i></i><i></i></span>
           </div>
         </section>
@@ -405,7 +416,6 @@
           src="assets/common/props/prop-window-casement-wall-perspective-open-v4.png" alt="">
         <button class="detail-target stage-two-window-target" id="stage-two-window-target" type="button"
           aria-label="창문 중앙 손잡이를 눌러 열기">
-          <span class="stage-two-window-handle-label" aria-hidden="true">손잡이를 눌러 열기</span>
         </button>
       </div>
     </div>
@@ -429,6 +439,9 @@
     </header>
     <div class="kitchen-detail-view stage-two-pipe-view">
       <img class="stage-two-pipe-view__art" src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="" aria-hidden="true">
+      <div class="stage-two-pipe-warning" id="stage-two-pipe-warning" role="alert" hidden>
+        <span aria-hidden="true">⚠</span><strong>가스 누출 의심!</strong>
+      </div>
       <section class="stage-two-pipe-tool-choice" aria-labelledby="stage-two-pipe-tool-title">
         <h3 id="stage-two-pipe-tool-title">무엇으로 확인해야 할까?</h3>
         <div class="stage-two-pipe-tool-options" role="group" aria-label="배관 점검 도구 선택">
@@ -468,9 +481,9 @@
       <img class="result-mascot-art" src="assets/common/mascots/mascot-somyeongi-ending-logo-v1.png" alt=""
         aria-hidden="true">
       <div class="result-copy">
-        <h2 id="result-title" class="image-title" tabindex="-1"><img src="assets/masters/common/ui/title-ending-mission-alpha-v1.png"
-            alt="안전점검 임무 완료!" width="2116" height="407"></h2>
-        <p class="result-message">출발 전 점검과 귀가 후 안전 대응을 모두 마쳤어요!</p>
+        <h2 id="result-title" class="image-title" tabindex="-1"><img
+            src="assets/masters/common/ui/title-ending-mission-combined-alpha-v1.png"
+            alt="안전점검 임무 완료! 출발 전 점검과 귀가 후 안전 대응을 모두 마쳤어요!" width="2170" height="725"></h2>
       </div>
       <div class="retro-actions result-actions">
         <button class="retro-button btn-blue" id="restart-button" type="button" data-ui-component="button"
@@ -551,7 +564,7 @@
   <script src="app/stage-2/dialogue/somyeongi-dialogue.js"></script>
   <script src="app/stage-1/scripts/safety-rule-cards.js"></script>
   <script src="app/stage-1/scripts/game-data.js"></script>
-  <script src="app/common/audio/sound-data.js?v=outing-foley-1"></script>
+  <script src="app/common/audio/sound-data.js?v=leak-warning-1"></script>
   <script src="app/common/audio/audio-manager.js?v=outing-foley-1"></script>
   <script src="app/common/scripts/ui-components.js"></script>
   <script src="app/common/scripts/asset-loader.js?v=asset-loader-1"></script>
@@ -559,8 +572,8 @@
   <script src="app/stage-1/scripts/kitchen-scenes.js?v=asset-loader-1"></script>
   <script src="app/transitions/scripts/exit-transition.js"></script>
   <script src="app/transitions/scripts/outing-transition.js?v=return-bgm-1"></script>
-  <script src="app/stage-2/scripts/stage-2.js?v=stage2-bgm-2"></script>
-  <script src="app/stage-1/scripts/game.js?v=stage2-bgm-2"></script>
+  <script src="app/stage-2/scripts/stage-2.js?v=leak-warning-badge-1"></script>
+  <script src="app/stage-1/scripts/game.js?v=leak-warning-1"></script>
 </body>
 
 </html>

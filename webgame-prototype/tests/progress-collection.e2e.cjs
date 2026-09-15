@@ -88,7 +88,7 @@ async function drag(page, selector, fromX, toX) {
   assert((await page.locator("#stage-two-window-target").getAttribute("aria-label")) === "창문 중앙 손잡이를 눌러 열기", "window interaction must identify the handle action");
   assert(await page.locator("#stage-two-window-action").count() === 0, "window modal must not duplicate the interaction with a text action button");
   assert(await page.locator(".stage-two-window-handle-art").count() === 0, "window modal must not use a detached handle overlay");
-  assert(await page.locator(".stage-two-window-handle-label").count() === 1, "window modal must show the approved handle cue");
+  assert(await page.locator(".stage-two-window-handle-label").count() === 0, "window modal must not show a redundant visible handle cue");
   const windowBox = await page.locator("#stage-two-window-target").boundingBox();
   assert(windowBox && windowBox.width >= 44 && windowBox.height >= 44, `full window target must remain touch accessible: ${JSON.stringify(windowBox)}`);
   if (process.env.QA_SCREENSHOT) await page.screenshot({ path:process.env.QA_SCREENSHOT });

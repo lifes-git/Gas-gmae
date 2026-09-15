@@ -706,6 +706,8 @@ button,.progress-card,.settings-card {
   bottom:18px !important;
   width:min(43%,540px) !important;
   display:block !important;
+  padding:0 !important;
+  background:transparent !important;
 }
 .mission-stage:has(.visual-butane-outdoor) .mission-dialogue > img { width:96px !important; }
 .mission-stage:has(.visual-butane-outdoor) .mission-speech { padding:11px 14px !important; }
@@ -748,6 +750,24 @@ button,.progress-card,.settings-card {
   .mission-stage:has(.visual-butane-outdoor) #return-room-button { margin-left:66px !important; }
   .visual-butane-outdoor .outdoor-return-door > span { left:7px; width:42px; height:42px; border-radius:12px; }
   .visual-butane-outdoor .outdoor-return-door svg { width:29px; height:29px; }
+}
+
+@media (orientation:portrait), (max-width:680px) {
+  .mission-stage:has(.visual-butane-outdoor) {
+    height:100% !important;
+    min-height:0 !important;
+  }
+
+  .mission-stage:has(.visual-butane-outdoor) .mission-visual {
+    position:absolute;
+    inset:0;
+    height:100% !important;
+    aspect-ratio:auto;
+  }
+
+  .mission-stage:has(.visual-butane-outdoor) .mission-console {
+    position:absolute !important;
+  }
 }
 
 @media (prefers-reduced-motion:reduce) {

@@ -38,6 +38,7 @@
   var pipeToolButtons = Array.from(pipeDialog.querySelectorAll("[data-pipe-tool]"));
   var pipeKit = document.getElementById("stage-two-pipe-kit");
   var pipeBrush = document.getElementById("stage-two-pipe-brush");
+  var pipeWarning = document.getElementById("stage-two-pipe-warning");
   var pipePoints = Array.from(pipeDialog.querySelectorAll("[data-pipe-point]"));
   var status = document.getElementById("stage-two-status");
   var safetyRuleDialog = document.getElementById("safety-rule-dialog");
@@ -52,8 +53,10 @@
   var solved = { window: false, pipe: false };
   var collected = { window: false, pipe: false };
   var windowOpenTimer = 0;
+  var windowSafetyTimer = 0;
   var pipeCheckTimer = 0;
   var pipeSafetyTimer = 0;
+  var pipeWarningTimer = 0;
   var endingTimer = 0;
   var endingReady = false;
   var pipeStep = "locked";
@@ -77,7 +80,7 @@
   function resetEndingSequence() {
     callScene.hidden = true;
     callScene.classList.remove("is-active", "is-dialing", "is-calling", "is-complete");
-    callCopy.textContent = dialogue.callPrompt;
+    callCopy.textContent = dialogue.callConnecting;
     exitDoor.hidden = true;
     exitDoor.disabled = true;
   }
@@ -90,7 +93,7 @@
       callScene.hidden = false;
       void callScene.offsetWidth;
       callScene.classList.add("is-active");
-      callCopy.textContent = dialogue.callPrompt;
+      callCopy.textContent = dialogue.callConnecting;
       status.textContent = "안전한 실외로 이동했습니다.";
       playSound("storyStep");
       endingTimer = window.setTimeout(beginPhoneDialing, reduceMotion ? 80 : 2800);
@@ -113,7 +116,6 @@
     playSound("phoneRing");
     endingTimer = window.setTimeout(function () {
       callScene.classList.add("is-complete");
-      callCopy.textContent = dialogue.callComplete;
       status.textContent = "가스 전문가 점검 요청을 완료했습니다. 점검 전까지 가스를 사용하지 않습니다.";
       playSound("stageComplete");
       endingTimer = window.setTimeout(function () {
@@ -126,6 +128,7 @@
   function showSafetyRuleCard(id) {
     var rule = window.SAFETY_RULE_CARDS[id];
     if (!rule || safetyRuleDialog.open) return;
+    if (window.setSafetyRuleInteractionLock) window.setSafetyRuleInteractionLock(true);
     safetyRuleDialog.dataset.hazard = id;
     safetyRuleDialog.dataset.stage = "2";
     safetyRuleDialog.setAttribute("aria-label", rule.label);
@@ -211,10 +214,15 @@
     if (!screen) return;
     window.clearTimeout(windowOpenTimer);
     windowOpenTimer = 0;
+    window.clearTimeout(windowSafetyTimer);
+    windowSafetyTimer = 0;
     window.clearTimeout(pipeCheckTimer);
     pipeCheckTimer = 0;
     window.clearTimeout(pipeSafetyTimer);
     pipeSafetyTimer = 0;
+    window.clearTimeout(pipeWarningTimer);
+    pipeWarningTimer = 0;
+    pipeWarning.hidden = true;
     window.clearTimeout(endingTimer);
     endingTimer = 0;
     if (windowDialog.open) windowDialog.close();
@@ -284,7 +292,6 @@
   exitDoor.addEventListener("click", function () {
     if (!endingReady || room !== "living") return;
     exitDoor.disabled = true;
-    guide.textContent = dialogue.callPrompt;
     status.textContent = "현관문을 통해 안전한 실외로 이동합니다.";
     playSound("tap");
     startEndingSequence();
@@ -298,6 +305,7 @@
 
   pipeHotspot.addEventListener("click", function () {
     if (!solved.window) {
+      playSound("toolWrong");
       guide.textContent = dialogue.pipeLocked;
       status.textContent = "배관 점검 전에 창문을 열어 자연환기해야 합니다.";
       pipeHotspot.classList.remove("is-denied");
@@ -336,7 +344,12 @@
     status.textContent = "창문 열어 자연환기하기를 완료했습니다.";
     renderProgress();
     render();
-    showSafetyRuleCard("window");
+    if (window.setSafetyRuleInteractionLock) window.setSafetyRuleInteractionLock(true);
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    windowSafetyTimer = window.setTimeout(function () {
+      windowSafetyTimer = 0;
+      showSafetyRuleCard("window");
+    }, reduceMotion ? 200 : 1000);
   }
 
   function expectedPipePoint() {
@@ -408,6 +421,18 @@
         pipePoints[1].focus();
       } else {
         playSound("bubbleWarning");
+        pipeWarningTimer = window.setTimeout(function () {
+          playSound("leakWarning");
+          pipeWarning.hidden = false;
+          pipeWarning.classList.remove("is-visible");
+          void pipeWarning.offsetWidth;
+          pipeWarning.classList.add("is-visible");
+          pipeWarningTimer = window.setTimeout(function () {
+            pipeWarningTimer = 0;
+            pipeWarning.hidden = true;
+            pipeWarning.classList.remove("is-visible");
+          }, reduced ? 1200 : 2800);
+        }, reduced ? 0 : 140);
         pipeStep = "leakFound";
         solved.pipe = true;
         point.classList.add("is-leak");
@@ -418,10 +443,13 @@
         guide.textContent = dialogue.pipeLeakFound;
         status.textContent = "큰 거품이 확인되어 가스 누출이 의심됩니다.";
         render();
+        if (window.setSafetyRuleInteractionLock) window.setSafetyRuleInteractionLock(true);
         pipeSafetyTimer = window.setTimeout(function () {
           pipeSafetyTimer = 0;
+          pipeWarning.hidden = true;
+          pipeWarning.classList.remove("is-visible");
           showSafetyRuleCard("pipe");
-        }, reduced ? 0 : 1100);
+        }, reduced ? 1300 : 3000);
       }
     }, reduced ? 0 : 680);
   }

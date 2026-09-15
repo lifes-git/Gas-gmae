@@ -33,3 +33,29 @@ window.SAFETY_RULE_CARDS = {
     progressIcon: "assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png"
   }
 };
+
+(function () {
+  "use strict";
+  var lockTargets = "#app, #mission-dialog, .kitchen-detail-dialog, #settings-dialog, #rules-dialog, #stage-two, .stage-two-window-dialog, .stage-two-pipe-dialog";
+
+  window.setSafetyRuleInteractionLock = function (locked) {
+    document.querySelectorAll(lockTargets).forEach(function (element) {
+      if (locked) {
+        if (!element.inert) {
+          element.inert = true;
+          element.dataset.safetyRuleLocked = "true";
+        }
+      } else if (element.dataset.safetyRuleLocked === "true") {
+        element.inert = false;
+        delete element.dataset.safetyRuleLocked;
+      }
+    });
+  };
+
+  var dialog = document.getElementById("safety-rule-dialog");
+  if (dialog) {
+    dialog.addEventListener("close", function () {
+      window.setSafetyRuleInteractionLock(false);
+    });
+  }
+}());

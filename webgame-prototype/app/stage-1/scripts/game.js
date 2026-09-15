@@ -81,6 +81,8 @@
   function showSafetyRuleCard(id) {
     var rule = window.SAFETY_RULE_CARDS[id];
     if (!rule || elements.safetyRuleDialog.open) return;
+    if (window.setSafetyRuleInteractionLock) window.setSafetyRuleInteractionLock(true);
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     elements.safetyRuleDialog.dataset.hazard = id;
     elements.safetyRuleDialog.dataset.stage = "1";
     elements.safetyRuleDialog.setAttribute("aria-label", rule.label);
@@ -88,10 +90,13 @@
     elements.safetyRuleLead.textContent = rule.lead + " ";
     elements.safetyRuleHighlight.textContent = rule.highlight;
     window.setTimeout(function () {
-      if (!state.started || !state.solved.has(id) || elements.safetyRuleDialog.open) return;
+      if (!state.started || !state.solved.has(id) || elements.safetyRuleDialog.open) {
+        if (window.setSafetyRuleInteractionLock) window.setSafetyRuleInteractionLock(false);
+        return;
+      }
       elements.safetyRuleDialog.showModal();
       elements.safetyRuleConfirm.focus();
-    }, 0);
+    }, reduceMotion ? 120 : 1000);
   }
 
   var kitchenScenes = window.createKitchenScenes({
@@ -120,6 +125,7 @@
   function playFeedback(kind) {
     if ((kind === "success" || kind === "error") && elements.vibrationSetting.checked && navigator.vibrate) navigator.vibrate(kind === "success" ? 45 : [25, 35, 25]);
     if (!elements.soundSetting.checked) return;
+    duckBackgroundMusic(kind === "hiss" ? 1050 : kind === "cloth" ? 700 : 550);
     try {
       var AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) return;
@@ -221,8 +227,29 @@
 
   var backgroundMusicPhase = "stage1";
   var backgroundMusicFade = 0;
+  var backgroundMusicDuckTimer = 0;
+  var stageOneMusicVolume = .19;
   var stageTwoMusicTrack = "assets/common/audio/bgm-stage2-v1.mp3?v=30cb3ac463a4";
-  var stageTwoMusicVolume = .22;
+  var stageTwoMusicVolume = .19;
+  var completionMusicVolume = .19;
+
+  function backgroundMusicTargetVolume() {
+    if (!elements.result.hidden) return completionMusicVolume;
+    if (backgroundMusicPhase === "transition") return 0;
+    return backgroundMusicPhase === "stage2" ? stageTwoMusicVolume : stageOneMusicVolume;
+  }
+
+  function duckBackgroundMusic(duration) {
+    if (!elements.music || elements.music.paused || !elements.soundSetting.checked || backgroundMusicPhase === "transition") return;
+    if (backgroundMusicDuckTimer) window.clearTimeout(backgroundMusicDuckTimer);
+    fadeBackgroundMusic(backgroundMusicTargetVolume() * .8, 90);
+    backgroundMusicDuckTimer = window.setTimeout(function () {
+      backgroundMusicDuckTimer = 0;
+      if (elements.soundSetting.checked && !document.hidden) {
+        fadeBackgroundMusic(backgroundMusicTargetVolume(), 320);
+      }
+    }, duration || 550);
+  }
 
   function fadeBackgroundMusic(target, duration) {
     if (!elements.music) return;
@@ -266,7 +293,7 @@
     try { elements.music.currentTime = 0; } catch (error) { /* metadata may still be loading */ }
     if (!elements.soundSetting.checked || document.hidden) {
       elements.music.pause();
-      elements.music.volume = .16;
+      elements.music.volume = stageTwoMusicVolume;
       return;
     }
     elements.music.volume = 0;
@@ -312,8 +339,9 @@
       elements.music.load();
     }
     elements.music.loop = !completion;
-    if (trackChanged) elements.music.volume = backgroundMusicPhase === "stage2" && !completion ? 0 : .16;
-    else if (completion) elements.music.volume = .16;
+    if (trackChanged) elements.music.volume = backgroundMusicPhase === "stage2" && !completion ? 0 : backgroundMusicTargetVolume();
+    else if (completion) elements.music.volume = completionMusicVolume;
+    else if (!backgroundMusicDuckTimer && !backgroundMusicFade) elements.music.volume = backgroundMusicTargetVolume();
     if (!elements.soundSetting.checked || document.hidden) {
       elements.music.pause();
       return;
@@ -323,6 +351,10 @@
     if (trackChanged && backgroundMusicPhase === "stage2" && !completion) fadeBackgroundMusic(stageTwoMusicVolume, 1200);
     if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
   }
+
+  document.addEventListener("game-sound-played", function (event) {
+    duckBackgroundMusic(event.detail && event.detail.duckDuration);
+  });
 
   function setMissionStatus(kind, message) {
     elements.missionSpeech.classList.remove("is-error", "is-success");
@@ -933,10 +965,14 @@
     showSafetyRuleCard(hazard);
     elements.console.classList.add("is-success");
     var outdoorReturn = elements.visual.querySelector(".outdoor-return-door");
-    elements.returnRoom.hidden = Boolean(outdoorReturn);
+    if (hazard === "butane" && outdoorReturn) {
+      outdoorReturn.remove();
+      outdoorReturn = null;
+    }
+    elements.returnRoom.hidden = hazard === "butane" || Boolean(outdoorReturn);
     if (outdoorReturn) outdoorReturn.hidden = false;
     elements.explanationToggle.hidden = hazard === "butane" || !content.explanation;
-    (outdoorReturn || elements.returnRoom).focus();
+    if (hazard !== "butane") (outdoorReturn || elements.returnRoom).focus();
   }
 
   function resetGame() {

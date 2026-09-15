@@ -124,7 +124,7 @@ function assert(condition, message) {
   assert((await page.locator(".stage-two-call-scene__background").getAttribute("src")).includes("bg-outdoor-sunset-return-v1.jpg"), "the call interaction must take place in the safe outdoor scene");
   assert((await page.locator(".stage-two-call-beat--phone .stage-two-call-beat__art").getAttribute("src")).includes("ending-scene-call-v2.webp"), "Somyeongi must visibly make the expert-inspection call in the third standalone comic scene");
   await page.locator("#stage-two-call-scene.is-dialing").waitFor({ state:"visible" });
-  assert((await page.locator(".stage-two-call-beat--dial .stage-two-call-beat__art").getAttribute("src")).includes("ending-scene-dial-v5.webp"), "the dialing cut must show the coherent full-scene phone keypad artwork");
+  assert((await page.locator(".stage-two-call-beat--dial .stage-two-call-beat__art").getAttribute("src")).includes("ending-scene-dial-v6.webp"), "the dialing cut must show the coherent full-scene phone keypad artwork");
   await page.waitForTimeout(240);
   if (process.env.QA_DIAL_SCREENSHOT) await page.screenshot({ path:process.env.QA_DIAL_SCREENSHOT });
   await page.locator("#stage-two-call-scene.is-calling").waitFor({ state:"visible" });
@@ -150,7 +150,7 @@ function assert(condition, message) {
   await page.locator("#result-screen").waitFor({ state:"visible" });
   await page.waitForTimeout(900);
   assert(await page.locator("#stage-two").isHidden(), "Stage 2 must hide when the ending appears");
-  assert((await page.locator("#result-title img").getAttribute("src")).includes("title-ending-mission-alpha-v1.png"), "ending must use the mission-complete PNG title");
+  assert((await page.locator("#result-title img").getAttribute("src")).includes("title-ending-mission-combined-alpha-v1.png"), "ending must use the combined mission-complete PNG title");
   assert((await page.locator(".result-mascot-art").getAttribute("src")).includes("mascot-somyeongi-ending-logo-v1.png"), "ending must use the logo-bearing mascot PNG");
   assert(await page.locator(".result-kicker").count() === 0, "ending must not restore the removed five-of-five kicker");
   assert(await page.locator(".result-stage-group").count() === 0, "ending must omit the duplicated stage summary cards");

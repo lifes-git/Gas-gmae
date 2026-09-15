@@ -52,7 +52,6 @@
   elements.console = document.querySelector(".mission-console");
   elements.explanationToggle = document.getElementById("explanation-toggle");
   elements.explanation = document.getElementById("mission-explanation");
-  elements.returnRoom = document.getElementById("return-room-button");
   elements.missionSpeech = document.querySelector(".mission-speech");
   elements.missionMascot = document.querySelector(".mission-dialogue > img");
   elements.guideMascot = document.getElementById("mascot-art");
@@ -856,15 +855,6 @@
       nozzle.setAttribute("aria-label", "부탄캔 노즐을 길게 누르기");
       nozzle.tabIndex = 0;
       elements.visual.appendChild(nozzle);
-      var outdoorReturn = document.createElement("button");
-      outdoorReturn.type = "button";
-      outdoorReturn.className = "outdoor-return-door";
-      outdoorReturn.setAttribute("aria-label", "현관문으로 방 안에 돌아가기");
-      // The doorway is a transparent scene hit area, not a filled UI button.
-      outdoorReturn.hidden = true;
-      outdoorReturn.innerHTML = '<span aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><path d="M7 24h32M29 14l10 10-10 10"/></svg></span>';
-      outdoorReturn.addEventListener("click", returnToRoom);
-      elements.visual.appendChild(outdoorReturn);
     }
 
     if (visualName === "valve") {
@@ -904,7 +894,6 @@
     renderMissionVisual(content.visual);
     setMissionStatus(null, "");
     elements.console.classList.remove("is-success");
-    elements.returnRoom.hidden = true;
     elements.explanationToggle.hidden = true;
     elements.explanation.hidden = true;
     elements.explanation.textContent = content.explanation || "";
@@ -964,15 +953,7 @@
     renderProgress();
     showSafetyRuleCard(hazard);
     elements.console.classList.add("is-success");
-    var outdoorReturn = elements.visual.querySelector(".outdoor-return-door");
-    if (hazard === "butane" && outdoorReturn) {
-      outdoorReturn.remove();
-      outdoorReturn = null;
-    }
-    elements.returnRoom.hidden = hazard === "butane" || Boolean(outdoorReturn);
-    if (outdoorReturn) outdoorReturn.hidden = false;
     elements.explanationToggle.hidden = hazard === "butane" || !content.explanation;
-    if (hazard !== "butane") (outdoorReturn || elements.returnRoom).focus();
   }
 
   function resetGame() {
@@ -1097,14 +1078,6 @@
   updateSceneScale();
   window.requestAnimationFrame(updateSceneScale);
 
-  function returnToRoom() {
-    playFeedback("door");
-    elements.dialog.close();
-    elements.console.classList.remove("is-success");
-    document.getElementById("game-scene").focus({ preventScroll: true });
-  }
-
-  elements.returnRoom.addEventListener("click", returnToRoom);
   elements.soundSetting.addEventListener("change", function () { syncBackgroundMusic(false); });
   document.addEventListener("visibilitychange", function () { syncBackgroundMusic(false); });
   // Autoplay may be blocked; retry from the first trusted title-screen gesture.

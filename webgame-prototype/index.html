@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="app/common/styles/styles.css?v=font-system-3">
   <link rel="stylesheet" href="app/stage-1/styles/kitchen-scenes.css?v=no-detail-action-1">
   <link rel="stylesheet" href="app/common/styles/toon-ui.css?v=font-system-3">
-  <link rel="stylesheet" href="app/common/styles/ui-components.css?v=font-system-5">
+  <link rel="stylesheet" href="app/common/styles/ui-components.css?v=detail-back-1">
   <link rel="stylesheet" href="app/common/styles/entrance-motion.css">
   <link rel="stylesheet" href="app/common/styles/loading-overlay.css?v=asset-loader-1">
   <link rel="stylesheet" href="app/transitions/styles/exit-transition.css">
@@ -160,9 +160,6 @@
           </div>
         </div>
         <p class="mission-feedback" id="mission-feedback" role="status" aria-live="polite"></p>
-        <button class="retro-button btn-blue" id="return-room-button" type="button" hidden data-ui-component="button"
-          data-ui-variant="info" style="width: 100%; margin-top: 1rem; padding: 1rem;"><span class="visually-hidden">방으로
-            돌아가기</span></button>
       </section>
     </form>
   </dialog>
@@ -426,9 +423,6 @@
         <p class="detail-instruction" id="stage-two-window-copy"></p>
       </div>
     </div>
-    <footer>
-      <button class="detail-back" id="stage-two-window-back" type="button" aria-label="거실로 돌아가기"><span aria-hidden="true">↩</span></button>
-    </footer>
   </dialog>
 
   <dialog class="kitchen-detail-dialog stage-two-pipe-dialog ui-modal" id="stage-two-pipe-dialog"
@@ -440,7 +434,13 @@
     <div class="kitchen-detail-view stage-two-pipe-view">
       <img class="stage-two-pipe-view__art" src="assets/stage-2/props/prop-stage2-gas-pipe-integrated-v2.png" alt="" aria-hidden="true">
       <div class="stage-two-pipe-warning" id="stage-two-pipe-warning" role="alert" hidden>
-        <span aria-hidden="true">⚠</span><strong>가스 누출 의심!</strong>
+        <span aria-hidden="true">
+          <svg class="stage-two-pipe-warning__icon" viewBox="0 0 32 32" focusable="false">
+            <path d="M16 3.5 29 27H3L16 3.5Z"></path>
+            <path d="M16 11v8.5"></path>
+            <circle cx="16" cy="23.5" r="1.35"></circle>
+          </svg>
+        </span><strong>가스 누출 의심!</strong>
       </div>
       <section class="stage-two-pipe-tool-choice" aria-labelledby="stage-two-pipe-tool-title">
         <h3 id="stage-two-pipe-tool-title">무엇으로 확인해야 할까?</h3>
@@ -471,9 +471,6 @@
         <p class="detail-instruction" id="stage-two-pipe-copy"></p>
       </div>
     </div>
-    <footer>
-      <button class="detail-back" id="stage-two-pipe-back" type="button" aria-label="주방으로 돌아가기"><span aria-hidden="true">↩</span></button>
-    </footer>
   </dialog>
 
   <section class="result-screen" id="result-screen" hidden aria-labelledby="result-title">

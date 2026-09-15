@@ -18,7 +18,6 @@
   var windowHotspot = document.getElementById("stage-two-window-hotspot");
   var windowDialog = document.getElementById("stage-two-window-dialog");
   var windowClose = document.getElementById("stage-two-window-close");
-  var windowBack = document.getElementById("stage-two-window-back");
   var windowTarget = document.getElementById("stage-two-window-target");
   var windowCopy = document.getElementById("stage-two-window-copy");
   var windowGuideCopy = document.getElementById("stage-two-window-guide-copy");
@@ -29,7 +28,6 @@
   var exitDoor = document.getElementById("stage-two-exit-door");
   var pipeDialog = document.getElementById("stage-two-pipe-dialog");
   var pipeClose = document.getElementById("stage-two-pipe-close");
-  var pipeBack = document.getElementById("stage-two-pipe-back");
   var pipeCopy = document.getElementById("stage-two-pipe-copy");
   var pipeGuideCopy = document.getElementById("stage-two-pipe-guide-copy");
   var pipeMascot = document.getElementById("stage-two-pipe-mascot");
@@ -300,7 +298,7 @@
     windowCopy.textContent = solved.window ? dialogue.windowSuccess : dialogue.windowPrompt;
     windowDialog.classList.toggle("is-success", solved.window);
     windowDialog.showModal();
-    (solved.window ? windowBack : windowTarget).focus();
+    (solved.window ? windowClose : windowTarget).focus();
   });
 
   pipeHotspot.addEventListener("click", function () {
@@ -340,7 +338,6 @@
     windowDialog.classList.add("is-success");
     windowGuideCopy.classList.add("is-success");
     windowMascot.src = "assets/common/mascots/mascot-somyeongi-success-logo-v1.svg";
-    windowBack.focus();
     status.textContent = "창문 열어 자연환기하기를 완료했습니다.";
     renderProgress();
     render();
@@ -550,9 +547,7 @@
     windowDialog.classList.remove("is-opening");
     windowTarget.disabled = false;
   }
-  windowBack.addEventListener("click", function () { cancelWindowOpen(); windowDialog.close(); navigation.focus(); });
   windowClose.addEventListener("click", function () { cancelWindowOpen(); windowDialog.close(); });
-  pipeBack.addEventListener("click", function () { cancelPipeCheck(); pipeDialog.close(); pipeHotspot.focus(); });
   pipeClose.addEventListener("click", function () { cancelPipeCheck(); pipeDialog.close(); pipeHotspot.focus(); });
   window.addEventListener("resize", updateSceneLayout);
   window.addEventListener("orientationchange", function () { window.requestAnimationFrame(updateSceneLayout); });

@@ -117,9 +117,12 @@
       status.textContent = "가스 전문가 점검 요청을 완료했습니다. 점검 전까지 가스를 사용하지 않습니다.";
       playSound("stageComplete");
       endingTimer = window.setTimeout(function () {
-        endingTimer = 0;
-        if (window.GameEnding) window.GameEnding.show();
-      }, reduceMotion ? 120 : 5000);
+        if (window.GameMusic) window.GameMusic.beginEndingTransition();
+        endingTimer = window.setTimeout(function () {
+          endingTimer = 0;
+          if (window.GameEnding) window.GameEnding.show();
+        }, reduceMotion ? 120 : 2000);
+      }, reduceMotion ? 0 : 3000);
     }, reduceMotion ? 120 : 4200);
   }
 
@@ -295,6 +298,7 @@
     startEndingSequence();
   });
   windowHotspot.addEventListener("click", function () {
+    playSound("windowLatch");
     windowCopy.textContent = solved.window ? dialogue.windowSuccess : dialogue.windowPrompt;
     windowDialog.classList.toggle("is-success", solved.window);
     windowDialog.showModal();
@@ -312,6 +316,7 @@
       pipeHotspot.focus();
       return;
     }
+    playSound("windowLatch");
     var expected = expectedPipePoint();
     pipeCopy.textContent = pipeTool === "soap"
       ? expected === 2 ? dialogue.pipePoint1Success : dialogue.pipeIntro
@@ -346,7 +351,7 @@
     windowSafetyTimer = window.setTimeout(function () {
       windowSafetyTimer = 0;
       showSafetyRuleCard("window");
-    }, reduceMotion ? 200 : 1000);
+    }, reduceMotion ? 200 : 600);
   }
 
   function expectedPipePoint() {
@@ -393,6 +398,10 @@
     var expected = expectedPipePoint();
     if (pipeTool !== "soap" || !expected || pipeCheckTimer) return;
     if (number !== expected) {
+      playSound("toolWrong");
+      point.classList.remove("is-wrong");
+      void point.offsetWidth;
+      point.classList.add("is-wrong");
       pipeCopy.textContent = pipePointName(expected) + " 연결부부터 순서대로 확인하자 멍!";
       status.textContent = pipePointName(expected) + " 배관 연결부를 먼저 점검해야 합니다.";
       return;
@@ -446,13 +455,14 @@
           pipeWarning.hidden = true;
           pipeWarning.classList.remove("is-visible");
           showSafetyRuleCard("pipe");
-        }, reduced ? 1300 : 3000);
+        }, reduced ? 1300 : 2300);
       }
     }, reduced ? 0 : 680);
   }
 
   pipePoints.forEach(function (point) {
     point.addEventListener("click", function () { checkPipePoint(point); });
+    point.addEventListener("animationend", function () { point.classList.remove("is-wrong"); });
   });
 
   function choosePipeTool(tool, button) {

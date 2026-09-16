@@ -9,7 +9,7 @@
 .stage-two-call-scene__background { position:absolute; z-index:-3; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
 .stage-two-call-scene__shade { position:absolute; z-index:-2; inset:0; background:linear-gradient(rgba(15,31,48,.28),rgba(31,34,52,.5)),radial-gradient(circle at 50% 35%,rgba(255,190,102,.16),transparent 54%); }
 .stage-two-call-story { position:relative; width:min(1000px,90vw,calc(86vh * 16 / 9)); height:auto; aspect-ratio:16 / 9; overflow:hidden; }
-.stage-two-call-beat { position:absolute; inset:2%; overflow:hidden; border:5px solid #fff; border-radius:18px; outline:4px solid #24323b; outline-offset:-1px; box-shadow:0 15px 0 rgba(36,50,59,.92),0 26px 34px rgba(10,24,36,.4); opacity:0; transform:translateX(7%) scale(.94) rotate(1deg); transition:opacity .48s ease,transform .58s cubic-bezier(.2,.85,.3,1); }
+.stage-two-call-beat { position:absolute; inset:2%; overflow:hidden; border:5px solid #fff; border-radius:18px; outline:4px solid #24323b; outline-offset:-1px; opacity:0; transform:translateX(7%) scale(.94) rotate(1deg); transition:opacity .48s ease,transform .58s cubic-bezier(.2,.85,.3,1); }
 .stage-two-call-beat__frame { position:absolute; z-index:20; inset:0; border:3px solid rgba(36,50,59,.2); border-radius:12px; pointer-events:none; }
 .stage-two-call-beat--arrival { background:linear-gradient(rgba(20,43,56,.05),rgba(17,36,49,.2)); }
 .stage-two-call-beat--dial { display:grid; place-items:center; background:#f6cd43; }
@@ -328,9 +328,16 @@
 .stage-two-pipe-result em { display:none; padding:5px 9px; border:2px solid #24323b; border-radius:999px; color:#fff; box-shadow:0 3px 0 rgba(36,50,59,.28); font:900 13px/1 var(--font-body); font-style:normal; }
 .stage-two-pipe-point.is-done:not(.is-leak) .stage-two-pipe-result .is-normal { display:block; background:#5bae61; }
 .stage-two-pipe-point.is-leak .stage-two-pipe-result .is-warning { display:block; background:#d95543; animation:stage-two-warning-pop .42s cubic-bezier(.2,.8,.25,1.25) both; }
+.stage-two-pipe-point.is-wrong { animation:stage-two-pipe-point-wrong .34s ease both; }
 .stage-two-pipe-dialog.is-success .stage-two-pipe-point { pointer-events:none; }
 @keyframes stage-two-pipe-point-glow { 0%,100% { transform:translate(-50%,-50%) scale(.92); } 50% { transform:translate(-50%,-50%) scale(1.08); } }
 @keyframes stage-two-warning-pop { from { opacity:0; transform:scale(.45); } to { opacity:1; transform:scale(1); } }
+@keyframes stage-two-pipe-point-wrong {
+  0%,100% { transform:translate(-50%,-50%); }
+  25% { transform:translate(calc(-50% - 8px),-50%) rotate(-3deg); }
+  50% { transform:translate(calc(-50% + 8px),-50%) rotate(3deg); }
+  75% { transform:translate(calc(-50% - 5px),-50%) rotate(-2deg); }
+}
 @keyframes stage-two-leak-warning-badge {
   0% { opacity:0; transform:translateX(-50%) scale(.74); }
   12% { opacity:1; transform:translateX(-50%) scale(1.08); }

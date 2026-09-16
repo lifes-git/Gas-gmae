@@ -95,7 +95,7 @@
       }
       elements.safetyRuleDialog.showModal();
       elements.safetyRuleConfirm.focus();
-    }, reduceMotion ? 120 : 1000);
+    }, reduceMotion ? 120 : 600);
   }
 
   var kitchenScenes = window.createKitchenScenes({
@@ -226,15 +226,17 @@
 
   var backgroundMusicPhase = "stage1";
   var backgroundMusicFade = 0;
+  var backgroundMusicPrimeTimer = 0;
   var backgroundMusicDuckTimer = 0;
   var stageOneMusicVolume = .19;
   var stageTwoMusicTrack = "assets/common/audio/bgm-stage2-v1.mp3?v=30cb3ac463a4";
   var stageTwoMusicVolume = .19;
   var completionMusicVolume = .19;
+  var backgroundMusicTransitionFadeDuration = 2000;
 
   function backgroundMusicTargetVolume() {
     if (!elements.result.hidden) return completionMusicVolume;
-    if (backgroundMusicPhase === "transition") return 0;
+    if (backgroundMusicPhase === "transition" || backgroundMusicPhase === "endingTransition") return 0;
     return backgroundMusicPhase === "stage2" ? stageTwoMusicVolume : stageOneMusicVolume;
   }
 
@@ -271,24 +273,46 @@
   function primeStageTwoBackgroundMusic() {
     if (!elements.music) return;
     backgroundMusicPhase = "transition";
-    if (backgroundMusicFade) window.cancelAnimationFrame(backgroundMusicFade);
-    backgroundMusicFade = 0;
-    var track = stageTwoMusicTrack;
-    if (elements.music.getAttribute("src") !== track) {
-      elements.music.pause();
-      elements.music.setAttribute("src", track);
-      elements.music.load();
-    }
-    elements.music.loop = true;
-    elements.music.volume = 0;
-    if (!elements.soundSetting.checked || document.hidden) return;
-    var playback = elements.music.play();
-    if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
+    if (backgroundMusicDuckTimer) window.clearTimeout(backgroundMusicDuckTimer);
+    backgroundMusicDuckTimer = 0;
+    if (backgroundMusicPrimeTimer) window.clearTimeout(backgroundMusicPrimeTimer);
+    fadeBackgroundMusic(0, backgroundMusicTransitionFadeDuration);
+    backgroundMusicPrimeTimer = window.setTimeout(function () {
+      backgroundMusicPrimeTimer = 0;
+      if (backgroundMusicPhase !== "transition") return;
+      var track = stageTwoMusicTrack;
+      if (elements.music.getAttribute("src") !== track) {
+        elements.music.pause();
+        elements.music.setAttribute("src", track);
+        elements.music.load();
+      }
+      elements.music.loop = true;
+      elements.music.volume = 0;
+      if (!elements.soundSetting.checked || document.hidden) return;
+      var playback = elements.music.play();
+      if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
+    }, backgroundMusicTransitionFadeDuration);
+  }
+
+  function beginEndingBackgroundMusicTransition() {
+    if (!elements.music) return;
+    backgroundMusicPhase = "endingTransition";
+    if (backgroundMusicDuckTimer) window.clearTimeout(backgroundMusicDuckTimer);
+    backgroundMusicDuckTimer = 0;
+    fadeBackgroundMusic(0, backgroundMusicTransitionFadeDuration);
   }
 
   function revealStageTwoBackgroundMusic() {
     if (!elements.music) return;
+    if (backgroundMusicPrimeTimer) window.clearTimeout(backgroundMusicPrimeTimer);
+    backgroundMusicPrimeTimer = 0;
     backgroundMusicPhase = "stage2";
+    if (elements.music.getAttribute("src") !== stageTwoMusicTrack) {
+      elements.music.pause();
+      elements.music.setAttribute("src", stageTwoMusicTrack);
+      elements.music.load();
+    }
+    elements.music.loop = true;
     try { elements.music.currentTime = 0; } catch (error) { /* metadata may still be loading */ }
     if (!elements.soundSetting.checked || document.hidden) {
       elements.music.pause();
@@ -318,7 +342,7 @@
       stage1: "assets/common/audio/Suitcase_and_Sunlight.mp3",
       stage2: stageTwoMusicTrack
     };
-    if (backgroundMusicPhase === "transition" && !completion) {
+    if ((backgroundMusicPhase === "transition" || backgroundMusicPhase === "endingTransition") && !completion) {
       if (!elements.soundSetting.checked || document.hidden) {
         elements.music.pause();
       } else if (elements.music.paused) {
@@ -338,7 +362,7 @@
       elements.music.load();
     }
     elements.music.loop = !completion;
-    if (trackChanged) elements.music.volume = backgroundMusicPhase === "stage2" && !completion ? 0 : backgroundMusicTargetVolume();
+    if (trackChanged) elements.music.volume = (backgroundMusicPhase === "stage2" && !completion) || completion ? 0 : backgroundMusicTargetVolume();
     else if (completion) elements.music.volume = completionMusicVolume;
     else if (!backgroundMusicDuckTimer && !backgroundMusicFade) elements.music.volume = backgroundMusicTargetVolume();
     if (!elements.soundSetting.checked || document.hidden) {
@@ -348,11 +372,16 @@
     if (!elements.music.paused || (completion && elements.music.ended)) return;
     var playback = elements.music.play();
     if (trackChanged && backgroundMusicPhase === "stage2" && !completion) fadeBackgroundMusic(stageTwoMusicVolume, 1200);
+    if (trackChanged && completion) fadeBackgroundMusic(completionMusicVolume, 1200);
     if (playback && playback.catch) playback.catch(function () { /* a later user gesture can retry */ });
   }
 
   document.addEventListener("game-sound-played", function (event) {
     duckBackgroundMusic(event.detail && event.detail.duckDuration);
+  });
+
+  window.GameMusic = Object.freeze({
+    beginEndingTransition: beginEndingBackgroundMusicTransition
   });
 
   function setMissionStatus(kind, message) {
@@ -965,6 +994,8 @@
     state.exiting = false;
     if (backgroundMusicFade) window.cancelAnimationFrame(backgroundMusicFade);
     backgroundMusicFade = 0;
+    if (backgroundMusicPrimeTimer) window.clearTimeout(backgroundMusicPrimeTimer);
+    backgroundMusicPrimeTimer = 0;
     backgroundMusicPhase = "stage1";
     if (window.ExitTransition) window.ExitTransition.reset();
     if (window.OutingTransition) window.OutingTransition.reset();

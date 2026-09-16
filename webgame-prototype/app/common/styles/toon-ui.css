@@ -1175,15 +1175,15 @@ button,
 
 @media (orientation:landscape) and (max-height:520px) {
   .scene-navigation {
-    width: 68px !important;
-    height: 68px !important;
-    min-width: 68px !important;
-    min-height: 68px !important;
+    width: 75px !important;
+    height: 75px !important;
+    min-width: 75px !important;
+    min-height: 75px !important;
   }
 
   .scene-navigation svg {
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
   }
 
   .rotation-cue-valve {
